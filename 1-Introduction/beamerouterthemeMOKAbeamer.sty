@@ -1,0 +1,70 @@
+\mode<presentation>
+
+
+%\setbeamercolor*{author in head/foot}{parent=palette tertiary}
+%\setbeamercolor*{title in head/foot}{parent=palette secondary}
+%\setbeamercolor*{date in head/foot}{parent=palette primary}
+
+%\setbeamercolor*{section in head/foot}{parent=palette tertiary}
+%\setbeamercolor*{subsection in head/foot}{parent=palette primary}
+
+
+%Headline
+%\newboolean{showNum}
+%\setboolean{showNum}{true}
+\defbeamertemplate*{headline}{MOKAbeamer}
+{
+  %Utiliser la headline pour mettre le titre des sections
+%  \ifthenelse{\boolean{showNum}}{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=7.5ex,dp=1.25ex,right]{number in foot}%
+\hskip0.8\paperwidth \insertframenumber{} / \inserttotalframenumber\hspace*{0.06\paperwidth} 
+  \end{beamercolorbox}%
+%  }
+}
+%\setbeamersize{text margin left=1em,text margin right=1em}
+
+% Frame title
+\defbeamertemplate*{frametitle}{MOKAbeamer}[1][]
+{
+%\vspace*{-\headheight}
+\vspace{-\headheight}%
+\leavevmode%
+ \begin{beamercolorbox}[wd=\paperwidth,ht=3.25ex,dp=1ex,left]{frametitle}%
+   %\usebeamerfont{author in head/foot}
+   \hspace*{0.05\paperwidth}\insertframetitle
+    %\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}
+  \end{beamercolorbox}%
+}
+
+%Footline
+\setbeamercolor*{section in head/foot}{fg=grey55}
+\setbeamertemplate{section in head/foot}{\color{fg}\insertsectionhead}
+\setbeamertemplate{section in head/foot shaded}{\color{fg!50!white!50}\insertsectionhead}
+\defbeamertemplate*{footline}{MOKAbeamer}
+{
+%  \leavevmode%
+%  \begin{beamercolorbox}[wd=\paperwidth]{line}
+%    \hskip0.45\paperwidth\rule{0.10\paperwidth}{0.3pt}
+%  \end{beamercolorbox}\\
+%  \hbox{%
+  %\begin{beamercolorbox}[wd=.4\paperwidth,ht=2.5ex,dp=1.25ex,left]{section in foot}%
+  % \hspace*{0.06\paperwidth}\insertsectionhead
+  %\end{beamercolorbox}%
+%  \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.5ex,dp=1.25ex,left]{number in foot}%
+%    \hspace*{0.06\paperwidth}\MakeUppercase{\insertshorttitle}
+%  \end{beamercolorbox}%
+
+%  \begin{beamercolorbox}[wd=.6\paperwidth,ht=2.5ex,dp=1.25ex,center]{section in head/foot}%
+%    \insertsection
+    %\insertsectionnavigationhorizontal{.5\textwidth}{\hspace*{0.05\paperwidth}}{\hskip0pt plus1filll}
+%  \end{beamercolorbox}%
+%  \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.5ex,dp=1.25ex,right]{number in foot}%
+%    \insertframenumber{} / \inserttotalframenumber\hspace*{0.06\paperwidth} 
+%  \end{beamercolorbox}%
+%  }%
+%  \vskip0pt%
+}
+
+
+
+\mode<all>
