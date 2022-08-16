@@ -90,11 +90,13 @@
 \begin{frame}{Supervised  Learning}
 \structure{{\bf Supervised Learning Framework}}
 
-$\rightharpoondown$ \alert{Input} measurement $\textbf{X}  \in \mathcal{X}$ (often $\mathcal{X} \subset \mathbb{R}^d$), \alert{output} measurement $Y \in \mathcal{Y}$.
+$\rightharpoondown$ \alert{Input} measurement $\textbf{X}  \in \mathcal{X}$ (often $\mathcal{X} \subset \mathbb{R}^d$).
+
+$\rightharpoondown$  \alert{Output} measurement $Y \in \mathcal{Y}$.
 
 $\rightharpoondown$  The joint distribution of $(\textbf{X},Y)$ is  \alert{unknown}.
 
-$\rightharpoondown$  $Y \in \{-1,1\}$ (classification) or $Y \in \mathbb{R}^m$ (regression).
+$\rightharpoondown$  $Y \in \{1,\ldots,M\}$ (classification) or $Y \in \mathbb{R}^m$ (regression).
 
 
 $\rightharpoondown$ A \alert{predictor} is a measurable function $f:\mathcal{X} \to \mathcal{Y}$.
@@ -103,7 +105,8 @@ $\rightharpoondown$ A \alert{predictor} is a measurable function $f:\mathcal{X} 
 
 \structure{{\bf Training data}}
 
-$\rightharpoondown$ $\mathcal{D}_n=\{(\textbf{X}_1, Y_1),\ldots,(\textbf{X}_n, Y_n)\}$ i.i.d. with the same distribution as $(\textbf{X},Y)$.
+$\rightharpoondown$ i.i.d. with the same distribution as $(\textbf{X},Y)$:
+$$\mathcal{D}_n=\{(\textbf{X}_1, Y_1),\ldots,(\textbf{X}_n, Y_n)\}\,.$$ 
 
 
 
@@ -121,7 +124,7 @@ $\rightharpoondown$  Need to specify the meaning of good.
 \begin{frame}{Loss and Probabilistic Framework}
 \structure{{\bf Loss function}}
 
-$\rightharpoondown$ $\ell(Y,f(\textbf{X}))$ measures the goodness of the prediction of $Y$ by $f(\textbf{X})$.
+$\rightharpoondown$ $\ell(Y,f(\textbf{X}))$: the goodness of the prediction of $Y$ by $f(\textbf{X})$.
 
 $\rightharpoondown$ \alert{Prediction} loss: $\ell(Y,f(\textbf{X}))=\mathbf{1}_{Y\neq f(\textbf{X})}$.
 
@@ -142,7 +145,7 @@ $\rightharpoondown$ \alert{Quadratic} loss: $\E[\ell(Y,f(\textbf{X}))]=\E[\|Y-f(
 
 \vspace{.3cm}
 
-$\rightharpoondown$ \alert{\textbf{Beware:}}  As $\widehat{f}_n$ depends on $\mathcal{D}_n$, $\mathcal{R}(\widehat{f}_n)$ is a random variable!
+$\rightharpoondown$ {\color{Vert} \textbf{Beware:}}  As $\widehat{f}_n$ depends on $\mathcal{D}_n$, $\mathcal{R}(\widehat{f}_n)$ is a random variable!
 
 \end{frame}
 
@@ -521,7 +524,7 @@ Assume that for all $1\in\{1,\ldots,M\}$, \alert{$\P(Y= i) = \pi_i$, where $\pi_
 	\end{figure}
 \end{frame}
 
-\begin{frame}{Naive Bayes}
+\begin{frame}{A very simple case - Naive Bayes}
 
 
 Classical algorithm using a \alert{crude modeling for the conditional law of $X$ given $Y$}
@@ -544,7 +547,7 @@ Very simple learning even in \alert{very high dimension!}
 
 \end{frame}
 
-\begin{frame}{Gaussian Naive Bayes}
+\begin{frame}{A very simple case - Gaussian Naive Bayes}
 $\rightharpoondown$ \alert{Feature  independence} assumption.
 
 \vspace{.2cm}
@@ -569,18 +572,16 @@ where \structure{$\Sigma_k = \mathrm{diag}(\sigma_{1,k}^2,\ldots,\sigma_{d,k}^2)
 
 \end{frame}
 
-\begin{frame}{Gaussian Naive Bayes}
-In a two-classes problem, the optimal classifier is (\alert{see linear discriminant analysis below}):
+\begin{frame}{A very simple case - Gaussian Naive Bayes}
+In a two-classes problem, the optimal classifier is (\alert{see linear discriminant analysis}):
 
 \begin{align*}
-f^*:X\mapsto 2\mathds{1}\{\P(Y= 1| X)>\P(Y= -1| X)\}-1\,.
+f^*(X) = 2\mathds{1}_{\P(Y= 1| X)>\P(Y= -1| X)}-1\,.
 \end{align*}
 
 \vspace{.2cm}
 
-$\rightharpoondown$ When the parameters are unknown, they may be replaced by their \alert{maximum likelihood estimates}.
-
-This yields, for $k\in\{1,2\}$,  
+$\rightharpoondown$ When the parameters are unknown, they may be replaced by their \alert{maximum likelihood estimates}. This yields, for $k\in\{1,2\}$,  
 \begin{align*}
 \structure{{\bf \widehat \pi_k^n}} &= \frac{1}{n}\sum_{i=1}^n\mathds{1}_{Y_i=k}\,,\\
 \structure{{\bf \widehat \mu_k^n}} &= \frac{1}{\sum_{i=1}^n\mathds{1}_{Y_i=k}}\sum_{i=1}^n\mathds{1}_{Y_i=k}\,X_i\,,\\
@@ -594,53 +595,81 @@ This yields, for $k\in\{1,2\}$,
 %	- densité jointe et règle de Bayes
 %	- test d'égalité des matrices de covariance \citep[Chapter 10]{anderson_introduction_2003}
 
-\begin{frame}{In Practice}
-\structure{{\bf Estimation}} 
+%\begin{frame}{Discriminant analysis in practice}
+%\structure{{\bf Estimation}} 
+%
+%
+%In practice, $\mu_k$, $\Sigma_k$ and $\pi_k:=\P(Y=k)$ have to be estimated. 
+%
+%\vspace{.3cm}
+%
+%$\rightharpoondown$ \alert{Estimated proportions} $ \widehat{\pi}_k =\frac{n_k}{n}= \frac{1}{n} \sum_{i=1}^n \mathbf{1}_{\{Y_i=k\}} $.
+%
+%
+% $\rightharpoondown$ \alert{Maximum likelihood estimate} of $\widehat{\mu_k}$ and $\widehat{\Sigma_k}$ (explicit formulas).
+%
+%\vspace{.4cm}
+%
+%The DA classifier then becomes
+%  \begin{align*}
+%    \widehat{g}_n(X) = \begin{cases}
+%1 & \text{\small if
+%$\widehat{g}_{1}(X)\geq\widehat{g}_{2}(X)$}\,,
+%\\
+%2 & \text{otherwise}\,.
+%    \end{cases}
+%  \end{align*}
+%
+%\vspace{.3cm}
+%
+% If  $\Sigma_{1}=\Sigma_2 = \Sigma$ then the \alert{{\bf decision boundary is an affine hyperplane}}.
+%
+%\end{frame}
 
-
-In practice, $\mu_k$, $\Sigma_k$ and $\pi_k:=\P(Y=k)$ have to be estimated. 
-
-$\rightharpoondown$ \alert{Estimated proportions} $ \widehat{\pi}_k =\frac{n_k}{n}= \frac{1}{n} \sum_{i=1}^n \mathbf{1}_{\{Y_i=k\}} $.
-
-
- $\rightharpoondown$ \alert{Maximum likelihood estimate} of $\widehat{\mu_k}$ and $\widehat{\Sigma_k}$ (explicit formulas).
-
-\vspace{.4cm}
-
-The DA classifier then becomes
-  \begin{align*}
-    \widehat{f}_n(X) = \begin{cases}
-+1 & \text{\small if
-$\widehat{g}_{1}(X)\geq\widehat{g}_{-1}(X)$}\,,
-\\
--1 & \text{otherwise}\,.
-    \end{cases}
-  \end{align*}
-
-\vspace{.3cm}
-
- If  $\Sigma_{1}=\Sigma_2 = \Sigma$ then the \alert{{\bf decision boundary is an affine hyperplane}}.
-
-\end{frame}
-
-\begin{frame}
+\begin{frame}{Linear discriminant analysis in practice}
 \structure{{\bf The loglikelihood of the observations}} is given by
 \begin{align*}
-\ell_n(\theta) &= - \frac{nd}{2} \log(2\pi)-\frac{n}2 \alert{\log\mathrm{\det}(\Sigma)} + n_1\textcolor{violet}{\log \pi_1} + \left(n-n_1\right)\textcolor{violet}{\log (1-\pi_{1})} \\
+\ell_n(\theta) &= - \frac{nd}{2} \log(2\pi)-\frac{n}2 \alert{\log\mathrm{\det}(\Sigma)} + n_1\textcolor{violet}{\log \pi_1} + \left(n-n_2\right)\textcolor{violet}{\log (1-\pi_{1})} \\
 & \hspace{-.21cm}
 -  \frac{1}{2}\sum_{i=1}^n\mathds{1}_{Y_i=1}\alert{\left(X_i - \mu_{1}\right)^\top}\alert{\Sigma^{-1}}\alert{\left(X_i - \mu_{1}\right)}\\
 & \hspace{-.21cm} -  \frac{1}{2}\sum_{i=1}^n\mathds{1}_{Y_i=-1}\textcolor{blue}{\left(X_i - \mu_{-1}\right)^\top}\alert{\Sigma^{-1}}\textcolor{blue}{\left(X_i - \mu_{-1}\right)}\,,
 \end{align*}
-where $n_1 = \sum_{i=1}^n\mathds{1}_{Y_i=1}$. This yields, for $k\in\{1,2\}$,  
+where $n_1 = \sum_{i=1}^n\mathds{1}_{Y_i=1}$. This yields, for $k\in\{1,2\}$,   the following MLE estimates:
 \begin{align*}
-\structure{{\bf \widehat \pi_k^n}} &= \frac{1}{n}\sum_{i=1}^n\mathds{1}_{Y_i=k}\,,\\
-\structure{{\bf \widehat \mu_k^n}} &= \frac{1}{\sum_{i=1}^n\mathds{1}_{Y_i=k}}\sum_{i=1}^n\mathds{1}_{Y_i=k}\,X_i\,,\\
-\structure{{\widehat\Sigma^n}} &= \frac{1}{n}\sum_{i=1}^n \left(X_i - \widehat \mu_{Y_i}^n\right)\left(X_i - \widehat \mu_{Y_i}^n\right)^\top\,.
+\structure{{\bf \widehat \pi_k}} &= \frac{1}{n}\sum_{i=1}^n\mathds{1}_{Y_i=k}\,, \quad \structure{{\bf \widehat \mu_k}} = \frac{1}{\sum_{i=1}^n\mathds{1}_{Y_i=k}}\sum_{i=1}^n\mathds{1}_{Y_i=k}\,X_i\,,\\
+\structure{{\widehat\Sigma}} &= \frac{1}{n}\sum_{i=1}^n \left(X_i - \widehat \mu_{Y_i}\right)\left(X_i - \widehat \mu_{Y_i}\right)^\top\,.
 \end{align*}
 
-\alert{{\bf Remains to plug these estimates in the classification boundary}}.
+%{\color{Vert}{\bf Remains to plug these estimates in the classification boundary}}.
 \end{frame}
 
+\begin{frame}{Linear discriminant analysis in practice}
+	We assume that the \structure{covariance is the same in each class}.
+	$$
+		\Sigma_1 = \Sigma_2 = \Sigma.
+	$$
+
+	
+	\begin{prop}
+		Define 
+		\begin{align*}
+			\widehat{h} &\colon x \in \R^d \mapsto (\hat\mu_1-\hat\mu_2)^\top\hat{\Sigma}^{-1}x \\
+			\widehat{b} &= \frac 12 (\hat{\mu_2}^\top\hat{\Sigma}^{-1}\hat{\mu}_2 - \hat{\mu}_1^\top\hat{\Sigma}^{-1}\hat{\mu}_1) + \log \left( \frac{\hat{\pi}_1}{\hat{\pi}_2} \right).
+		\end{align*}
+		Then, a "Plug-in" Bayes classifier is
+		$$
+			\widehat{g} \colon x \in \R^d \mapsto
+			\left\{ \begin{array}{ll}
+				1 & \text{if } \widehat{h}(x) + \widehat{b} > 0 \\
+				2 & \text{otherwise}.
+			\end{array} \right.
+		$$
+	\end{prop}
+
+\centering
+{\color{Vert} Proof on blackboard, see also XXX}
+
+\end{frame}
 
 
 \subsection{Rayleigh quotient}
@@ -650,9 +679,9 @@ where $n_1 = \sum_{i=1}^n\mathds{1}_{Y_i=1}$. This yields, for $k\in\{1,2\}$,
 	
 	\begin{block}{Setting}
 	\begin{itemize}
-	\item Suppose that the distribution of $X|Y$ is \structure{unimodal}
+	\item Suppose that the conditional distribution of $X$ given $Y$ is \structure{unimodal}
 	\pause
-	\item So the  distribution of $X|Y$ can be characterized by the information of
+	\item So this  distribution can be characterized by the information of
 	\begin{enumerate}[(i)]
 	\item  its \structure{expectation}
 	\item  its \structure{variance}
@@ -847,20 +876,20 @@ where $n_1 = \sum_{i=1}^n\mathds{1}_{Y_i=1}$. This yields, for $k\in\{1,2\}$,
 \begin{itemize}
 \item In regression with $\Xc = \R^d$ , the linear model is the \structure{parametric reference model}.
 \pause 
-\item This model makes the assumption that the regression function is linear: 
+\item This model makes the assumption that the regression function is linear: for $1\leq i \leq n$
 $$
-m^\star(x)=\E [Y_i|X_i=x]= \beta_1^\star x_1+\hdots +\beta_d^\star x_d,
-$$
-or equivalently that for $1\leq i \leq n$
-$$
-Y_i = \beta_1 X_{i,1} + \hdots +  \beta_d X_{i,d} + \varepsilon_i = X_i^T \beta +\varepsilon_i,
+Y =  X^\top \beta +\varepsilon,
 $$
 with 
 $$
-\E [ \varepsilon_i | X_i=x ] = 0 \quad \text{and } \quad \V [ \varepsilon_i | X_i=x ] = \sigma^2.
+\E [ \varepsilon| X ] = 0 \quad \text{and } \quad \V [ \varepsilon | X] = \sigma^2.
 $$
-\item Here, estimating $m^\star$ is equivalent to estimate $\beta^\star \in \R^d$.
-$m^\star$ is characterized by the parameter $\beta^\star \in \R^d$ (finite dimension) \\ $\Rightarrow$ parametric model.  
+\item Here, estimating the regression function is equivalent to estimate $\beta^\star \in \R^d$.
+
+\vspace{.2cm}
+
+{\color{Vert}Finite dimensional parametric model}
+%$m^\star$ is characterized by the parameter $\beta^\star \in \R^d$ (finite dimension) \\ $\Rightarrow$ parametric model.  
 \end{itemize} 
 \end{frame}
 
@@ -872,19 +901,19 @@ $m^\star$ is characterized by the parameter $\beta^\star \in \R^d$ (finite dimen
 $$
 \min_{\beta \in \R^d} \widehat{\Rc}_n (\beta) = \min_{\beta \in \R^d} \frac{1}{n} \sum_{i=1}^n (Y_i - X_i^T \beta)^2 =  \min_{\beta \in \R^d}  \frac{1}{n}\| Y - X \beta \|_2^2
 $$
-with $Y\in\R^n$, $X\in \R^{n\times d}$ is given by
-\pause 
+with $Y\in\R^n$, $X\in \R^{n\times d}$ is given, if $X$ has full rank, by
+ 
 $$
-\widehat{\beta}^{LS}  = (X^T X)^{-1} X^T Y.
+\widehat{\beta}^{LS}  = (X^\top X)^{-1} X^\top Y.
 $$
-\item The regression function $m^\star$ is estimated by
-\pause
+\item The regression function $m^\star: x \mapsto x^\top \beta^*$ is estimated by
+
 $$
-\widehat{m}_n^{LS} (x) = \hat{\beta}^{LS}_1 x_1 + \hdots + \hat{\beta}^{LS}_d x_d.
+\widehat{m}_n^{LS} x \mapsto  x^\top \widehat{\beta}^{LS}.
 $$
 \item Under some technical assumptions (see lectures of past year)
 $$
-\E [ \widehat{\beta}^{LS}  ] = \beta^\star \quad \text{and} \quad \V (\widehat{\beta}^{LS}   ) = (X^T X)^{-1} \sigma^2.
+\E [ \widehat{\beta}^{LS}  ] = \beta^\star \quad \text{and} \quad \V (\widehat{\beta}^{LS}   ) = (X^\top X)^{-1} \sigma^2.
 $$
 \item We deduce that
 $$
@@ -900,6 +929,10 @@ $$
 \item Moreover, if errors terms $(\varepsilon_i)_i$ are Gaussian, we can compute the distribution of the least squares estimates (confidence intervals, test statistics...).
 \end{itemize}
 \end{remark}
+
+\vspace{.3cm}
+
+{\color{Vert} See \href{https://sylvainlc.github.io/}{[Lecture notes on statistical learning, Chapter 2]} for additional details (Ridge/Lasso  regression)...}
 \end{frame}
 
 
@@ -907,15 +940,13 @@ $$
 \begin{frame}{Going beyond: the logistic model}
 
 \begin{itemize}
-\item One of the most widely used classification algorithm.
-
-\item Logistic model is the "brother" of the linear model in the context of binary classification 
+\item One of the most widely used classification algorithm in the context of binary classification 
 ($\Yc = \{-1, 1\}$).
 
 \item We want to explain the label $Y$ based on $X$, we want to
 "regress" $Y$ on $X$.
 
-\item It \structure{models the distribution of $Y|X$}.
+\item It \structure{models the distribution of $Y$ given $X$}.
 For $y\in \{-1, 1\}$
 $$
 \P\left(  Y = 1 | X =x \right) = \sigma \left( x^T w +b \right)
@@ -923,30 +954,38 @@ $$
 where $w\in \R^d$ is a vector of model weights and $b\in\R$ is the
 intercept, and where $\sigma$ is the \structure{sigmoid} function:
 \end{itemize}
-\begin{minipage}{0.45\textwidth}
-$$
-\sigma(z) = \frac{1}{1+e^{-z}}. 
-$$
-\end{minipage}
-\begin{minipage}{0.35\textwidth}
+%\begin{minipage}{0.45\textwidth}
+%$$
+%\sigma(z) = \frac{1}{1+e^{-z}}. 
+%$$
+%\end{minipage}
+%\begin{minipage}{0.35\textwidth}
+%\begin{figure}[H]
+%\begin{center}
+%\includegraphics[height=2cm]{./sigmoid}
+%%\caption{The sigmoid function}
+%\end{center}
+%\end{figure}
+%\end{minipage}
+\end{frame}
+
+\begin{frame}{Going beyond: the logistic model}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[height=2cm]{notes/img/sigmoid}
+\includegraphics[scale = .6]{./sigmoid}
 %\caption{The sigmoid function}
 \end{center}
 \end{figure}
-\end{minipage}
 \end{frame}
-
 
 
 \begin{frame}{Some comments on the logistic model}
 \begin{itemize}
 \item The sigmoid choice really is a choice. It is a modelling choice.
-\item It's a way to map $\R \to [0, 1]$ (we want to model a probability).
+\item It is a way to map $\R \to [0, 1]$ (we want to model a probability).
 \item We could also consider
 $$
-\P\left(  Y = 1 | X =x \right) = F \left( x^T w +b \right)
+\P\left(  Y = 1 | X \right) = F \left( X^\top w +b \right)
 $$
 for any distribution function $F$. 
 \pause
@@ -964,13 +1003,13 @@ which leads to another loss called {\color{PineGreen}probit}.
 \item In the case of the sigmoid,
 one has
 \begin{align*}
-\P\left(  Y = 1 | X =x \right) &= \frac{\exp (b+ w^Tx)}{1+ \exp(b+ w^T x)} = \frac{1}{1+\exp(-(b+ w^T x)) } \\
-\P\left(  Y = - 1 | X =x \right) &=  \frac{1}{1+\exp(b+ w^T x) }
+\P\left(  Y = 1 | X  \right) &= \frac{\exp (b+ w^\top X)}{1+ \exp(b+ w^\top X)} = \frac{1}{1+\exp(-(b+ w^\top X)) } \\
+\P\left(  Y = - 1 | X \right) &=  \frac{1}{1+\exp(b+ w^\top X) }
 \end{align*}
 
 \item However, the sigmoid choice has the following nice interpretation: an easy computation leads to
 $$
-\log \left( \frac{\P\left(  Y = 1 | X =x \right)}{\P\left(  Y = -1 | X =x \right)} \right) = x^T w +b.
+\log \left( \frac{\P\left(  Y = 1 | X  \right)}{\P\left(  Y = -1 | X \right)} \right) = X^\top w +b.
 $$
 \item This quantity is called the \structure{log-odd ratio}.
 \end{itemize}
@@ -979,19 +1018,19 @@ $$
 \begin{frame}{The logistic model}
 
 \begin{itemize}
-\item Therefore, this model makes the assumption that \structure{(the logit transformation of) the probability $p(x)=\P\left(  Y = 1 | X =x \right)$  is linear}:
+\item Therefore, this model makes the assumption that \structure{(the logit transformation of) the probability $p(X)=\P\left(  Y = 1 | X  \right)$  is linear}:
 $$
-\mathrm{logit} (p(x)) := \log\left( \frac{p(x)}{1-p(x)} \right) = x^T w + b.
+\mathrm{logit} (p(X)) := \log\left( \frac{p(X)}{1-p(X)} \right) = X^\top w + b.
 $$
 \pause
 \item Note that 
 \begin{block}{}
 $$
-\P\left(  Y = 1 | X =x \right) \geq \P\left(  Y = -1 | X =x \right)
+\P\left(  Y = 1 | X  \right) \geq \P\left(  Y = -1 | X  \right)
 $$
 \underline{\textbf{iff}}
 $$
-x^Tw + b \geq 0.
+X^\top w + b \geq 0.
 $$
 \end{block}
 \pause
@@ -1062,8 +1101,8 @@ This is a \structure{linear classification rule}, linear w.r.t.\ the considered 
 \begin{frame}{Estimation of $w$ and $b$}
 
 \begin{itemize}
-\item We have a model for $Y|X$
-\item Data $(x_i , y_i)$ is assumed i.i.d with the same distribution as $(X,Y)$
+\item We have a model for the conditional law of $Y$ given $X$.
+\item Data $(X_i , X_i)$ is assumed i.i.d with the same distribution as $(X,Y)$
 \item Compute estimators $\hat{w}$ and $\hat{b}$ by maximum likelihood estimation
 \item Or equivalently, minimize the minus log-likelihood.
 \item  More generally, when a model is used
@@ -1144,16 +1183,7 @@ which is \alert{linear} in $x$!
 
 \end{frame}
 
-\begin{frame}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{notes/img/lda_qda_log}
-\end{center}
-\caption{Comparison between LDA, QDA and logistic regression}
-\end{figure}
-
-\end{frame}
 
 
 
