@@ -1,0 +1,221 @@
+\documentclass[a4paper,10pt,fleqn]{article}
+
+\usepackage{a4wide,amsmath,amsthm,amssymb,bbm,fancyhdr}
+\usepackage{ifthen,color,enumerate,comment,dsfont,pdfsync,framed,todonotes,enumitem}
+\newboolean{corrige}
+\setboolean{corrige}{true}
+
+\newtheoremstyle{styleQuestion}
+  {6pt}% space above
+  {6pt}% space below
+  {\sffamily}%body font
+  {13.5pt}%indent amount
+  {\sffamily}%Theorem head
+  {.}%punctuation
+  {0.5em}%space after theorem head
+  {}
+
+
+\ifthenelse{\boolean{corrige}}%
+ {\theoremstyle{styleQuestion}%
+ \newtheorem{question}{}}%
+ {\theoremstyle{styleQuestion}%
+ \newtheorem{question}{}}
+\ifthenelse{\boolean{corrige}}%
+   {\renewenvironment{comment}%
+   %{\begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\rightmargin}{0pt}}\item[]\ignorespaces\begin{sffamily}\small\textbf{Corrigé. \footnotesize } }{\hfill\qed\end{sffamily}\unskip\end{list} }}
+   { \noindent \\ \textbf{Solution.}\begin{leftbar} \footnotesize}{\hfill \qed \end{leftbar}}}
+   {}
+
+\newcommand{\titre}[1]{\textbf{\textsc{#1}}}
+
+\RequirePackage[T1]{fontenc}
+
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{dsfont}
+\newcommand{\thisyear}{PC9}
+\usepackage{enumitem}
+\newcommand{\eqsp}{\,}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\rset}{\ensuremath{\mathbb{R}}}
+\renewcommand{\P}{\ensuremath{\operatorname{P}}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\rme}{\ensuremath{\mathrm{e}}}
+\newcommand{\calH}{\ensuremath{\mathcal{H}}}
+\newcommand{\xset}{\ensuremath{\mathsf{X}}}
+\newcommand{\V}{\ensuremath{\mathbb{V}}}
+\newcommand{\Sb}{\ensuremath{\mathbb{S}}}
+\newcommand{\gaus}{\ensuremath{\mathcal{N}}}
+\newcommand{\HH}{\ensuremath{\mathcal{H}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\W}{\ensuremath{\mathcal{W}}}
+\newcommand{\X}{\ensuremath{\mathcal{X}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\dlim}{\ensuremath{\stackrel{\mathcal{L}}{\longrightarrow}}}
+\newcommand{\plim}{\ensuremath{\stackrel{\mathrm{P}}{\longrightarrow}}}
+\newcommand{\PP}{\ensuremath{\mathbb{P}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\pa}[1]{\left(#1\right)}
+\newcommand{\hatk}{\widehat K}
+\newcommand{\f}{\varphi}
+\newcommand{\Id}{\textsf{Id}}
+\newcommand{\bfU}{\mathbf{U}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfs}{\mathbf{\Sigma}}
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfV}{\mathbf{V}}
+\newcommand{\bfB}{\mathbf{B}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\bfI}{\mathbf{I}}
+\newcommand{\bfD}{\mathbf{D}}
+\newcommand{\bfK}{\mathbf{K}}
+\newcommand{\argmin}{\mathop{\textrm{argmin}}}
+\newcommand{\argmax}{\mathop{\textrm{argmax}}}
+\newcommand{\crit}{\mathop{\textrm{crit}}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\pc}{\pi_{\mathcal{C}}}
+
+
+% Style
+\pagestyle{fancyplain}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+%\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\footnotesize {\sf
+%MAP569 Machine Learning II, \thisyear %/ \rightmark
+%}}}
+%\rhead[\fancyplain{}{\footnotesize {\sf MAP534 Introduction to machine learning, \thisyear %/ \rightmark
+%}}]{\fancyplain{}{\thepage}}
+%\cfoot[\fancyplain{}{}]{\fancyplain{}{}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\parindent=0mm
+
+\newtheorem{theorem}{Theorem}
+
+% Titre
+\title{{\bf MAT4506 Introduction to machine learning}}
+\author{{\em Logistic regression}}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+Assume that $\{(\bX_1, Y_1), \hdots, (\bX_n, Y_n)\}$ are independent random variables distributed as $(\bX, Y)$ where $\bX$ takes values in $\mathbb{R}^d$ and $Y \in  \{ 0, 1 \}$ and where
+$$
+\log \left(\mathbb{P}\left(Y=1 | \bX\right)\right) - \log \left(\mathbb{P}\left(Y=0 | \bX\right)\right) = \bX^T \beta \, ,
+$$
+where $\beta\in\rset^d$ is an unknown parameter.
+
+
+
+\begin{enumerate}
+	
+	\item Prove that 
+	\begin{align*}
+	\mathbb{P}\left(Y=1 | \bX\right) = \frac{e^{\bX^T \beta}}{1 + \mathrm{e}^{\bX^T \beta}}\,.
+	\end{align*}
+	
+\vspace{.2cm}
+
+{\em
+By definition,
+$$
+\log \left(\mathbb{P}\left(Y=1 | \bX\right)\right) - \log \left(1 - \mathbb{P}\left(Y=1 | \bX\right)\right) = \bX^T \beta\,,
+$$
+so that
+$$
+\frac{\mathbb{P}\left(Y=1 | \bX\right)}{1-\mathbb{P}\left(Y=1 | \bX\right)}= \mathrm{e}^{\bX^T \beta}\,,
+$$
+which concludes the proof.
+}
+	\item In this question only,  $\beta = (\beta_0,\beta_1)\in \rset^2$ and $\bX_i = (1,\bx_i)$ for all $1\leqslant i \leqslant n$.
+
+\vspace{.2cm}
+
+{\em
+
+}
+\begin{enumerate}
+\item If $\beta = (\beta_0,\beta_1)\in \rset\times \rset^*$, provide the value $\bx_*$ of $\bx_i$ such that $\mathbb{P}(Y_i=1 | \bX_i) = 1/2$. The logistic Bayes classifier is therefore defined by $h_*(\bX_i) = 1$ if and only if $\bx_i>\bx_*$. 
+
+\vspace{.2cm}
+
+{\em
+The real number $\bx_*$ is such that $ (\beta_0,\beta_1)(1,\bx_*)^T = 0$ i.e. $\bx_* = -\beta_0/\beta_1$.
+}
+\item Another classifier could be defined by choosing a threshold $\tilde p\in(0,1)$ and defining $\tilde h(\bX_i) = 1$ if and only if $\mathbb{P}(Y_i=1 | \bX_i) > \tilde p$.  Provide $\tilde \bx$ such that $\tilde h(\bX_i) = 1$ if and only if $\bx_i>\tilde x$. Explain a practical interest to choose $\tilde p < 1/2$.
+
+\vspace{.2cm}
+
+{\em
+Choosing the threshold $\tilde p$ modifies the true and false positive rates of the classifier. Depending on the application, ensuring a false positive rate below a given value  may be important for instance (see the ROC curve in the practical session).
+}
+\end{enumerate}
+	\item %Since the observations are assumed to be independent, the likelihood writes
+	%\begin{equation*}
+	%	\mathcal{L}_n(\beta) = \prod_{i=1}^n \mathds{P}\left(Y = y_i | X \right)_{|\bX = \bX_i}.
+	%\end{equation*}
+	Prove that the negative loglikelihood $f$ of the observations $(Y_1,\ldots,Y_n)$ given $(\bX_1,\ldots,\bX_n)$ can be written as 
+	$$
+	f(\beta) =   \frac{1}{n}\log \mathbb{P}\left(Y_1,\ldots,Y_n\middle | \bX_1,\ldots,\bX_n\right) = \frac{1}{n}\sum_{i=1}^n \left\{\log(1+\exp(\bX_{i}^T\beta))- Y_{i}\bX_{i}^T\beta\right\}\eqsp.
+	$$
+	
+\vspace{.2cm}
+
+{\em
+As the $\{(\bX_i,Y_i)\}_{1\leqslant i\leqslant n}$ are independent, 
+\begin{align*}
+f(\beta) =   -\frac{1}{n}\sum_{i=1}^n \log \mathbb{P}\left(Y_i\middle | \bX_i\right) &= - \frac{1}{n}\sum_{i=1}^n \left\{-\log(1+\exp(-\bX_{i}^T\beta)) + Y_{i}\bX_{i}^T\beta\right\}\eqsp,\\
+&= \frac{1}{n}\sum_{i=1}^n \left\{\log(1+\exp(\bX_{i}^T\beta))- Y_{i}\bX_{i}^T\beta\right\}\eqsp.
+\end{align*}
+}
+	\item Prove that the gradient of the negative loglikelihood satisfies
+	\begin{align*}
+	\nabla f (\beta) = - \frac{1}{n}\sum_{i=1}^n Y_i \bX_i + \frac{1}{n}\sum_{i=1}^n \frac{\exp(\bX_{i}^T\beta)}{1  + \exp(\bX_{i}^T\beta)} \bX_i\eqsp.
+	\end{align*}
+
+\vspace{.2cm}
+
+{\em
+It is enough to write, for all $1\leqslant i\leqslant n$,
+$$
+\nabla_{\beta}\left\{\log(1+\exp(\bX_{i}^T\beta))- Y_{i}\bX_{i}^T\beta\right\} =  -Y_i \bX_i +  \frac{\exp(\bX_{i}^T\beta)}{1  + \exp(\bX_{i}^T\beta)} \bX_i\eqsp.
+$$
+}
+	\item Prove that the Hessian matrix $H$ of the negative loglikelihood satisfies
+	\begin{align*}
+	H = \frac{1}{n}\sum_{i=1}^n \frac{\exp(\bX_{i}^T\beta)}{(1  + \exp(\bX_{i}'\beta))^2} \bX_i\bX_i^T\eqsp.
+	\end{align*}
+
+\vspace{.2cm}
+
+{\em
+It is enough to write, for all $1\leqslant i\leqslant n$,
+$$
+\nabla_{\beta}\left\{ \frac{\exp(\bX_{i}^T\beta)}{1  + \exp(\bX_{i}^T\beta)} \bX_i\right\} =  \frac{\exp(\bX_{i}^T\beta)}{(1  + \exp(\bX_{i}'\beta))^2} \bX_i\bX_i^T\eqsp.
+$$
+}
+	
+	\item Prove that the function $f$ is convex (if the Hessian matrix $H$ of $f$ is positive, that is, for all $\bz \in \mathbb{R}^d$, $\bz^T H \bz \geqslant 0$, then the function $f$ is convex). 
+
+\vspace{.2cm}
+
+{\em
+For all $z$ and all $1\leqslant i\leqslant n$, $z^T\bX_i\bX_i^Tz = (z^T\bX_i)^2$.
+}
+	
+	\item For all $1\leqslant i \leqslant n$, provide the gradient of the function $f_i: \beta \mapsto \log(1+\exp(\bX_{i}^T\beta))- Y_{i}\bX_{i}^T\beta$.
+	
+\item Provide one iteration of a stochastic gradient descent algorithm to minimize $f$ ? What is the complexity of this iteration with respect to a standard gradient descent algorithm ?
+\end{enumerate}
+
+
+\end{document}

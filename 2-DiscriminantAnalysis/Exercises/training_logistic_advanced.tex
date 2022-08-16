@@ -1,0 +1,323 @@
+\documentclass[a4paper,10pt,fleqn]{article}
+
+\usepackage{a4wide,amsmath,amsthm,amssymb,bbm,fancyhdr}
+\usepackage{ifthen,color,enumerate,comment,dsfont,pdfsync,framed,todonotes,enumitem}
+\newboolean{corrige}
+\setboolean{corrige}{true}
+
+\newtheoremstyle{styleQuestion}
+  {6pt}% space above
+  {6pt}% space below
+  {\sffamily}%body font
+  {13.5pt}%indent amount
+  {\sffamily}%Theorem head
+  {.}%punctuation
+  {0.5em}%space after theorem head
+  {}
+
+
+\ifthenelse{\boolean{corrige}}%
+ {\theoremstyle{styleQuestion}%
+ \newtheorem{question}{}}%
+ {\theoremstyle{styleQuestion}%
+ \newtheorem{question}{}}
+\ifthenelse{\boolean{corrige}}%
+   {\renewenvironment{comment}%
+   %{\begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\rightmargin}{0pt}}\item[]\ignorespaces\begin{sffamily}\small\textbf{Corrigé. \footnotesize } }{\hfill\qed\end{sffamily}\unskip\end{list} }}
+   { \noindent \\ \textbf{Solution.}\begin{leftbar} \footnotesize}{\hfill \qed \end{leftbar}}}
+   {}
+
+\newcommand{\titre}[1]{\textbf{\textsc{#1}}}
+
+\RequirePackage[T1]{fontenc}
+
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{dsfont}
+\newcommand{\thisyear}{}
+\usepackage{enumitem}
+\newcommand{\eqsp}{\,}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\rset}{\ensuremath{\mathbb{R}}}
+\renewcommand{\P}{\ensuremath{\operatorname{P}}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\rme}{\ensuremath{\mathrm{e}}}
+\newcommand{\calH}{\ensuremath{\mathcal{H}}}
+\newcommand{\xset}{\ensuremath{\mathsf{X}}}
+\newcommand{\V}{\ensuremath{\mathbb{V}}}
+\newcommand{\Sb}{\ensuremath{\mathbb{S}}}
+\newcommand{\gaus}{\ensuremath{\mathcal{N}}}
+\newcommand{\HH}{\ensuremath{\mathcal{H}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\W}{\ensuremath{\mathcal{W}}}
+\newcommand{\X}{\ensuremath{\mathcal{X}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\dlim}{\ensuremath{\stackrel{\mathcal{L}}{\longrightarrow}}}
+\newcommand{\plim}{\ensuremath{\stackrel{\mathrm{P}}{\longrightarrow}}}
+\newcommand{\PP}{\ensuremath{\mathbb{P}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\pa}[1]{\left(#1\right)}
+\newcommand{\hatk}{\widehat K}
+\newcommand{\f}{\varphi}
+\newcommand{\Id}{\textsf{Id}}
+\newcommand{\bfU}{\mathbf{U}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfs}{\mathbf{\Sigma}}
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfV}{\mathbf{V}}
+\newcommand{\bfB}{\mathbf{B}}
+\newcommand{\bfI}{\mathbf{I}}
+\newcommand{\bfD}{\mathbf{D}}
+\newcommand{\bfK}{\mathbf{K}}
+\newcommand{\argmin}{\mathop{\textrm{argmin}}}
+\newcommand{\argmax}{\mathop{\textrm{argmax}}}
+\newcommand{\crit}{\mathop{\textrm{crit}}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\pc}{\pi_{\mathcal{C}}}
+
+
+% Style
+\pagestyle{fancyplain}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+%\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\footnotesize {\sf
+%MAT4506 Introduction to Machine Learning  %/ \rightmark
+%}}}
+%\rhead[\fancyplain{}{\footnotesize {\sf MAT4506 Introduction to machine learning, \thisyear %/ \rightmark
+%}}]{\fancyplain{}{\thepage}}
+\cfoot[\fancyplain{}{}]{\fancyplain{}{}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\parindent=0mm
+
+\newtheorem{theorem}{Theorem}
+
+% Titre
+\title{{\bf MAP534:  Introduction to machine learning}}
+\author{{\em Logistic regression}}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+
+%\section*{Logistic Regression}
+The \emph{logistic model} assumes that the random variables  $(X,Y)\in \rset^p\times\{0,1\}$ are such that
+$$
+\bP(Y=1|X)={\exp\left(\langle \beta^*,X\rangle\right)\over 1+\exp\left(\langle \beta^*,X\rangle\right)}\eqsp,
+$$
+with $\beta^*\in\mathbb{R}^d$. In this case, for all $x\in\rset^d$, $\bP(Y=1|X)|_{X=x}>1/2$ if and only if $\langle \beta^*,x\rangle>0$, so
+the frontier between $\left\{x\eqsp;\eqsp h_{*}(x)=1\right\}$ and $\left\{x\eqsp ;\eqsp h_{*}(x)=0\right\}$ is an hyperplane, with orthogonal
+direction $\beta^*$. The unknown parameter $\beta^*$ may be estimated  by maximizing the conditional likelihood of $Y$ given $X$
+\begin{align*}
+\widehat \beta_n\in\mathrm{argmax}_{\beta\in\mathbb{R}^{d}}
+\prod_{i=1}^n \left[ \left( \frac{\exp\left(\langle
+	\beta,x_{i}\rangle\right)}{1+\exp\left(\langle
+	\beta,x_{i}\rangle\right)}\right)^{Y_{i}}
+\left(\frac{1}{1+\exp\left(\langle
+	\beta,x_{i}\rangle\right)}\right)^{1- Y_{i}} \right] ,
+\end{align*}
+to define the empirical classifier
+$$
+\widehat h_{n}: x \mapsto \1_{\langle \widehat\beta_n,x\rangle>0}\eqsp.
+$$
+In the following, $\{(x_i,Y_i)\}_{1\leqslant i\leqslant n}$ are assumed to be i.i.d. with the same distribution as $(X,Y)$.
+\begin{enumerate}
+\item Compute the gradient and the Hessian $H_{n}$ of
+$$
+\ell_{n}:\beta \mapsto -\sum_{i=1}^n\left[Y_{i}\langle x_{i},\beta\rangle-\log(1+\exp(\langle x_{i},\beta\rangle))\right]\eqsp.
+$$
+What can be said about the function $\ell_{n}$ when for all $\beta\in\rset^d$, $H_{n}(\beta)$ is nonsingular? This assumption is supposed to hold in the following questions.
+\item Prove that there exists $\widetilde \beta_n\in\rset^d$ such that $\|\widetilde \beta_n-\beta^*\|\leq \|\widehat \beta_n-\beta^*\|$ and
+$$
+\widehat \beta_n-\beta^*=-H_{n}(\widetilde \beta_n)^{-1}\nabla \ell_{n}(\beta^*)\eqsp.
+$$
+\end{enumerate}
+In the following it is assumed that the $(x_{i})_{1\leqslant i\leqslant n}$ are uniformly bounded, $\widehat \beta_n\to \beta^*$ a.s. and that there exists a continuous and nonsingular function $H$ such that $n^{-1}H_{n}(\beta)$ converges to $H(\beta)$, uniformly in a ball around $\beta^*$.
+\begin{enumerate}  \setcounter{enumi}{2}
+\item Define for all $1\leqslant i \leqslant n$, $p_{i}(\beta)=e^{\langle x_{i},\beta\rangle}/ \left(1+e^{\langle x_{i},\beta\rangle}\right)$. Check that
+\begin{align*}
+\bE \left[e^{-n^{-1/2}\langle t,\nabla\ell_{n}(\beta^*)\rangle}\right]& =\prod_{i=1}^n \left({1-p_{i}(\beta^*)+p_{i}(\beta^*)e^{\langle t,x_{i}\rangle/\sqrt{n}}}\right) e^{-p_{i}(\beta^*)\langle t,x_{i}\rangle/\sqrt{n}}\eqsp, \\
+&=\exp\left(\frac{1}{2}t^T\left(n^{-1}H_{n}(\beta^*)\right)t+O(n^{-1/2})\right)\eqsp.
+\end{align*}
+\item What is the asymptotic distribution of $-n^{-1/2}\nabla\ell_{n}(\beta^*)$ and of $\sqrt{n}(\widehat \beta_n-\beta^*)$?
+\item For all $1\leqslant j \leqslant d$ and all $\alpha\in(0,1)$, propose a confidence interval $\mathcal{I}_{n,\alpha}$ such that $\beta^*_{j}\in \mathcal{I}_{n,\alpha}$ with asymptotic probability $1-\alpha$.
+\end{enumerate}
+
+\clearpage
+\newpage
+%
+%
+%A function $k:\mathbb{R}^d\times\mathbb{R}^d:\to \mathbb{R}$ is said to be a positive semi-definite kernel if and only if it is symmetric and if for all $n\geqslant 1$, $(x_1,\ldots,x_n)\in(\mathbb{R}^d)^n$ and all $(a_1,\ldots,a_n)\in(\mathbb{R}^d)^n$,
+%$$
+%\sum_{1\leqslant i,j\leqslant n}a_ia_jk(x_i,x_j) \geqslant 0\eqsp.
+%$$
+%
+%The following functions, defined on $\rset^d\times\rset^d$, are positive semi-definite kernels:
+%$$
+%k:(x,y)\mapsto x^Ty \quad\mathrm{and}\quad k:(x,y)\mapsto \mathrm{exp}\left(-\|x-y\|^2/(2\sigma^2\right)\eqsp,\; \sigma>0\eqsp.
+%$$
+%
+%
+%Let $\calF$ be a Hilbert space of functions $f:\mathbb{R}^d\to\mathbb{R}^d$. A symmetric function $k:\mathbb{R}^d\times\mathbb{R}^d:\to \rset$ is said to be a reproducing kernel of $\calF$ if and only if for all $x\in\mathbb{R}^d$, $k(x,\cdot)\in\calF$ and for all $x\in\mathbb{R}^d$ and all $f\in\calF$, $\langle f; k(x,\cdot)\rangle = f(x)$. The space $\calF$ is said to be a reproducing kernel Hilbert space  (RKHS) with kernel $k$. A reproducing kernel associated with a reproducing kernel Hilbert space is positive semi-definite since for all $n\geqslant 1$, $(x_1,\ldots,x_n)\in\xset^n$ and all $(a_1,\ldots,a_n)\in\rset^n$,
+%$$
+%\sum_{1\leqslant i,j\leqslant n}a_ia_jk(x_i,x_j) = \sum_{1\leqslant i,j\leqslant n}a_ia_j \langle k(x_i,\cdot);k(x_j,\cdot)\rangle = \left\|\sum_{1\leqslant i\leqslant n}a_i\langle k(x_i,\cdot)\right\|^2 \geqslant 0\eqsp.
+%$$
+%
+%
+%The positive semi-definite kernel $k:(x,y)\mapsto x^Ty$ defined on $\rset^d\times\rset^d$ is a reproducing kernel of the space
+%$$
+%\calF = \left\{f: \rset^d\to\rset\eqsp;\eqsp \exists \omega\in\rset^d \eqsp\forall x\in \rset^d\eqsp, \eqsp f(x) = \omega^Tx\right\}\eqsp,
+%$$
+%equipped with the inner product defined, for all $(f,g)\in\calF\times\calF$, by 
+%$$
+%\langle f; g\rangle = \omega_f^T\omega_g\eqsp, 
+%$$
+%where $\omega_f,\omega_g\in\rset^d$ and $f: x\mapsto \omega_f^Tx$, $g: x\mapsto \omega_g^Tx$. 
+
+
+
+%\subsection*{Kernels}
+% Let $\calH$ be a RKHS associated with a positive definite kernel $k: \xset\times \xset \to \rset$.
+%\begin{enumerate}
+%\item  Prove that for all $(x,y)\in\xset\times \xset$, 
+%$$
+%|f(x)-f(y)|\leqslant \|f\|_{\calH}\|k(x,\cdot)-k(y,\cdot)\|_{\calH}\eqsp.
+%$$
+%
+%\vspace{.2cm}
+%
+%{\em
+%The proof follows from Cauchy-Schwarz inequality as, for all $(x,y)\in\xset^2$,
+%$$
+%|f(x)-f(y)|= |\langle f, k(x,\cdot)\rangle_{\mathcal{H}}-\langle f, k(x,\cdot)\rangle_{\mathcal{H}}| = |\langle f, k(x,\cdot)-k(y,\cdot)\rangle_{\mathcal{H}}|\eqsp.
+%$$
+%}
+%
+%\item  Prove that the kernel $k$ associated with $\calH$ is unique, i.e. if $\widetilde k$ is another potitive definite kernel satisfying the RKHS properties for $\calH$, then $k = \widetilde k$.
+%
+%\vspace{.2cm}
+%
+%{\em
+%Write, for all $x\in\xset$,
+%$$
+%\|k(x,\cdot) - \widetilde k(x,\cdot)\|_{\calH}^2 = \langle k(x,\cdot) - \widetilde k(x,\cdot),k(x,\cdot) - \widetilde k(x,\cdot)\rangle = k(x,x) - \widetilde k(x,x) +  \widetilde k(x,x) - k(x,x)= 0\,.
+%$$
+%}
+%
+%\item  Prove that  for all $x\in\xset$, the function defined on $\calH$ by $\delta_x: f \mapsto f(x)$ is continuous.
+%
+%\vspace{.2cm}
+%
+%{\em
+%Left as an exercise.
+%}
+%\end{enumerate}
+%
+%
+%\subsection*{Penalized kernel regression}
+%Consider the regression model given, for all $1\leqslant i\leqslant n$, by
+%$$
+%Y_{i}=f^*(X_{i})+\xi_{i}\eqsp,
+%$$
+%where for all $1\leqslant i\leqslant n$, $X_i\in\mathsf{X}$, and the $(\xi_{i})_{1\leqslant i \leqslant n}$ are i.i.d. centered Gaussian random variables with variance $\sigma^2$. In this exercise, $f^*$ is estimated by
+%$$
+%\widehat f_n=\argmin_{f\in\mathcal{H}}\left\{{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2\right\}\eqsp,
+%$$
+%with $\lambda>0$  and $\mathcal{H}$  a RKHS on $\mathsf{X}$ with symmetric positive definite kernel $k$.
+%\begin{enumerate}
+%\item Check that $\widehat f(x)=\sum_{j=1}^n\widehat \beta_{n,j}k(X_{j},x)$ where $\widehat \beta_n$ is solution to
+%$$
+%\widehat \beta_n =\argmin_{\beta\in\R^n}\left\{\|Y-K\beta\|_2^2+{\lambda} \beta^TK\beta\right\}\eqsp,
+%$$
+%with $K$ defined, for all $1\leqslant i,j\leqslant n$, by $K_{i,j}=k (X_{i},X_{j})$.  Provide the explicit expression of $\widehat \beta_n$ when $K$ is nonsingular.
+%
+%\vspace{.2cm}
+%
+%{\em
+%Let  
+%$$
+%V = \left\{ \sum_{i=1}^{n}\alpha_ik(X_i, \cdot)\eqsp;\eqsp  (\alpha_1,\ldots,\alpha_n)\in\rset^n\right\}\eqsp.
+%$$  
+%For all $f \in \mathcal{H}$, write $f = f_V + f_{V^{\perp}}$ where $f_V \in V$ and $f_{V^{\perp}} \in V^{\perp}$. Therefore,
+%		\begin{align*}
+%			\frac{1}{n} \sum_{i=1}^n \Big( Y_i - f(X_i) \Big)^2 + \frac{\lambda}{n} \|f\|_{\mathcal{H}}^2
+%			& = 	\frac{1}{n} \sum_{i=1}^n \Big( Y_i - f_V(X_i) \Big)^2 + \frac{\lambda}{n} \Big( \|f_V\|_{\mathcal{H}}^2 + \|f_{V^{\perp}}\|_{\mathcal{H}}^2 \Big)\,,
+%		\end{align*}	
+%		since, by definition of $V^{\perp}$, for all $1 \leqslant i \leqslant n$,  
+%		$$
+%		f_{V^{\perp}}(X_i) = \langle f_{V^{\perp}} , k(X_i, \cdot) \rangle_{\mathcal{H}} = 0\,. 
+%		$$
+%		Thus, the initial optimization problem can be written as
+%$$
+%\widehat f_n=\argmin_{f\in V}\left\{{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2\right\}.
+%$$
+%Therefore, there exists $\beta\in\mathbb{R}^n$ such that, for all $x\in\xset$,
+%$$
+%\widehat{f}_n(x) = \sum_{j=1}^n \widehat{\beta}_j k(X_j, x)\,.
+%$$
+%This yields,
+%$$
+%{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2 = {1\over n}\sum_{i=1}^n(Y_{i}-\sum_{j=1}^n \beta_j k(X_j, X_i))^2+{\lambda\over n} \langle \sum_{j=1}^n \beta_j k(X_j, \cdot), \sum_{i=1}^n \beta_i k(X_i, \cdot) \rangle_{\mathcal{H}}\,.
+%$$
+%The proof is completed by noting that,
+%$$
+%\langle \sum_{j=1}^n \beta_j k(X_j, \cdot), \sum_{i=1}^n \beta_i k(X_i, \cdot) \rangle_{\mathcal{H}}  = \sum_{i,j=1}^n \beta_i \beta_j k(X_i, X_j)\,.
+%$$
+%Let 
+%$$
+%L(\beta) = \| Y - K \beta\|_2^2 + \lambda \beta^T K \beta.
+%$$
+%The gradient of $L$ is then given by
+%$$
+%\nabla L (\beta)  = -2K^T (Y - K \beta) + \lambda (K \beta + K^T \beta)   = -2K(Y-K \beta) + 2 \lambda K \beta\,.
+%$$
+%The minimum $\widehat{\beta}_n$ of $L$ satisfies 
+%$$
+%\widehat{\beta}_n = (K + \lambda I_n)^{-1} Y\,.
+%$$
+%}
+%\item  Let $(u_i)_{1 \leqslant i \leqslant n}$ be an orthonormal basis of $\R^n$ of eigenvectors of $K$ associated with the eigenvalues $(\lambda_i)_{1 \leqslant i \leqslant n}$. Check that 
+%$$
+%K\widehat \beta_n= \sum_{i=1}^n {\lambda_{i}\over \lambda_{i}+\lambda} \langle Y_i, u_{i}\rangle u_{i}\,.
+%$$
+%
+%
+%\vspace{.2cm}
+%
+%{\em
+%Since $(u_i)_{1 \leq i \leq n}$ is an orthonormal basis of $\R^n$, one can write  
+%		\begin{align*}
+%			K \widehat{\beta}_n & = \sum_{i=1}^n \langle K \widehat{\beta}_n, u_i\rangle u_i\,,\\
+%			& = \sum_{i=1}^n \langle K (K+\lambda I_n)^{-1}Y, u_i\rangle u_i\,,\\
+%			& = \sum_{i=1}^n \langle Y, (K+\lambda I_n)^{-1} K  u_i\rangle u_i\,,\\
+%			& = \sum_{i=1}^n \frac{\lambda_i }{\lambda + \lambda_i} \langle Y, u_i \rangle u_i\,.
+%		\end{align*}
+%}
+%\item Prove that
+%$$
+%\V[K\widehat \beta_n]=\sum_{i=1}^n \left(\lambda_{i}\sigma\over \lambda_{i}+\lambda\right)^2u_{i}u_{i}^T\eqsp.
+%$$
+%
+%\vspace{.2cm}
+%
+%{\em
+%Since $\widehat{\beta}_n = (K + \lambda I_n)^{-1}Y$, 
+%		\begin{align*}
+%			\V [K \widehat{\beta}_n] & = K \V \left[ (K + \lambda I_n)^{-1} Y \right]K^T\,,\\
+%			& = K (K + \lambda I)^{-1} \V [Y] (K + \lambda I_n)^{-1} K\,,\\
+%			& = \sigma^2 K^2 (K + \lambda I_n)^{-2}\,,\\
+%			& = \sum_{i=1}^n \left( \frac{\lambda_i \sigma }{\lambda_i + \lambda}\right)^2 u_i u_i^T\,,
+%		\end{align*}
+%	using the eigenvector decomposition of $K$.
+%}
+%\end{enumerate}
+
+
+
+\end{document} 
