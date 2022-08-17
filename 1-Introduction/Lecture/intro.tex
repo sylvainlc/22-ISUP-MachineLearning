@@ -244,8 +244,9 @@ $\rightharpoondown$ \alert{Evaluation}: 1/4 QCM en cours + 3/4 exam.
 \begin{frame}{Focus on classification and regression}
 %Machine learning problems can be decomposed into two different classes.
 
-{\bf Classification}
+\structure{{\bf Classification: $(X,Y)\in\mathbb{R}^d\times \{1,\ldots,M\}$}}
 
+\vspace{.2cm} 
 
 $\rightharpoondown$  Learn whether an individual from $\mathbb{R}^d$ \alert{belongs to some class}.
 
@@ -257,13 +258,13 @@ $\rightharpoondown$  Focus with \alert{known number $M$ of classes},   $\mathcal
 \vspace{.2cm} 
 
 
-$\rightharpoondown$  $(X,Y)\in\mathbb{R}^d\times \{1,\ldots,M\}$ and the objective is to \alert{define a function $f: \mathbb{R}^d \to \{1,\ldots,M\}$}, called classifier, such that $f(X)$ is the best prediction of $Y$ in a given context.
+$\rightharpoondown$   Objective: \alert{define a function $f: \mathbb{R}^d \to \{1,\ldots,M\}$}, such that $f(X)$ is the best prediction of $Y$ in a given context.
 
 \vspace{.5cm}
 
-{\bf Regression}
+\structure{{\bf Regression: $(X,Y)\in\mathbb{R}^d\times \mathbb{R}^m$}}
 
-
+\vspace{.2cm} 
 
 $\rightharpoondown$ \alert{The observation associated with $X$} is assumed to be given by
 $$
@@ -273,7 +274,7 @@ where $\varepsilon$ is a centered noise independent of $X$.
 
 \vspace{.2cm} 
 
-$\rightharpoondown$ $(X,Y)\in\mathbb{R}^d\times \mathbb{R}^m$ and \alert{the objective is to define the  best estimator of $f_*$ in a given context}. %An element of $\mathbb{R}^p$ contains all the features the label prediction or the regression estimate has to be based on.
+$\rightharpoondown$   Objective:  \alert{define the  best estimator of $f_*$ in a given context}. %An element of $\mathbb{R}^p$ contains all the features the label prediction or the regression estimate has to be based on.
 \end{frame}
 
 
@@ -328,7 +329,7 @@ $\rightharpoondown$ The joint distribution of $(\textbf{X},Y)$ is  \alert{unknow
 
 \vspace{.1cm}
 
-$\rightharpoondown$  $Y \in \{-1,1\}$ (classification) or $Y \in \mathbb{R}^m$ (regression).
+$\rightharpoondown$  $Y \in \{1,\ldots,M\}$ (classification) or $Y \in \mathbb{R}^m$ (regression).
 
 \vspace{.1cm}
 
@@ -338,7 +339,7 @@ $\rightharpoondown$ A \alert{predictor} is a measurable function in $ f:\mathcal
 
 \structure{{\bf Training data}}
 
-$\rightharpoondown$ $\mathcal{D}_n=\{(\textbf{X}_1, Y_1),\ldots,(\textbf{X}_n, Y_n)\}$ i.i.d. with the same distribution as $(\textbf{X},Y)$.
+$\mathcal{D}_n=\{(\textbf{X}_i, Y_i)\}_{1\leq i \leq n}$ i.i.d. with the same distribution as $(\textbf{X},Y)$.
 
 
 
@@ -351,7 +352,7 @@ $\rightharpoondown$  Construct a \alert{good} predictor $\widehat{f}_n$ from the
 
 \vspace{.1cm}
 
-$\rightharpoondown$ Predict the output associated with \alert{input not in the training dataset}.
+$\rightharpoondown$ Predict the output for \alert{input data not in the training dataset}.
 
 %\vspace{.1cm}
 %
@@ -756,7 +757,45 @@ $$
 \end{frame}
 
 
+\begin{frame}{The ROC curve - example of a linear classifier}
 
+
+\structure{For a linear classifier}, the score writes $S:x\mapsto \omega^\top x + b$ where $\omega\in\mathbb{R}^d$ and $b\in\mathbb{R}$ (see next lecture on {\color{Vert} discriminant analysis and logistic regression}). 
+
+\vspace{.4cm}
+
+For each choice of the threshold $s^*$,  $x(s^*) = \P ( S(X)\geq s| Y=0) $  and $y(s^*) = \P (S(X) \geq s | Y=1)$ are unknown and \structure{replaced by the empirical false positive rate (FPR) and true positive rate (TPR)}.
+
+
+\vspace{.3cm}
+
+\begin{align*}
+\mathrm{FPR} &= \frac{\sum_{i=1}^n \mathds{1}_{S(X_i)\geq s^* ; Y_i = 0}}{\sum_{i=1}^n \mathds{1}_{Y_i = 0}}\,,\\
+\mathrm{TPR} &= \frac{\sum_{i=1}^n \mathds{1}_{S(X_i)\geq s^* ; Y_i = 1}}{\sum_{i=1}^n \mathds{1}_{Y_i = 1}}\,.\\
+\end{align*}
+
+
+\end{frame}
+
+
+\begin{frame}{The ROC curve - example of a linear classifier}
+
+\begin{figure}[h]
+		\center
+		\includegraphics[height=0.75\textheight]{log_reg}
+		\caption{1000 data points are randomly generated ($d=2$) with Gaussian distribution. A Logistic regression model is used to label each data randomly. }
+		\label{fig:roc}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{The ROC curve - example of a linear classifier}
+
+\begin{figure}[h]
+		\center
+		\includegraphics[height=0.75\textheight]{roc}
+		\caption{A ROC curve for a  logistic regression classifier is then displayed using 200 additional data points not in the training set. Simulations are inspired by \structure{\href{https://scikit-learn.org/stable/auto\_examples/model\_selection/plot\_roc.html}{(Roc curve with scikit-learn)}} and can be found here \structure{\cite{https://sylvainlc.github.io/}}.}
+	\end{figure}
+\end{frame}
 
 \begin{frame}[allowframebreaks,fragile=singleslide]{Area Under ROC} 
 
