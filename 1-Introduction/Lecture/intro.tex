@@ -215,27 +215,27 @@ $\rightharpoondown$ \alert{Evaluation}: 1/4 QCM en cours + 3/4 exam.
 \begin{frame}{Typical machine learning problems}
 
 \begin{itemize}
-\item \textbf{Classification}: Assign a category to each input data. 
+\item \textbf{Classification}: \alert{Assign a category} to each input data. 
 
 \vspace{.2cm}
 
 %For example, document classification may assign items with categories such as politics, business, sports, or weather while image classification may assign items with categories such as landscape, portrait, or animal. The number of categories in such tasks is often relatively small, but can be large in some difficult tasks and even unbounded as in OCR, text classification, or speech recognition.
-\item \textbf{Regression}: Predict a vector associated with each input data. 
+\item \textbf{Regression}: \alert{Predict a vector} associated with each input data. 
 
 \vspace{.2cm}
 
 %e.g.\ prediction of stock value
 %Examples of regression include prediction of stock values or variations of economic variables. In this problem, the penalty for an incorrect prediction depends on the magnitude of the difference between the true and predicted values, in contrast with the classification problem, where there is typically no notion of closeness between various categories.
-\item \textbf{Ranking}: Order input data according to some criterion. 
+\item \textbf{Ranking}: \alert{Order input data} according to some criterion. 
 
 \vspace{.2cm}
 
 %Web search, e.g., returning web pages relevant to a search query, is the canonical ranking example. Many other similar ranking problems arise in the context of the design of information extraction or natural language processing systems.
-\item \textbf{Clustering}: Partition input data into homogeneous regions. %Clustering is often performed to analyze very large data sets. For example, in the context of social network analysis, clustering algorithms attempt to identify “communities” within large groups of people.
+\item \textbf{Clustering}: \alert{Partition input data} into homogeneous regions. %Clustering is often performed to analyze very large data sets. For example, in the context of social network analysis, clustering algorithms attempt to identify “communities” within large groups of people.
 
 \vspace{.2cm}
 
-\item \textbf{Dimensionality reduction or manifold learning}: Transform an initial representation of input data into a lower-dimensional representation  while preserving some properties. 
+\item \textbf{Dimensionality reduction or manifold learning}: Transform an initial representation of input data into a \alert{lower-dimensional representation}  while preserving some properties. 
 %A common example involves preprocessing digital images in computer vision tasks.
 \end{itemize}
 
@@ -251,7 +251,7 @@ $\rightharpoondown$  Learn whether \structure{an individual from $\mathbb{R}^d$ 
 
 $\rightharpoondown$  Focus usually set on learning with a \structure{known number $M$ of classes}:  an individual is associated with a label in $\{1,\ldots,M\}$. 
 
-$\rightharpoondown$  $(X,Y)\in\mathbb{R}^d\times \{1,\ldots,M\}$ and the objective is to \structure{define a function $f: \mathbb{R}^p \to \{1,\ldots,M\}$}, called classifier, such that $f(X)$ is the best prediction of $Y$ in a given context.
+$\rightharpoondown$  $(X,Y)\in\mathbb{R}^d\times \{1,\ldots,M\}$ and the objective is to \structure{define a function $f: \mathbb{R}^d \to \{1,\ldots,M\}$}, called classifier, such that $f(X)$ is the best prediction of $Y$ in a given context.
 
 \vspace{.5cm}
 
@@ -261,11 +261,11 @@ $\rightharpoondown$  $(X,Y)\in\mathbb{R}^d\times \{1,\ldots,M\}$ and the objecti
 
 $\rightharpoondown$ \structure{The observation associated with $X$} is assumed to be given by
 $$
-Y = f(X) + \varepsilon\,,
+Y = f_*(X) + \varepsilon\,,
 $$
 where $\varepsilon$ is a centered noise independent of $X$. 
 
-$\rightharpoondown$ $(X,Y)\in\mathbb{R}^d\times \mathbb{R}^m$ and \structure{the objective is to define the  best estimator of $f$ in a given context}. %An element of $\mathbb{R}^p$ contains all the features the label prediction or the regression estimate has to be based on.
+$\rightharpoondown$ $(X,Y)\in\mathbb{R}^d\times \mathbb{R}^m$ and \structure{the objective is to define the  best estimator of $f_*$ in a given context}. %An element of $\mathbb{R}^p$ contains all the features the label prediction or the regression estimate has to be based on.
 \end{frame}
 
 
@@ -308,7 +308,15 @@ $\rightsquigarrow$ {\color{Vert}clustering and dimensionality reduction }
 \begin{frame}{Supervised  Learning}
 \structure{{\bf Supervised Learning Framework}}
 
-$\rightharpoondown$ \alert{Input} measurement $\textbf{X}  \in \mathcal{X}$ (often $\mathcal{X} \subset \R^d$), \alert{output} measurement $Y \in \mathcal{Y}$. The joint distribution of $(\textbf{X},Y)$ is  \alert{unknown}.
+$\rightharpoondown$ \alert{Input} measurement $\textbf{X}  \in \mathcal{X}$ (often $\mathcal{X} \subset \R^d$).
+
+\vspace{.1cm}
+
+$\rightharpoondown$ \alert{Output} measurement $Y \in \mathcal{Y}$. 
+
+\vspace{.1cm}
+
+$\rightharpoondown$ The joint distribution of $(\textbf{X},Y)$ is  \alert{unknown}.
 
 \vspace{.1cm}
 
@@ -337,9 +345,9 @@ $\rightharpoondown$  Construct a \alert{good} predictor $\widehat{f}_n$ from the
 
 $\rightharpoondown$ Predict the output associated with \alert{input not in the training dataset}.
 
-\vspace{.1cm}
-
-$\rightharpoondown$  Need to specify the meaning of good.
+%\vspace{.1cm}
+%
+%$\rightharpoondown$  Need to specify the meaning of good.
 
 \end{frame}
 
