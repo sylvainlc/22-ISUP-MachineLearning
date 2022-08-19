@@ -58,7 +58,7 @@
 
 
 % Style
-\pagestyle{fancyplain}
+%\pagestyle{fancyplain}
 \renewcommand{\sectionmark}[1]{\markright{#1}}
 \renewcommand{\subsectionmark}[1]{}
 %\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\footnotesize {\sf
@@ -66,20 +66,21 @@
 %}}}
 %\rhead[\fancyplain{}{\footnotesize {\sf MAT4506 Introduction to machine learning, \thisyear %/ \rightmark
 %}}]{\fancyplain{}{\thepage}}
-\cfoot[\fancyplain{}{}]{\fancyplain{}{}}
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\parindent=0mm
 
-\newtheorem{theorem}{Theorem}
-
-% Titre
-\title{{\bf Discriminant analysis}}
-\author{}
-\date{}
 
 \begin{document}
 
-\maketitle
+\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
+ 2022-2023
+
+\noindent\hrulefill
+
+\begin{center}
+\textsc{Discriminant analysis}
+\end{center}
+\hrulefill
+
+\medskip
 
 Linear discriminant analysis assumes that the random variables $(X,Y)\in \rset^p\times\{0,1\}$ has the following distribution. For all $A\in \mathcal{B}(\mathbb{R}^p)$ and all $y\in\{0,1\}$,
 $$

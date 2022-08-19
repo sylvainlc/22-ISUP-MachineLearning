@@ -5,28 +5,6 @@
 \newboolean{corrige}
 \setboolean{corrige}{true}
 
-\newtheoremstyle{styleQuestion}
-  {6pt}% space above
-  {6pt}% space below
-  {\sffamily}%body font
-  {13.5pt}%indent amount
-  {\sffamily}%Theorem head
-  {.}%punctuation
-  {0.5em}%space after theorem head
-  {}
-
-
-\ifthenelse{\boolean{corrige}}%
- {\theoremstyle{styleQuestion}%
- \newtheorem{question}{}}%
- {\theoremstyle{styleQuestion}%
- \newtheorem{question}{}}
-\ifthenelse{\boolean{corrige}}%
-   {\renewenvironment{comment}%
-   %{\begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\rightmargin}{0pt}}\item[]\ignorespaces\begin{sffamily}\small\textbf{Corrigé. \footnotesize } }{\hfill\qed\end{sffamily}\unskip\end{list} }}
-   { \noindent \\ \textbf{Solution.}\begin{leftbar} \footnotesize}{\hfill \qed \end{leftbar}}}
-   {}
-
 \newcommand{\titre}[1]{\textbf{\textsc{#1}}}
 
 \RequirePackage[T1]{fontenc}
@@ -82,7 +60,7 @@
 
 
 % Style
-\pagestyle{fancyplain}
+%\pagestyle{fancyplain}
 \renewcommand{\sectionmark}[1]{\markright{#1}}
 \renewcommand{\subsectionmark}[1]{}
 %\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\footnotesize {\sf
@@ -90,20 +68,32 @@
 %}}}
 %\rhead[\fancyplain{}{\footnotesize {\sf MAT4506 Introduction to machine learning, \thisyear %/ \rightmark
 %}}]{\fancyplain{}{\thepage}}
-\cfoot[\fancyplain{}{}]{\fancyplain{}{}}
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\parindent=0mm
+
 
 \newtheorem{theorem}{Theorem}
 
-% Titre
-\title{{\bf MAP534:  Introduction to machine learning}}
-\author{{\em Logistic regression}}
-\date{}
+%% Titre
+%\title{{\bf Machine learning}}
+%\author{{\em Logistic regression}}
+%\date{}
+
 
 \begin{document}
 
-\maketitle
+\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
+ 2022-2023
+
+\noindent\hrulefill
+
+\begin{center}
+\textsc{Logistic regression}
+\end{center}
+\hrulefill
+
+\medskip
+
+
+
 
 
 %\section*{Logistic Regression}
@@ -113,15 +103,35 @@ $$
 $$
 with $\beta^*\in\mathbb{R}^d$. In this case, for all $x\in\rset^d$, $\bP(Y=1|X)|_{X=x}>1/2$ if and only if $\langle \beta^*,x\rangle>0$, so
 the frontier between $\left\{x\eqsp;\eqsp h_{*}(x)=1\right\}$ and $\left\{x\eqsp ;\eqsp h_{*}(x)=0\right\}$ is an hyperplane, with orthogonal
-direction $\beta^*$. The unknown parameter $\beta^*$ may be estimated  by maximizing the conditional likelihood of $Y$ given $X$
-\begin{align*}
+direction $\beta^*$. 
+
+
+\section*{Warm-up}
+\begin{enumerate}
+
+	\item In this question only,  $\beta^* = (\beta_0,\beta_1)\in \rset^2$ and $X_i = (1,x_i)$ for all $1\leqslant i \leqslant n$.
+
+\begin{enumerate}
+\item Provide the value $x_*$ of $x_i$ such that $\mathbb{P}(Y_i=1 | X_i) = 1/2$. The logistic Bayes classifier is therefore defined by $h_*(X_i) = 1$ if and only if $x_i>x_*$. 
+\item Another classifier could be defined by choosing a threshold $\tilde p\in(0,1)$ and defining $\tilde h(X_i) = 1$ if and only if $\mathbb{P}(Y_i=1 | X_i) > \tilde p$.  Provide $\tilde x$ such that $\tilde h(X_i) = 1$ if and only if $x_i>\tilde x$. Explain a practical interest to choose $\tilde p < 1/2$.
+\end{enumerate}
+	\item 
+	Prove that the negative loglikelihood $f$ of the observations $(Y_1,\ldots,Y_n)$ given $(X_1,\ldots,X_n)$ can be written as 
+	$$
+	f(\beta) =   \frac{1}{n}\log \mathbb{P}\left(Y_1,\ldots,Y_n\middle | X_1,\ldots,X_n\right) = \frac{1}{n}\sum_{i=1}^n \left\{\log(1+\exp(X_{i}^\top\beta))- Y_{i}X_{i}^\top\beta\right\}\eqsp.
+	$$
+\end{enumerate}
+
+\section*{Maximum likelihood estimation}
+The unknown parameter $\beta^*$ may be estimated  by maximizing the conditional likelihood of $Y$ given $X$
+$$
 \widehat \beta_n\in\mathrm{argmax}_{\beta\in\mathbb{R}^{d}}
 \prod_{i=1}^n \left[ \left( \frac{\exp\left(\langle
 	\beta,x_{i}\rangle\right)}{1+\exp\left(\langle
 	\beta,x_{i}\rangle\right)}\right)^{Y_{i}}
 \left(\frac{1}{1+\exp\left(\langle
 	\beta,x_{i}\rangle\right)}\right)^{1- Y_{i}} \right] ,
-\end{align*}
+$$
 to define the empirical classifier
 $$
 \widehat h_{n}: x \mapsto \1_{\langle \widehat\beta_n,x\rangle>0}\eqsp.
