@@ -1149,6 +1149,7 @@ $$
 
 
 \begin{frame}
+In the case where \structure{$|\Cc| $ is finite, with $|\Cc| \leq N$},
 $$
 \P \left( \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \geq t  \right) \leq 2N e^{-2nt^2}.
 $$
@@ -1158,7 +1159,7 @@ $$
 \item Consequence: $\Rc(f_n^\star) - \inf_{f\in \Cc} \Rc(f)  \to 0$  almost surely. \\
 $ \Rightarrow$The estimation error tends to 0 almost surely\\
  meaning that learning is \structure{asymptotically optimal}.
-\item Bound on $\E \Rc (f_n^\star) - \inf_{f\in \Cc} \Rc(f)$?
+\item Bound on $\E [\Rc (f_n^\star)] - \inf_{f\in \Cc} \Rc(f)$?
 \end{itemize}
 \end{frame}
 
@@ -1177,16 +1178,16 @@ $$
 
 Lemma $\P$ to $\E$ and the previous thm lead to
 $$
- \E \left(  \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \right) \leq \sqrt{\frac{log(2\mathrm{e}N)}{2n}},
+ \E \left[  \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \right] \leq \sqrt{\frac{log(2\mathrm{e}N)}{2n}},
 $$
 and
 $$
-\E \Rc( f_n^\star) - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2\mathrm{e}N)}{2n}}.
+\E [\Rc( f_n^\star)] - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2\mathrm{e}N)}{2n}}.
 $$
 \end{frame}
 
 \begin{frame}{ERM with a finite class}
-
+In the case where \structure{$|\Cc| $ is finite, with $|\Cc| \leq N$},
 $$
 \E \Rc( f_n^\star) - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2\mathrm{e}N)}{2n}}.
 $$
