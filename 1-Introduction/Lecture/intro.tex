@@ -540,7 +540,7 @@ Define the \structure{quadratic risk} for a machine or regression function $m :\
 \begin{align*}
 \Rc(m) := \E \left[ (Y-m(X) )^2 \right].
 \end{align*}
-As seen in your previous statistics lectures, the optimal machine or regression function $m^\star$ for the quadratic risk is 
+As seen in your previous statistics lectures, the optimal regression function $m^\star$ for the quadratic risk is 
 
 \begin{align*}
 \alert{m^\star(x) := \E \left[ Y | X=x \right]}.
@@ -924,8 +924,8 @@ $$
 \end{itemize}
 Since the distribution of $(X,Y)$ is generally unknown, the minimization of the risk is impossible in practice.
 \begin{block}{Goal}
-Therefore, given a cost function $\ell : \Yc \times \Yc \to \R_+$, we search a predictor $f_n (x) = f_n(x, D_n)$ closed to the optimal machine $f^\star$ defined by
-$$f^\star \in \argmin \Rc(f)$$ 
+Therefore, given a cost function $\ell : \Yc \times \Yc \to \R_+$, we search a predictor $f_n (x) = f_n(x, D_n)$ "close" to \alert{the optimal  $f^\star$} defined by
+$$f^\star \in \argmin \Rc(f)\,,$$ 
 where $\Rc(f) = \E \left[ \ell(Y , f (X ))\right]$.
 \end{block}
 The problem is then to find $f_n^\star\in \Cc$ such that $\Rc(f_n^\star) \simeq \inf_{f\in \Cc} \Rc(f)$.
@@ -947,7 +947,7 @@ $$
  \pause
  {\small
  \begin{itemize}
- \item  The estimation error is \structure{random}, and reflects the discrepancy in terms of $\P$, between the chosen classifier and the "local champion" in $\Cc$.
+ \item  The estimation error is \structure{random}. It reflects the discrepancy in terms of $\P$, between the chosen classifier and the "local champion" in $\Cc$.
 \item The approximation error is \structure{deterministic} and measures the closeness in terms of $\P$ between the class $\Cc$ and the optimal choice $f^\star$.
 \end{itemize}
 }
@@ -958,7 +958,7 @@ $$
 
  
 
-\begin{frame}{Some comments on ERM}
+\begin{frame}{Some comments on Empirical risk minimization}
 
 %One can see that the two error terms depends on the inverse of the size of $\Cc$.
 $\Cc$ should \alert{be wide enough for the approximation error to be small}.
@@ -967,27 +967,27 @@ $\Cc$ should \alert{be wide enough for the approximation error to be small}.
 
 $\Cc$ should not be \alert{too wide for the control of the estimation error}.
 
-\vspace{.2cm}
+\vspace{.3cm}
 
-e.g.\ consider that $\Cc$ is the set of all measurable functions from $\R^d$ to $\{0,1\}$. 
+Consider for instance that $\Cc$ is the set of all measurable functions from $\R^d$ to $\{0,1\}$. 
 The approximation error is zero, but the estimation error can be large: think of the choice
 $$
 f_n(x) = \left\{
 \begin{array}{ll}
-Y_i,  & \text{if } \, \,  x= X_i, 1\leq i \leq n \\
+Y_i,  & \text{if } \, \,  x= X_i\,, 1\leq i \leq n\,, \\
 0 & \text{otherwise},
 \end{array}
 \right.
 $$
 for which the empirical risk is zero! \\
 $\rightsquigarrow$ \structure{no generalization} ability. \\
-$\rightsquigarrow$ \structure{overfitting} (to be continued)
+$\rightsquigarrow$ \structure{overfitting} (to be continued).
 \end{frame}
 
-\begin{frame}{ERM}
+\begin{frame}{Empirical risk minimization}
 \begin{lemma}
 \label{lem:estim_term}
-The following holds
+Define $f_n^\star \in \argmin_{f\in \Cc} \widehat{\Rc}_n(f)$ . Then,
 \begin{enumerate}
 \item $$\Rc(f_n^\star) - \inf_{f\in \Cc} \Rc(f) \leq 2  \sup_{f\in \Cc} \left| \widehat{\Rc}_n (f) - \Rc(f)  \right|  $$
 and,
@@ -997,42 +997,49 @@ $$
 $$ 
 \end{enumerate}
 \end{lemma}
-{\small \underline{Proof:} blackboard}
 
-Controlling the quantity $\sup_{f\in \Cc} | \widehat{\Rc}_n(f) - \Rc(f) |$ allows to
-\begin{enumerate}[(i)]
-\item the sub-optimality of $f_n^\star$ in $\Cc$ 
-\item the error $|\widehat{\Rc}_n(f_n^\star) - \Rc(f_n^\star)|$ that we make by estimating the true risk $\Rc(f_n^\star)$ of the chosen machine with its empirical version. 
-\end{enumerate}
+\vspace{.3cm}
+
+\centering 
+{\color{Vert} Proof on blackboard}
+
+\vspace{.3cm}
+
+The objective is now to control $\sup_{f\in \Cc} | \widehat{\Rc}_n(f) - \Rc(f) |$.
+
+%
+%Controlling the quantity $\sup_{f\in \Cc} | \widehat{\Rc}_n(f) - \Rc(f) |$ allows to
+%\begin{enumerate}[(i)]
+%\item the sub-optimality of $f_n^\star$ in $\Cc$ 
+%\item the error $|\widehat{\Rc}_n(f_n^\star) - \Rc(f_n^\star)|$ that we make by estimating the true risk $\Rc(f_n^\star)$ of the chosen machine with its empirical version. 
+%\end{enumerate}
 \end{frame}
 
-\begin{frame}{So next, for the ERM}
-\begin{exampleblock}{Focus on}
-$$
-\sup_{f\in \Cc} | \widehat{\Rc}_n(f) - \Rc(f) |.
-$$
-\end{exampleblock}
-
-\pause
-
- \begin{remark}
- Since $\Dc_n$ is used to construct the predictor $f_n$, the law of large numbers (LLN) does not apply. In general, $\widehat{\Rc}_n(f_n)$ underestimates $\Rc (f_n)$.
- In practice, one  solution to this problem can be the \structure{cross-validation} or \structure{bootstrap} approaches.
-\end{remark}
-
-\end{frame}
+%\begin{frame}{So next, for the ERM}
+%\begin{exampleblock}{Focus on}
+%$$
+%\sup_{f\in \Cc} | \widehat{\Rc}_n(f) - \Rc(f) |.
+%$$
+%\end{exampleblock}
+%
+%\pause
+%
+% \begin{remark}
+% Since $\Dc_n$ is used to construct the predictor $f_n$, the law of large numbers (LLN) does not apply. In general, $\widehat{\Rc}_n(f_n)$ underestimates $\Rc (f_n)$.
+% In practice, one  solution to this problem can be the \structure{cross-validation} or \structure{bootstrap} approaches.
+%\end{remark}
+%
+%\end{frame}
 
 
 \section{Case of a finite class}
 \label{sec:C_finie}
 
-\begin{frame}{The case of a finite class}
+\begin{frame}{The case of a finite class of binary classifiers}
 
 \begin{itemize}
-\item Setting: binary classification
-\item Recall that a natural choice for 
-the cost function in this case is
-\pause
+\item $(X,Y)\in \mathbb{R}^d\times\{0,1\}$.
+\item A natural choice for the cost function in this case is
 $$
 \ell(y,f(x)) = \one_{y\neq f(x)}.
 $$
@@ -1064,41 +1071,48 @@ $$
 
 \begin{frame}{ERM and a finite class}
 
-Having the previous Lemma in mind, we want to control:
-$$\sup_{f\in \Cc} | \widehat{\Rc}_n(f) - \Rc(f) |.$$
-Therefore, one needs uniform deviation of $\widehat{\Rc}_n(f)$ from its expectation $\Rc(f)$.
+\structure{Objective:}  Provide a theoretical control of $\sup_{f\in \Cc} | \widehat{\Rc}_n(f) - \Rc(f) |$.
 
-\textbf{1. Preliminary} Given $f\in \Cc$, what is the distribution of $n \widehat{\Rc}_n(f)$?
+\vspace{.4cm}
+
+We need a \alert{uniform deviation of $\widehat{\Rc}_n(f)$ from its expectation $\Rc(f)$}.
+
+\vspace{.4cm}
+
+Given $f\in \Cc$, 
 $$
-n \widehat{\Rc}_n(f) \overset{\Lc}{\sim} \Bc (n, \Rc(f) )
+n \widehat{\Rc}_n(f) =  \sum_{i=1}^n \one_{f(X_i) \neq Y_i}\,,
 $$
-Therefore, we need uniform deviations of binomial r.v.\ from their expectations.
+so that \alert{$n \widehat{\Rc}_n(f) \overset{\Lc}{\sim} \Bc (n, \Rc(f) )$}.
+
+\vspace{.4cm}
+
+Therefore, we need  a uniform control for binomial randm variables.
 \end{frame}
 
 \begin{frame}{ERM and a finite class}
-\textbf{2. Tools for deviation} 
 \begin{theorem}[Hoeffding's inequality] 
 {\small
 Let $X_1, \hdots , X_n$ be independent real-valued random variables. Assume that each $X_i$ takes its values in $[a_i , b_i ]$ $(ai < bi )$ with probability one. Then, for all $t > 0$,
 $$
-\P \left( \sum_{i=1}^n X_i - \E \sum_{i=1}^n X_i  \geq t \right) \leq e^{-2t^2 / \sum_{i=1}^n (b_i -a_i)^2},
+\P \left( \sum_{i=1}^n X_i - \E \left[\sum_{i=1}^n X_i\right]  \geq t \right) \leq \mathrm{e}^{-2t^2 / \sum_{i=1}^n (b_i -a_i)^2},
 $$
 and 
 $$
-\P \left( \sum_{i=1}^n X_i - \E \sum_{i=1}^n X_i  \leq -t \right) \leq e^{-2t^2 / \sum_{i=1}^n (b_i -a_i)^2}.
+\P \left( \sum_{i=1}^n X_i - \E \left[\sum_{i=1}^n X_i\right]  \leq -t \right) \leq \mathrm{e}^{-2t^2 / \sum_{i=1}^n (b_i -a_i)^2}.
 $$
 In particular,
 $$ 
-\P \left( \left|  \sum_{i=1}^n X_i - \E \sum_{i=1}^n X_i  \right| \geq t \right)  \leq 2 e^{-2t^2 / \sum_{i=1}^n (b_i -a_i)^2}.
+\P \left( \left|  \sum_{i=1}^n X_i - \E \left[\sum_{i=1}^n X_i \right] \right| \geq t \right)  \leq 2 \mathrm{e}^{-2t^2 / \sum_{i=1}^n (b_i -a_i)^2}.
 $$}
 \end{theorem}
 \end{frame}
 \begin{frame}
 Proof of Hoeffding's inequality by using Chernoff's bounding method and the following lemma.
 \begin{lemma}\label{lem:for_hoeffding}
-Let $X$ be a real-valued random variable with $\E X = 0$ and $X\in [ a, b ]$ $(a < b)$ with probability one. Then, for all $s > 0$,
+Let $X$ be a real-valued random variable with $\E [X] = 0$ and $X\in [ a, b ]$ $(a < b)$ with probability one. Then, for all $s > 0$,
 $$
-\E e^{sX} \leq e^{s^2(b^2-a^2)/8}.
+\E \left[\mathrm{e}^{sX}\right] \leq \mathrm{e}^{s^2(b^2-a^2)/8}\,.
 $$
 \end{lemma}
 
@@ -1120,7 +1134,7 @@ $$
 \begin{corollary}
 Let $X \sim \Bc(n,p)$, $n \geq 1, p \in [0,1]$. Then for all $t\geq 0$,
 $$
-\P \left( \left| X- np \right| \geq t \right) \leq 2 e^{-2t^2/n}.
+\P \left( \left| X- np \right| \geq t \right) \leq 2 \mathrm{e}^{-2t^2/n}.
 $$
 \end{corollary}}
 A union bound ($|\Cc|<\infty$) leads to the following result.
@@ -1128,7 +1142,7 @@ A union bound ($|\Cc|<\infty$) leads to the following result.
 \label{thm:C_finie}
 Assume that $|\Cc| $ is finite, with $|\Cc| \leq N$. Then, for all $t > 0$,
 $$
-\P \left( \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \geq t  \right) \leq 2N e^{-2nt^2}.
+\P \left( \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \geq t  \right) \leq 2N \mathrm{e}^{-2nt^2}.
 $$
 \end{theorem}
 \end{frame}
@@ -1153,28 +1167,28 @@ $ \Rightarrow$The estimation error tends to 0 almost surely\\
 \textbf{4. From probability to expectation} \hfill \\
 \begin{lemma}[$\P$ to $\E$]
 \label{lem:PtoE}
-Let $Z$ be a random variable taking values in $\R_+$. Assume that there exists a constant $C\geq 1$ such that, for all $t>0$, $\P (Z\geq t) \leq  C e^{-2nt^2}$.
+Let $Z$ be a random variable taking values in $\R_+$. Assume that there exists a constant $C\geq 1$ such that, for all $t>0$, $\P (Z\geq t) \leq  C \mathrm{e}^{-2nt^2}$.
 Then,
 $$
-\E Z\leq  \sqrt{\frac{\log(Ce)}{2n}}.
+\E [Z]\leq  \sqrt{\frac{\log(C\mathrm{e})}{2n}}.
 $$
 \end{lemma}
 
 
 Lemma $\P$ to $\E$ and the previous thm lead to
 $$
- \E \left(  \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \right) \leq \sqrt{\frac{log(2eN}{2n}},
+ \E \left(  \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \right) \leq \sqrt{\frac{log(2\mathrm{e}N)}{2n}},
 $$
 and
 $$
-\E \Rc( f_n^\star) - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2eN}{2n}}.
+\E \Rc( f_n^\star) - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2\mathrm{e}N)}{2n}}.
 $$
 \end{frame}
 
 \begin{frame}{ERM with a finite class}
 
 $$
-\E \Rc( f_n^\star) - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2eN)}{2n}}.
+\E \Rc( f_n^\star) - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2\mathrm{e}N)}{2n}}.
 $$
 \begin{alertblock}{Take-home message}
 For a finite class $\Cc$, such that $|\Cc|\leq N$
