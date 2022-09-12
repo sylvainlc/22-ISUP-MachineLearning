@@ -1177,8 +1177,7 @@ $$
 $$
 \end{lemma}
 
-
-Lemma $\P$ to $\E$ and the previous thm lead to
+Combined with the previous result, this yields
 $$
  \E \left[  \sup_{f\in \Cc} \left| \widehat{\Rc}_n(f) - \Rc(f)  \right| \right] \leq \sqrt{\frac{log(2\mathrm{e}N)}{2n}},
 $$
@@ -1191,7 +1190,7 @@ $$
 \begin{frame}{ERM with a finite class}
 In the case where \structure{$|\Cc| $ is finite, with $|\Cc| \leq N$},
 $$
-\E \Rc( f_n^\star) - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2\mathrm{e}N)}{2n}}.
+\E \left[\Rc( f_n^\star)\right] - \inf_{f\in\Cc} \Rc (f) \leq 2 \sqrt{\frac{log(2\mathrm{e}N)}{2n}}.
 $$
 \begin{alertblock}{Take-home message}
 For a finite class $\Cc$, such that $|\Cc|\leq N$
@@ -1266,26 +1265,26 @@ Ideally we want to optimize both of them.
 \end{exampleblock}
 \end{frame}
 
-\begin{frame}{Bias-Variance tradeoff}
-\footnote{taken from \url{http://scott.fortmann-roe.com/docs/BiasVariance.html}}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\includegraphics[width=\textwidth]{overfitting_cible}
-\end{column}
-\begin{column}{0.49\textwidth}
-\begin{itemize}
-\item The center of the target is a model that perfectly predicts the correct values!
-\item We can repeat our entire model building process to get a number of separate hits on the target!
-
-$\rightsquigarrow$ Each hit represents an \structure{individual realization of the model!}
-\end{itemize}
-\end{column}
-\end{columns}
-\begin{itemize}
-\item Bias measures how far are in general these models' predictions are from the correct value!
-\item  Variance is how much the predictions for a given point vary between different realizations of the model!
-\end{itemize}
-\end{frame}
+%\begin{frame}{Bias-Variance tradeoff}
+%\footnote{taken from \url{http://scott.fortmann-roe.com/docs/BiasVariance.html}}
+%\begin{columns}
+%\begin{column}{0.5\textwidth}
+%\includegraphics[width=\textwidth]{overfitting_cible}
+%\end{column}
+%\begin{column}{0.49\textwidth}
+%\begin{itemize}
+%\item The center of the target is a model that perfectly predicts the correct values!
+%\item We can repeat our entire model building process to get a number of separate hits on the target!
+%
+%$\rightsquigarrow$ Each hit represents an \structure{individual realization of the model!}
+%\end{itemize}
+%\end{column}
+%\end{columns}
+%\begin{itemize}
+%\item Bias measures how far are in general these models' predictions are from the correct value!
+%\item  Variance is how much the predictions for a given point vary between different realizations of the model!
+%\end{itemize}
+%\end{frame}
 
 
 \begin{frame}{Bias-Variance tradeoff}
@@ -1378,20 +1377,20 @@ data and a very complex model!
 %\end{frame}
 
  
-\begin{frame}{A way to avoid overfitting}
-\begin{block}{Penalization}
- Overfitting can also be prevented by penalization.
- \end{block}
-  For instance, in linear regression, computing
-  $$
-  \hat{\beta}, \hat{e} \in \argmin_{\beta, e} \frac{1}{n} \sum_{i=1}^n \ell( Y_i, X_i^T \beta + e)
-  $$
-  could lead to bad classifier. Minimize instead 
-    $$
-  \hat{\beta}, \hat{e} \in \argmin_{\beta, e} \frac{1}{n} \sum_{i=1}^n \ell( Y_i, X_i^T \beta + e) + \lambda \mathrm{pen}(\beta)
-  $$
-  where $\mathrm{pen}$ is a penalization function, it forbids $\beta$ to be "too complex". $\lambda > 0$ is a tuning or smoothing parameter, that balances goodness-of-fit and penalization.
-  \end{frame}
+%\begin{frame}{A way to avoid overfitting}
+%\begin{block}{Penalization}
+% Overfitting can also be prevented by penalization.
+% \end{block}
+%  For instance, in linear regression, computing
+%  $$
+%  \hat{\beta}, \hat{e} \in \argmin_{\beta, e} \frac{1}{n} \sum_{i=1}^n \ell( Y_i, X_i^T \beta + e)
+%  $$
+%  could lead to bad classifier. Minimize instead 
+%    $$
+%  \hat{\beta}, \hat{e} \in \argmin_{\beta, e} \frac{1}{n} \sum_{i=1}^n \ell( Y_i, X_i^T \beta + e) + \lambda \mathrm{pen}(\beta)
+%  $$
+%  where $\mathrm{pen}$ is a penalization function, it forbids $\beta$ to be "too complex". $\lambda > 0$ is a tuning or smoothing parameter, that balances goodness-of-fit and penalization.
+%  \end{frame}
 
 
 
@@ -1414,9 +1413,9 @@ $\rightsquigarrow$ If the model is overfitting, the generalization error can be 
 \item  We would like to estimate the generalization error on new data, which we do not have!
 \end{itemize}
 
-\begin{alertblock}{}
-Any idea?
-\end{alertblock}
+%\begin{alertblock}{}
+%Any idea?
+%\end{alertblock}
 \end{frame}
  
 
