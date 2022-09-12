@@ -117,7 +117,7 @@ $\rightharpoondown$ \alert{4h of lecture/TD/TP per week};
 
 \vspace{.3cm}
 
-$\rightharpoondown$ \alert{Evaluation}: 1/4 QCM en cours + 3/4 exam.
+$\rightharpoondown$ \alert{Evaluation}: 1/4 Moodle quiz + 3/4 exam.
 
 \end{frame}
 
@@ -485,30 +485,30 @@ Such a function $f^\star$ (if it exists) is called the \structure{optimal predic
 \end{itemize}
 \end{frame}
 
-
-\begin{frame}{Universal consistency}
-\begin{definition}
-We said that the estimate $(f_n)_n$ is \alert{universally consistent} if for all distribution of $(X,Y)$:
-$$
-\lim_{n\to + \infty} \Rc(f_n) = \Rc (f^\star),
-$$
-and \alert{strongly consistent} if
-$$
-\Rc(f_n) \to \Rc(f^\star) \quad a.s.\
-$$
-\end{definition}
-
-\textbf{Exercise:}
-Show that
-$$
-\text{Consistency} \Leftrightarrow \Rc(f_n) \overset{L^1}{\to} \Rc^\star \Leftrightarrow \Rc(f_n) \overset{\P}{\to} \Rc^\star.
-$$
-
-
-\textbf{Hint:} the first equivalence is given since $\Rc(g_n) \geq \Rc^\star$. \\
-
-
-\end{frame}
+%
+%\begin{frame}{Universal consistency}
+%\begin{definition}
+%We said that the estimate $(f_n)_n$ is \alert{universally consistent} if for all distribution of $(X,Y)$:
+%$$
+%\lim_{n\to + \infty} \Rc(f_n) = \Rc (f^\star),
+%$$
+%and \alert{strongly consistent} if
+%$$
+%\Rc(f_n) \to \Rc(f^\star) \quad a.s.\
+%$$
+%\end{definition}
+%
+%\textbf{Exercise:}
+%Show that
+%$$
+%\text{Consistency} \Leftrightarrow \Rc(f_n) \overset{L^1}{\to} \Rc^\star \Leftrightarrow \Rc(f_n) \overset{\P}{\to} \Rc^\star.
+%$$
+%
+%
+%\textbf{Hint:} the first equivalence is given since $\Rc(g_n) \geq \Rc^\star$. \\
+%
+%
+%\end{frame}
 
 \begin{frame}{Choice of a cost function $\ell$?}
 \begin{itemize}
@@ -543,7 +543,7 @@ Define the \structure{quadratic risk} for a machine or regression function $m :\
 As seen in your previous statistics lectures, the optimal regression function $m^\star$ for the quadratic risk is 
 
 \begin{align*}
-\alert{m^\star(x) := \E \left[ Y | X=x \right]}.
+\alert{m^\star(X) := \E \left[ Y | X \right]}.
 \end{align*}
 
 Indeed, for all $m$,
@@ -600,20 +600,20 @@ $$
 \begin{block}{Does an optimum exist?} 
 The \structure{Bayes classifier} $g^\star$ is defined as:
 $$
-g^{\star}(x) =
+g^{\star}(X) =
 \left\{
 	\begin{array}{cc}
-		1 &\quad \text{if} \quad \P \left( Y=1 | X=x \right) > \P \left( Y=0 | X=x \right), \\
+		1 &\quad \text{if} \quad \P \left( Y=1 | X \right) > \P \left( Y=0 | X \right), \\
 		0 &\quad \text{otherwise}. \hfill
 	\end{array}
 \right.
 $$
 Equivalently,
 $$
-g^{\star}(x) =
+g^{\star}(X) =
 \left\{
 	\begin{array}{cc}
-		1 &\quad \text{if} \quad r(x) > 1/2, \\
+		1 &\quad \text{if} \quad r(X) > 1/2, \\
 		0 &\quad \text{otherwise}, \hfill
 	\end{array}
 \right.
@@ -797,7 +797,7 @@ $$
 
 \vspace{.4cm}
 
-For each choice of the threshold $s^*$,  $x(s^*) = \P ( S(X)\geq s| Y=0) $  and $y(s^*) = \P (S(X) \geq s | Y=1)$ are unknown and \structure{replaced by the empirical false positive rate (FPR) and true positive rate (TPR)}.
+For each choice of the threshold $s^*$,  $x(s^*) = \P ( S(X)\geq s^*| Y=0) $  and $y(s^*) = \P (S(X) \geq s^* | Y=1)$ are unknown and \structure{replaced by the empirical false positive rate (FPR) and true positive rate (TPR)}.
 
 
 \vspace{.3cm}
@@ -826,7 +826,7 @@ For each choice of the threshold $s^*$,  $x(s^*) = \P ( S(X)\geq s| Y=0) $  and 
 \begin{figure}[h]
 		\center
 		\includegraphics[height=0.75\textheight]{roc}
-		\caption{A ROC curve for a  logistic regression classifier is then displayed using 200 additional data points not in the training set. Simulations are inspired by \structure{\href{https://scikit-learn.org/stable/auto\_examples/model\_selection/plot\_roc.html}{(Roc curve with scikit-learn)}} and can be found here \structure{\cite{https://sylvainlc.github.io/}}.}
+		\caption{A ROC curve for a  logistic regression classifier 200 additional data points not in the training set. Simulations are inspired by \structure{\href{https://scikit-learn.org/stable/auto\_examples/model\_selection/plot\_roc.html}{(Roc curve with scikit-learn)}} and can be found here \structure{\url{https://sylvainlc.github.io/}}.}
 	\end{figure}
 \end{frame}
 
@@ -861,7 +861,7 @@ $$
 %\end{verbatim} 
 
 
-AUC(S) can be seen as a cost function for a score$S$;
+AUC(S) can be seen as a cost function for a score $S$;
 
 
 
@@ -872,7 +872,7 @@ AUC(S) can be seen as a cost function for a score$S$;
 
 
 \begin{theorem}[S Cl\'emen\c con, G Lugosi, N Vayatis, 2008]
-Let $S^\star(x)= \P(Y =1|X =x)$, then for any score S we have 
+Let $S^\star(X)= \P(Y =1|X )$, then for any score S we have 
 $$
 AUC(S^\star)\geq AUC(S).
 $$
@@ -884,13 +884,15 @@ $$
 
 \vspace{.2cm}
 
-\item We should find a \alert{good empirical  estimate $S_n$ of $S^\star(x)= \P(Y =1|X =x)$}.
+\item We should find a \alert{good empirical  estimate $S_n$ of $S^\star(X)= \P(Y =1|X)$}.
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}[shrink=20]{Summary}
-\vfill
+
+\vspace{1.5cm}
+
 \begin{tabularx}{\textwidth}{c||c|c|c}
 & & & \\
  & Cost function $\ell(y,f(x))$ & Risk $\E \left[ \ell(y,f(x)) \right]$ & Optimum $f^\star$ \\
@@ -898,7 +900,7 @@ $$
  \hline 
  \hline
  & & & \\
- Regression & $(y-f(x))^2$ & $ \E \left[ (Y-f(X))^2 \right] $ & $\E\left[ Y |X=x \right]$ \\
+ Regression & $(y-f(x))^2$ & $ \E \left[ (Y-f(X))^2 \right] $ & $\E\left[ Y |X\right]$ \\
  & & & \\
  \hline
  & & & \\
@@ -906,7 +908,7 @@ $$
  & & & \\
  \hline
  & & & \\
- Scoring &   & $AUC(S)$ & $\P(Y=1 |X=x)$. \\
+ Scoring &   & $AUC(S)$ & $\P(Y=1 |X)$. \\
  & & & \\
 \end{tabularx}
 \vfill
@@ -1051,10 +1053,10 @@ $$
 \item The optimal choice for the classifier is the \structure{Bayes rule}
 \pause
 $$
-g^{\star}(x) =
+g^{\star}(X) =
 \left\{
 	\begin{array}{cc}
-		1 &\quad \text{if} \quad \P \left( Y=1 | X=x \right) > \P \left( Y=0 | X=x \right), \\
+		1 &\quad \text{if} \quad \P \left( Y=1 | X \right) > \P \left( Y=0 | X \right), \\
 		0 &\quad \text{otherwise}. \hfill
 	\end{array}
 \right.
