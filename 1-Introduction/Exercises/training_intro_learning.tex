@@ -131,7 +131,7 @@ $$
 Assume that $(X,Y)\in\mathbb{R}\times\{0,1\}$ is defined on $(\Omega,\mathcal{F},\mathbb{P})$ with $\mathbb{P}(Y=1) = \pi \in(0,1)$.  Assume that conditionally on $\{Y=0\}$ (resp. $\{Y=1\}$) $X$ has a uniform distribution on $[0,\theta]$ with $\theta\in(0,1)$ (resp. on $[0,1]$). Compute $\eta(X) = \mathbb{P}(Y=1 |X)$.
 
 \subsection{Exercice 2}
-Assume that $(X,Y)\in\mathbb{R}\times\{0,1\}$ is defined on $(\Omega,\mathcal{F},\mathbb{P})$. The distribution of $X$ is written $\mu$ and $\eta(X) = \mathbb{P}(Y=1|X) = x(x+\theta)^{-1}$ where $\theta>0$. Compute the Bayes classifier $h^*$ in this setting and prove that
+Assume that $(X,Y)\in\mathbb{R}\times\{0,1\}$ is defined on $(\Omega,\mathcal{F},\mathbb{P})$. The distribution of $X$ is written $\mu$ and $\eta(X) = \mathbb{P}(Y=1|X) = X(X+\theta)^{-1}$ where $\theta>0$. Compute the Bayes classifier $h^*$ in this setting and prove that
 $$
 R(h^*) = \bP(h^*(X)\neq Y) = \int \{\eta(x) \wedge (1-\eta(x))\}\mu(\rmd x)\,.
 $$
@@ -157,7 +157,7 @@ h_{*}(x)={\rm sign}(\eta(x)-1/2)\eqsp,
 $$
 where
 $$
-\eta:x \mapsto\bP(Y=1|X)_{|X=x}\eqsp.
+\eta(X) = \mapsto\bP(Y=1|X)\eqsp.
 $$
 Given $n$ independent couples $\{(X_i,Y_i)\}_{1\leqslant i \leqslant n}$ with the same distribution as $(X,Y)$, an empirical surrogate for $h_{*}$ is obtained from a possibly nonparametric estimator $\widehat \eta_n$ of $\eta$:
 $$
@@ -166,7 +166,7 @@ $$
 \begin{enumerate}
 \item Prove that for any classifier $h:\mathcal{X}\to \{-1,1\}$,
 $$
-\bP(Y\neq h(X)|X)_{|X=x} = (2\eta(x)-1)\1_{h(x)=-1}+1-\eta(x)
+\bP(Y\neq h(X)|X) = (2\eta(X)-1)\1_{h(X)=-1}+1-\eta(X)
 $$
 and
 $$
