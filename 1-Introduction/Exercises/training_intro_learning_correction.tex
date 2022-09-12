@@ -133,6 +133,22 @@ This criterion can lead to very poor performance if means are close (see Figure~
 \subsection{Exercice 1}
 Assume that $(X,Y)\in\mathbb{R}\times\{0,1\}$ is defined on $(\Omega,\mathcal{F},\mathbb{P})$ with $\mathbb{P}(Y=1) = \pi \in(0,1)$.  Assume that conditionally on $\{Y=0\}$ (resp. $\{Y=1\}$) $X$ has a uniform distribution on $[0,\theta]$ with $\theta\in(0,1)$ (resp. on $[0,1]$). Compute $\eta(X) = \mathbb{P}(Y=1 |X)$.
 
+\vspace{.2cm}
+
+{\em
+Let $g$ be the probability density function of $X$. For any measurable set $A$,
+\begin{align*}
+\mathbb{P}(X\in A) &= \mathbb{P}(Y=0)\mathbb{P}(X\in A|Y=0) + \mathbb{P}(Y=1)\mathbb{P}(X\in A|Y=1)\,,\\
+&= (1-\pi) \theta^{-1}\int \1_A(x)\1_{[0,\theta]}(x) \rmd x + \pi \int \1_A(x)\1_{[0,1]}(x) \rmd x\,,\\
+&= \int \1_A(x)\left\{ (1-\pi) \theta^{-1}\1_{[0,\theta]}(x) + \pi\1_{[0,1]}(x)\right\} \rmd x\,.
+\end{align*}
+Therefore, $g:x\mapsto  (1-\pi) \theta^{-1}\1_{[0,\theta]}(x) + \pi\1_{[0,1]}(x)$. Then, using Bayes rules and writing $g_1$ the probability density of the distribution of $X$ given $\{Y=1\}$,
+$$
+\eta(X) = \mathbb{P}(Y=1 |X) = \frac{ \mathbb{P}(Y=1)g_1(X)}{g(X)} = \frac{\pi \1_{[0,1]}(X)}{(1-\pi) \theta^{-1}\1_{[0,\theta]}(X) + \pi\1_{[0,1]}(X)}
+$$
+
+}
+
 \subsection{Exercice 2}
 Assume that $(X,Y)\in\mathbb{R}\times\{0,1\}$ is defined on $(\Omega,\mathcal{F},\mathbb{P})$. The distribution of $X$ is written $\mu$ and $\eta(X) = \mathbb{P}(Y=1|X) = X(X+\theta)^{-1}$ where $\theta>0$. Compute the Bayes classifier $h^*$ in this setting and prove that
 $$
