@@ -92,7 +92,7 @@ $$
 \end{figure}
 
 \begin{enumerate}
-\item Recall the definition of the Bayes classifier.
+\item Provide an expression of a classifier $h_*$ minimizing $h \mapsto \bP(h(X)\neq Y)$.
 %
 %\vspace{.2cm}
 %
@@ -161,7 +161,7 @@ Assume that $(X,Y)\in\mathbb{R}\times\{0,1\}$ is defined on $(\Omega,\mathcal{F}
 $$
 \mathsf{R}(h) = \bE[2\omega_Y \mathds{1}_{Y\neq h(X)}]\,.
 $$
-Compute the Bayes classifier and its associated risk.
+Compute a classifier $h_*$ minimizing $h\mapsto \mathsf{R}(h)$ and $\mathsf{R}(h_*)$.
 %
 %\vspace{.2cm}
 %
@@ -194,19 +194,20 @@ Compute the Bayes classifier and its associated risk.
 \section{Additional exercises}
 
 \subsection{Bayes classifier: excess risk}
-Let $(X,Y)\in\rset^d\times\{0;1\}$ be random variables defined on the same probability space $(\Omega,\calF,\bP)$.
+Let $(X,Y)\in\rset^d\times\{0,1\}$ be random variables defined on the same probability space $(\Omega,\calF,\bP)$.
 For any classifier $h:\mathcal{X}\to \{0,1\}$, define its classification error by
 $$
 \mathsf{R}(h)=\bP(Y\neq h(X))\eqsp.
 $$
-The best classifier in terms of the classification error $\mathsf{R}$ is the Bayes classifier
+The classifier $h_*$ defined by:
 $$
 h_{*}(x)={\rm sign}(\eta(x)-1/2)\eqsp,
 $$
 where
 $$
-\eta(X) = \bP(Y=1|X)\eqsp.
+\eta(X) = \bP(Y=1|X)\eqsp,
 $$
+minimizes $h\mapsto \mathsf{R}(h)$.
 \begin{enumerate}
 \item Prove that 
 $$
@@ -252,20 +253,20 @@ $$
 
 
 \subsection{Plug-in classifier}
-Let $(X,Y)\in\rset^d\times\{-1;1\}$ be random variables defined on the same probability space $(\Omega,\calF,\bP)$.
+Let $(X,Y)\in\rset^d\times\{-1,1\}$ be random variables defined on the same probability space $(\Omega,\calF,\bP)$.
 For any classifier $h:\mathcal{X}\to \{-1,1\}$, define its classification error by
 $$
 \mathsf{R}(h)=\bP(Y\neq h(X))\eqsp.
 $$
-The best classifier in terms of the classification error $\mathsf{R}$ is the Bayes classifier
+The classifier $h_*$ defined by:
 $$
 h_{*}(x)={\rm sign}(\eta(x)-1/2)\eqsp,
 $$
 where
 $$
-\eta(X) = \bP(Y=1|X)\eqsp.
+\eta(X) = \bP(Y=1|X)\eqsp,
 $$
-Given $n$ independent couples $\{(X_i,Y_i)\}_{1\leqslant i \leqslant n}$ with the same distribution as $(X,Y)$, an empirical surrogate for $h_{*}$ is obtained from a possibly nonparametric estimator $\widehat \eta_n$ of $\eta$:
+minimizes $h\mapsto \mathsf{R}(h)$. Given $n$ independent couples $\{(X_i,Y_i)\}_{1\leqslant i \leqslant n}$ with the same distribution as $(X,Y)$, an empirical surrogate for $h_{*}$ is obtained from a possibly nonparametric estimator $\widehat \eta_n$ of $\eta$:
 $$
 \widehat h_n: x\mapsto {\rm sign}(\widehat \eta_n(x)-1/2)\eqsp.
 $$
