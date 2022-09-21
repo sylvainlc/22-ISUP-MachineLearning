@@ -5,28 +5,6 @@
 \newboolean{corrige}
 \setboolean{corrige}{true}
 
-\newtheoremstyle{styleQuestion}
-  {6pt}% space above
-  {6pt}% space below
-  {\sffamily}%body font
-  {13.5pt}%indent amount
-  {\sffamily}%Theorem head
-  {.}%punctuation
-  {0.5em}%space after theorem head
-  {}
-
-
-\ifthenelse{\boolean{corrige}}%
- {\theoremstyle{styleQuestion}%
- \newtheorem{question}{}}%
- {\theoremstyle{styleQuestion}%
- \newtheorem{question}{}}
-\ifthenelse{\boolean{corrige}}%
-   {\renewenvironment{comment}%
-   %{\begin{list}{}{\setlength{\leftmargin}{0pt}\setlength{\rightmargin}{0pt}}\item[]\ignorespaces\begin{sffamily}\small\textbf{Corrigé. \footnotesize } }{\hfill\qed\end{sffamily}\unskip\end{list} }}
-   { \noindent \\ \textbf{Solution.}\begin{leftbar} \footnotesize}{\hfill \qed \end{leftbar}}}
-   {}
-
 \newcommand{\titre}[1]{\textbf{\textsc{#1}}}
 
 \RequirePackage[T1]{fontenc}
@@ -82,7 +60,7 @@
 
 
 % Style
-\pagestyle{fancyplain}
+%\pagestyle{fancyplain}
 \renewcommand{\sectionmark}[1]{\markright{#1}}
 \renewcommand{\subsectionmark}[1]{}
 %\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\footnotesize {\sf
@@ -90,38 +68,81 @@
 %}}}
 %\rhead[\fancyplain{}{\footnotesize {\sf MAT4506 Introduction to machine learning, \thisyear %/ \rightmark
 %}}]{\fancyplain{}{\thepage}}
-\cfoot[\fancyplain{}{}]{\fancyplain{}{}}
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\parindent=0mm
+
 
 \newtheorem{theorem}{Theorem}
 
-% Titre
-\title{{\bf MAP534:  Introduction to machine learning}}
-\author{{\em Logistic regression}}
-\date{}
+%% Titre
+%\title{{\bf Machine learning}}
+%\author{{\em Logistic regression}}
+%\date{}
+
 
 \begin{document}
 
-\maketitle
+\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
+ 2022-2023
+
+\noindent\hrulefill
+
+\begin{center}
+\textsc{Logistic regression}
+\end{center}
+\hrulefill
+
+\medskip
 
 
-%\section*{Logistic Regression}
-The \emph{logistic model} assumes that the random variables  $(X,Y)\in \rset^p\times\{0,1\}$ are such that
+
+\section{Warm-up}
+The \emph{logistic model} assumes that the random variables  $(X,Y)\in \rset^d\times\{0,1\}$ are such that
 $$
 \bP(Y=1|X)={\exp\left(\langle \beta^*,X\rangle\right)\over 1+\exp\left(\langle \beta^*,X\rangle\right)}\eqsp,
 $$
-with $\beta^*\in\mathbb{R}^d$. In this case, for all $x\in\rset^d$, $\bP(Y=1|X)|_{X=x}>1/2$ if and only if $\langle \beta^*,x\rangle>0$, so
+with $\beta^*\in\mathbb{R}^d$. In this case,  $\bP(Y=1|X)>1/2$ if and only if $\langle \beta^*,X\rangle>0$, so
 the frontier between $\left\{x\eqsp;\eqsp h_{*}(x)=1\right\}$ and $\left\{x\eqsp ;\eqsp h_{*}(x)=0\right\}$ is an hyperplane, with orthogonal
-direction $\beta^*$. The unknown parameter $\beta^*$ may be estimated  by maximizing the conditional likelihood of $Y$ given $X$
-\begin{align*}
+direction $\beta^*$. 
+\begin{enumerate}
+
+	\item In this question only,  $\beta^* = (\beta_0,\beta_1)\in \rset^2$ and $X_i = (1,x_i)$ for all $1\leqslant i \leqslant n$.
+
+\begin{enumerate}
+\item Provide the value $x_*$ of $x_i$ such that $\mathbb{P}(Y_i=1 | X_i) = 1/2$. The logistic Bayes classifier is therefore defined by $h_*(X_i) = 1$ if and only if $x_i>x_*$. 
+\item Another classifier could be defined by choosing a threshold $\tilde p\in(0,1)$ and defining $\tilde h(X_i) = 1$ if and only if $\mathbb{P}(Y_i=1 | X_i) > \tilde p$.  Provide $\tilde x$ such that $\tilde h(X_i) = 1$ if and only if $x_i>\tilde x$. Explain a practical interest to choose $\tilde p < 1/2$.
+\end{enumerate}
+	\item The usual logistic regression classifier is defined by $h_n:x\mapsto 1$ is $x^\top\hat\beta_n >0$ and $0$ otherwise, where $\hat \beta_n$ is an estimator of $\beta$. Therefore $h_n(X) =1$ if and only if $\mathbb{P}(Y=1|X)>1/2$. Other classifiers can be defined by setting $h_n(X) =1$ if and only if $\mathbb{P}(Y=1|X)>p_*$ for a chosen $p_*\in(0,1)$. Two classifiers were built with $p_* = 0.5$ and $p_* = 0.2$, associate each classifier with its point on  ROC curve displayed above.
+
+\begin{figure}[h!]
+\label{fig:roc}
+\centering
+\includegraphics[scale = .45]{roc.png}
+\end{figure}
+	
+\end{enumerate}
+
+\section{Softmax regression}
+Assume that the observation $Y$ takes values in $\{1,\ldots,M\}$ and that $X\in\mathbb{R}^d$. The negative loglikelihood to be minimized to estimate the parameters of the model is given by:
+$$
+\theta \mapsto \ell^{\mathrm{multi}}_n(\theta)= -\frac{1}{n} \sum_{i=1}^n\sum_{k=1}^{M} \1_{Y_i=k}\log \mathbb{P}_{\theta}(Y_i = k | X_i)\,,
+$$
+where $\{(X_i,Y_i)\}_{1\leqslant i\leqslant n}$ are i.i.d. observations with the same law as $(X,Y)$. 
+
+\begin{enumerate}
+\item Explain the construction of $\mathbb{P}_{\theta}(Y_i = k | X_i)$, $1\leqslant i\leqslant n$ for a softmax regression model with parameters $\omega_m\in\mathbb{R}^d$ for $1\leqslant m  \leqslant M$.
+\item In the setting  of the softmax regression function, compute $\theta \mapsto \nabla_\theta \ell^{\mathrm{multi}}_n(\theta)$.
+\end{enumerate}
+
+
+\section{Maximum likelihood estimation}
+The unknown parameter $\beta^*$ may be estimated  by maximizing the conditional likelihood of $Y$ given $X$
+$$
 \widehat \beta_n\in\mathrm{argmax}_{\beta\in\mathbb{R}^{d}}
 \prod_{i=1}^n \left[ \left( \frac{\exp\left(\langle
 	\beta,x_{i}\rangle\right)}{1+\exp\left(\langle
 	\beta,x_{i}\rangle\right)}\right)^{Y_{i}}
 \left(\frac{1}{1+\exp\left(\langle
 	\beta,x_{i}\rangle\right)}\right)^{1- Y_{i}} \right] ,
-\end{align*}
+$$
 to define the empirical classifier
 $$
 \widehat h_{n}: x \mapsto \1_{\langle \widehat\beta_n,x\rangle>0}\eqsp.
@@ -133,54 +154,10 @@ $$
 \ell_{n}:\beta \mapsto -\sum_{i=1}^n\left[Y_{i}\langle x_{i},\beta\rangle-\log(1+\exp(\langle x_{i},\beta\rangle))\right]\eqsp.
 $$
 What can be said about the function $\ell_{n}$ when for all $\beta\in\rset^d$, $H_{n}(\beta)$ is nonsingular? This assumption is supposed to hold in the following questions.
-
-\vspace{.2cm}
-
-{\em
-Since for all $u\in\rset^d$, $\nabla_{\beta} \langle u, \beta \rangle = u$, 
-$$
-\nabla \ell_n(\beta) = - \sum_{i=1}^n Y_i x_i + \sum_{i=1}^n \frac{\exp(\langle x_{i},\beta\rangle)}{1  + \exp(\langle x_{i},\beta\rangle)} x_i\eqsp.
-$$
-On the other hand, for all $1\leqslant i \leqslant n$ and all $1 \leqslant j \leqslant d$,
-$$
-\partial_j \left( \frac{\exp(\langle x_{i},\beta\rangle)}{1  + \exp(\langle x_{i},\beta\rangle)} x_i \right) = \frac{\exp(\langle x_{i},\beta\rangle)}{(1  + \exp(\langle x_{i},\beta\rangle))^2} x_{ij}x_i\eqsp,
-$$
-where $x_{ij}$ is the $j$th component of $x_i$. Then
-$$
-\big(H_n(\beta)\big)_{\ell j} = \sum_{i=1}^n \frac{\exp(\langle x_{i},\beta\rangle)}{(1  + \exp(\langle x_{i},\beta\rangle))^2} x_{ij}x_{i \ell}\eqsp,
-$$
-that is,
-$$
-H_n(\beta) = \sum_{i=1}^n \frac{\exp(\langle x_{i},\beta\rangle)}{(1  + \exp(\langle x_{i},\beta\rangle))^2} x_{i} x^T_{i}\eqsp.
-$$
-%Note that $H_n(\beta)$ is the Gram matrix 
-%\[
-%H_n(\beta)   = \langle \tilde{x}_i, \tilde{x}_j \rangle,
-%\]
-%where 
-%\[
-%\tilde{x}_i = x_i \frac{\exp(\langle x_{i},\beta\rangle/2)}{1  + \exp(\langle x_{i},\beta\rangle)}\eqsp.
-%\]
-$H_n(\beta)$ is a semi positive definite matrix, which implies that $\ell_n(\beta)$ is convex. If we assume that $H_n$ is nonsingular, $\ell_n$  is strictly convex.
-}
 \item Prove that there exists $\widetilde \beta_n\in\rset^d$ such that $\|\widetilde \beta_n-\beta^*\|\leq \|\widehat \beta_n-\beta^*\|$ and
 $$
 \widehat \beta_n-\beta^*=-H_{n}(\widetilde \beta_n)^{-1}\nabla \ell_{n}(\beta^*)\eqsp.
 $$
-
-\vspace{.2cm}
-
-{\em
-Using a Taylor expansion between $\beta^{\star}$ and $\widehat{\beta}_n$, there exists $\tilde{\beta}_n \in B(\beta^{\star}, \|\widehat{\beta}_n - \beta^{\star}\|)$ such that 
-$$
-\nabla \ell_n(\widehat{\beta}_n) = \nabla \ell_n(\beta^{\star}) + H_n(\tilde{\beta}_n) ( \hat{\beta}_n - \beta^{\star})\eqsp. 
-$$
-By definition, $\ell_n(\widehat{\beta}_n) = 0$. Therefore, 
-$$
-\widehat{\beta}_n - \beta^{\star} = - H_n(\tilde{\beta}_n)^{-1} \nabla \ell_n(\beta^{\star})\eqsp,
-$$
-where $H_n(\tilde{\beta}_n)^{-1}$ exists since $H_n(\tilde{\beta})$ is assumed to be non-singular for all $\beta$.
-}
 \end{enumerate}
 In the following it is assumed that the $(x_{i})_{1\leqslant i\leqslant n}$ are uniformly bounded, $\widehat \beta_n\to \beta^*$ a.s. and that there exists a continuous and nonsingular function $H$ such that $n^{-1}H_{n}(\beta)$ converges to $H(\beta)$, uniformly in a ball around $\beta^*$.
 \begin{enumerate}  \setcounter{enumi}{2}
@@ -189,243 +166,9 @@ In the following it is assumed that the $(x_{i})_{1\leqslant i\leqslant n}$ are 
 \bE \left[e^{-n^{-1/2}\langle t,\nabla\ell_{n}(\beta^*)\rangle}\right]& =\prod_{i=1}^n \left({1-p_{i}(\beta^*)+p_{i}(\beta^*)e^{\langle t,x_{i}\rangle/\sqrt{n}}}\right) e^{-p_{i}(\beta^*)\langle t,x_{i}\rangle/\sqrt{n}}\eqsp, \\
 &=\exp\left(\frac{1}{2}t^T\left(n^{-1}H_{n}(\beta^*)\right)t+O(n^{-1/2})\right)\eqsp.
 \end{align*}
-
-\vspace{.2cm}
-
-{\em For all $t\in\rset^d$,
-\begin{align*}
- \bE \left[ \exp\left( - \frac{1}{\sqrt{n}} \langle t, \nabla \ell_n(\beta^{\star}) \rangle \right) \right] = & \prod_{i=1}^n \bE \left[ \exp\left( \frac{1}{\sqrt{n}} (Y_i - p_i(\beta^{\star}) )\langle x_i, t \rangle \right) \right]\eqsp,\\
-= & \prod_{i=1}^n \left[ \left( 1 - p_i(\beta^{\star}) +  p_i(\beta^{\star}) \exp\left( \frac{1}{\sqrt{n}} \langle x_i, t \rangle \right) \right) \exp \left( - \frac{ p_i(\beta^{\star})}{\sqrt{n}} \langle x_i, t \rangle \right) \right]\eqsp.
-\end{align*}
-Note that 
-$$
-\log \left( 1 - p_i + p_i \exp(u/\sqrt{n}) \right) =  \log\left( 1 + p_i \frac{u}{\sqrt{n}} + p_i \frac{u^2}{2n} + \textrm{O} \left( n^{-3/2} \right)\right)\\
- = p_i \frac{u}{\sqrt{n}} + \frac{p_i u^2}{2n} - \frac{p_i^2 u^2}{2n} + \textrm{O} \left( n^{-3/2} \right)\eqsp.
-$$
-Finally, 
-$$
-\bE \left[ \exp\left( - \frac{1}{\sqrt{n}} \langle t, \nabla \ell_n(\beta^{\star}) \rangle \right) \right] = 
-\exp\Bigg( \frac{1}{2n} \underbrace{\sum_{i=1}^n p_i(\beta^{\star}) (1 - p_i(\beta^{\star})) \langle t, x_i \rangle^2}_{t^T H_n(\beta^{\star}) t} + \textrm{O}(n^{-1/2})\Bigg)\eqsp.
-$$
-}
 \item What is the asymptotic distribution of $-n^{-1/2}\nabla\ell_{n}(\beta^*)$ and of $\sqrt{n}(\widehat \beta_n-\beta^*)$?
-
-\vspace{.2cm}
-
-{\em
- Recall that for a vector-valued random variable X, the moment-generating function is defined as 
-\begin{align*}%
-M_X(t) = \bE \left[ \exp\left( \langle t, X \rangle \right) \right].
-\end{align*}
-In particular, we know that if $X \sim \mathcal{N}(\mu, \Sigma)$ then 
-\begin{align*}
-M_X(t) = \bE \left[ \exp \left( \langle t, \mu + \frac{1}{2} \Sigma t \rangle \right) \right].
-\end{align*}
-A convergence theorem states that if, for all $t$, $M_{X_n}(t) \to M_X(t)$ then $X_n \to X$ in distribution. 
-For all $t\in\rset^d$, since $n^{-1} H_n(\beta^{\star}) \to_{n\to \infty} H(\beta^{\star})$,
-$$
-\bE \left[ \exp\left( - \frac{1}{\sqrt{n}} \langle t, \nabla \ell_n(\beta^{\star}) \rangle \right) \right] \to_{n\to \infty}  \exp\Bigg( \frac{1}{2} t^T H(\beta^{\star}) t \Bigg)\eqsp.
-$$
-Therefore, $-\nabla \ell_n(\beta^{\star}) / \sqrt{n}$ converges in distribution to  $Z \sim \mathcal{N}(0, H(\beta^{\star}))$. On the other hand, 
-$$
-\sqrt{n} (\widehat{\beta}_n - \beta^{\star}) = - \left( \frac{1}{n} H_n(\tilde{\beta}_n) \right)^{-1} \frac{1}{\sqrt{n}} \nabla \ell_n(\beta^{\star})\eqsp.
-$$
-As for all $n\geqslant 1$, $\tilde{\beta}_n \in B(\beta^{\star}, \|\widehat{\beta}_n - \beta^{\star}\|)$, $\tilde{\beta}_n$ converges to  $\beta^{\star}$ almost surely as $n$ grows to infinity. Hence, almost surely
-$$
-\left( \frac{1}{n} H_n(\tilde{\beta}_n) \right)^{-1} \to H(\beta^{\star})^{-1}
-$$
-and, by Slutsky lemma, $\sqrt{n} (\widehat{\beta}_n - \beta^{\star})$  converges in distribution to  $Z \sim \mathcal{N}(0,  H(\beta^{\star})^{-1})$.
-}
 \item For all $1\leqslant j \leqslant d$ and all $\alpha\in(0,1)$, propose a confidence interval $\mathcal{I}_{n,\alpha}$ such that $\beta^*_{j}\in \mathcal{I}_{n,\alpha}$ with asymptotic probability $1-\alpha$.
-
-\vspace{.2cm}
-
-{\em
-According to the last question, $\sqrt{n} ( \widehat{\beta}_j - \beta^{\star}_j) $ converges in distribution to a centered Gaussian random variable with variance $(H(\beta^{\star})^{-1})_{jj}$. On the other hand, almost surely,
-$$
-\widehat{\sigma}_{n,j}^2 = (n H_n(\widehat{\beta}_n)^{-1})_{jj} \to_{n\to \infty} (H(\beta^{\star})^{-1})_{jj}\eqsp.
-$$
-Then, 
-$$
-\sqrt{\frac{n}{\widehat{\sigma}_{n,j}^2}} (\widehat{\beta}_{n,j} - \beta^{\star}_j ) \to_{n\to \infty} \mathcal{N}(0,1).
-$$
-An asymptotic confidence interval $\mathcal{I}_{n,\alpha}$ of level $1-\alpha$ is then given by
-$$
-\mathcal{I}_{n,\alpha} = \left[ \widehat{\beta}_{n,j} - z_{1-\alpha/2} \sqrt{\frac{\widehat{\sigma}^2_{n,j}}{n}}\eqsp,\eqsp \widehat{\beta}_{n,j} + z_{1-\alpha/2} \sqrt{\frac{\widehat{\sigma}^2_{n,j}}{n}}  \right],
-$$
-where $z_{1- \alpha/2}$ is the quantile of order $1- \alpha/2$ of $\mathcal{N}(0, 1)$.
-}
 \end{enumerate}
-
-\clearpage
-\newpage
-%
-%
-%A function $k:\mathbb{R}^d\times\mathbb{R}^d:\to \mathbb{R}$ is said to be a positive semi-definite kernel if and only if it is symmetric and if for all $n\geqslant 1$, $(x_1,\ldots,x_n)\in(\mathbb{R}^d)^n$ and all $(a_1,\ldots,a_n)\in(\mathbb{R}^d)^n$,
-%$$
-%\sum_{1\leqslant i,j\leqslant n}a_ia_jk(x_i,x_j) \geqslant 0\eqsp.
-%$$
-%
-%The following functions, defined on $\rset^d\times\rset^d$, are positive semi-definite kernels:
-%$$
-%k:(x,y)\mapsto x^Ty \quad\mathrm{and}\quad k:(x,y)\mapsto \mathrm{exp}\left(-\|x-y\|^2/(2\sigma^2\right)\eqsp,\; \sigma>0\eqsp.
-%$$
-%
-%
-%Let $\calF$ be a Hilbert space of functions $f:\mathbb{R}^d\to\mathbb{R}^d$. A symmetric function $k:\mathbb{R}^d\times\mathbb{R}^d:\to \rset$ is said to be a reproducing kernel of $\calF$ if and only if for all $x\in\mathbb{R}^d$, $k(x,\cdot)\in\calF$ and for all $x\in\mathbb{R}^d$ and all $f\in\calF$, $\langle f; k(x,\cdot)\rangle = f(x)$. The space $\calF$ is said to be a reproducing kernel Hilbert space  (RKHS) with kernel $k$. A reproducing kernel associated with a reproducing kernel Hilbert space is positive semi-definite since for all $n\geqslant 1$, $(x_1,\ldots,x_n)\in\xset^n$ and all $(a_1,\ldots,a_n)\in\rset^n$,
-%$$
-%\sum_{1\leqslant i,j\leqslant n}a_ia_jk(x_i,x_j) = \sum_{1\leqslant i,j\leqslant n}a_ia_j \langle k(x_i,\cdot);k(x_j,\cdot)\rangle = \left\|\sum_{1\leqslant i\leqslant n}a_i\langle k(x_i,\cdot)\right\|^2 \geqslant 0\eqsp.
-%$$
-%
-%
-%The positive semi-definite kernel $k:(x,y)\mapsto x^Ty$ defined on $\rset^d\times\rset^d$ is a reproducing kernel of the space
-%$$
-%\calF = \left\{f: \rset^d\to\rset\eqsp;\eqsp \exists \omega\in\rset^d \eqsp\forall x\in \rset^d\eqsp, \eqsp f(x) = \omega^Tx\right\}\eqsp,
-%$$
-%equipped with the inner product defined, for all $(f,g)\in\calF\times\calF$, by 
-%$$
-%\langle f; g\rangle = \omega_f^T\omega_g\eqsp, 
-%$$
-%where $\omega_f,\omega_g\in\rset^d$ and $f: x\mapsto \omega_f^Tx$, $g: x\mapsto \omega_g^Tx$. 
-
-
-
-%\subsection*{Kernels}
-% Let $\calH$ be a RKHS associated with a positive definite kernel $k: \xset\times \xset \to \rset$.
-%\begin{enumerate}
-%\item  Prove that for all $(x,y)\in\xset\times \xset$, 
-%$$
-%|f(x)-f(y)|\leqslant \|f\|_{\calH}\|k(x,\cdot)-k(y,\cdot)\|_{\calH}\eqsp.
-%$$
-%
-%\vspace{.2cm}
-%
-%{\em
-%The proof follows from Cauchy-Schwarz inequality as, for all $(x,y)\in\xset^2$,
-%$$
-%|f(x)-f(y)|= |\langle f, k(x,\cdot)\rangle_{\mathcal{H}}-\langle f, k(x,\cdot)\rangle_{\mathcal{H}}| = |\langle f, k(x,\cdot)-k(y,\cdot)\rangle_{\mathcal{H}}|\eqsp.
-%$$
-%}
-%
-%\item  Prove that the kernel $k$ associated with $\calH$ is unique, i.e. if $\widetilde k$ is another potitive definite kernel satisfying the RKHS properties for $\calH$, then $k = \widetilde k$.
-%
-%\vspace{.2cm}
-%
-%{\em
-%Write, for all $x\in\xset$,
-%$$
-%\|k(x,\cdot) - \widetilde k(x,\cdot)\|_{\calH}^2 = \langle k(x,\cdot) - \widetilde k(x,\cdot),k(x,\cdot) - \widetilde k(x,\cdot)\rangle = k(x,x) - \widetilde k(x,x) +  \widetilde k(x,x) - k(x,x)= 0\,.
-%$$
-%}
-%
-%\item  Prove that  for all $x\in\xset$, the function defined on $\calH$ by $\delta_x: f \mapsto f(x)$ is continuous.
-%
-%\vspace{.2cm}
-%
-%{\em
-%Left as an exercise.
-%}
-%\end{enumerate}
-%
-%
-%\subsection*{Penalized kernel regression}
-%Consider the regression model given, for all $1\leqslant i\leqslant n$, by
-%$$
-%Y_{i}=f^*(X_{i})+\xi_{i}\eqsp,
-%$$
-%where for all $1\leqslant i\leqslant n$, $X_i\in\mathsf{X}$, and the $(\xi_{i})_{1\leqslant i \leqslant n}$ are i.i.d. centered Gaussian random variables with variance $\sigma^2$. In this exercise, $f^*$ is estimated by
-%$$
-%\widehat f_n=\argmin_{f\in\mathcal{H}}\left\{{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2\right\}\eqsp,
-%$$
-%with $\lambda>0$  and $\mathcal{H}$  a RKHS on $\mathsf{X}$ with symmetric positive definite kernel $k$.
-%\begin{enumerate}
-%\item Check that $\widehat f(x)=\sum_{j=1}^n\widehat \beta_{n,j}k(X_{j},x)$ where $\widehat \beta_n$ is solution to
-%$$
-%\widehat \beta_n =\argmin_{\beta\in\R^n}\left\{\|Y-K\beta\|_2^2+{\lambda} \beta^TK\beta\right\}\eqsp,
-%$$
-%with $K$ defined, for all $1\leqslant i,j\leqslant n$, by $K_{i,j}=k (X_{i},X_{j})$.  Provide the explicit expression of $\widehat \beta_n$ when $K$ is nonsingular.
-%
-%\vspace{.2cm}
-%
-%{\em
-%Let  
-%$$
-%V = \left\{ \sum_{i=1}^{n}\alpha_ik(X_i, \cdot)\eqsp;\eqsp  (\alpha_1,\ldots,\alpha_n)\in\rset^n\right\}\eqsp.
-%$$  
-%For all $f \in \mathcal{H}$, write $f = f_V + f_{V^{\perp}}$ where $f_V \in V$ and $f_{V^{\perp}} \in V^{\perp}$. Therefore,
-%		\begin{align*}
-%			\frac{1}{n} \sum_{i=1}^n \Big( Y_i - f(X_i) \Big)^2 + \frac{\lambda}{n} \|f\|_{\mathcal{H}}^2
-%			& = 	\frac{1}{n} \sum_{i=1}^n \Big( Y_i - f_V(X_i) \Big)^2 + \frac{\lambda}{n} \Big( \|f_V\|_{\mathcal{H}}^2 + \|f_{V^{\perp}}\|_{\mathcal{H}}^2 \Big)\,,
-%		\end{align*}	
-%		since, by definition of $V^{\perp}$, for all $1 \leqslant i \leqslant n$,  
-%		$$
-%		f_{V^{\perp}}(X_i) = \langle f_{V^{\perp}} , k(X_i, \cdot) \rangle_{\mathcal{H}} = 0\,. 
-%		$$
-%		Thus, the initial optimization problem can be written as
-%$$
-%\widehat f_n=\argmin_{f\in V}\left\{{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2\right\}.
-%$$
-%Therefore, there exists $\beta\in\mathbb{R}^n$ such that, for all $x\in\xset$,
-%$$
-%\widehat{f}_n(x) = \sum_{j=1}^n \widehat{\beta}_j k(X_j, x)\,.
-%$$
-%This yields,
-%$$
-%{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2 = {1\over n}\sum_{i=1}^n(Y_{i}-\sum_{j=1}^n \beta_j k(X_j, X_i))^2+{\lambda\over n} \langle \sum_{j=1}^n \beta_j k(X_j, \cdot), \sum_{i=1}^n \beta_i k(X_i, \cdot) \rangle_{\mathcal{H}}\,.
-%$$
-%The proof is completed by noting that,
-%$$
-%\langle \sum_{j=1}^n \beta_j k(X_j, \cdot), \sum_{i=1}^n \beta_i k(X_i, \cdot) \rangle_{\mathcal{H}}  = \sum_{i,j=1}^n \beta_i \beta_j k(X_i, X_j)\,.
-%$$
-%Let 
-%$$
-%L(\beta) = \| Y - K \beta\|_2^2 + \lambda \beta^T K \beta.
-%$$
-%The gradient of $L$ is then given by
-%$$
-%\nabla L (\beta)  = -2K^T (Y - K \beta) + \lambda (K \beta + K^T \beta)   = -2K(Y-K \beta) + 2 \lambda K \beta\,.
-%$$
-%The minimum $\widehat{\beta}_n$ of $L$ satisfies 
-%$$
-%\widehat{\beta}_n = (K + \lambda I_n)^{-1} Y\,.
-%$$
-%}
-%\item  Let $(u_i)_{1 \leqslant i \leqslant n}$ be an orthonormal basis of $\R^n$ of eigenvectors of $K$ associated with the eigenvalues $(\lambda_i)_{1 \leqslant i \leqslant n}$. Check that 
-%$$
-%K\widehat \beta_n= \sum_{i=1}^n {\lambda_{i}\over \lambda_{i}+\lambda} \langle Y_i, u_{i}\rangle u_{i}\,.
-%$$
-%
-%
-%\vspace{.2cm}
-%
-%{\em
-%Since $(u_i)_{1 \leq i \leq n}$ is an orthonormal basis of $\R^n$, one can write  
-%		\begin{align*}
-%			K \widehat{\beta}_n & = \sum_{i=1}^n \langle K \widehat{\beta}_n, u_i\rangle u_i\,,\\
-%			& = \sum_{i=1}^n \langle K (K+\lambda I_n)^{-1}Y, u_i\rangle u_i\,,\\
-%			& = \sum_{i=1}^n \langle Y, (K+\lambda I_n)^{-1} K  u_i\rangle u_i\,,\\
-%			& = \sum_{i=1}^n \frac{\lambda_i }{\lambda + \lambda_i} \langle Y, u_i \rangle u_i\,.
-%		\end{align*}
-%}
-%\item Prove that
-%$$
-%\V[K\widehat \beta_n]=\sum_{i=1}^n \left(\lambda_{i}\sigma\over \lambda_{i}+\lambda\right)^2u_{i}u_{i}^T\eqsp.
-%$$
-%
-%\vspace{.2cm}
-%
-%{\em
-%Since $\widehat{\beta}_n = (K + \lambda I_n)^{-1}Y$, 
-%		\begin{align*}
-%			\V [K \widehat{\beta}_n] & = K \V \left[ (K + \lambda I_n)^{-1} Y \right]K^T\,,\\
-%			& = K (K + \lambda I)^{-1} \V [Y] (K + \lambda I_n)^{-1} K\,,\\
-%			& = \sigma^2 K^2 (K + \lambda I_n)^{-2}\,,\\
-%			& = \sum_{i=1}^n \left( \frac{\lambda_i \sigma }{\lambda_i + \lambda}\right)^2 u_i u_i^T\,,
-%		\end{align*}
-%	using the eigenvector decomposition of $K$.
-%}
-%\end{enumerate}
-
 
 
 \end{document} 
