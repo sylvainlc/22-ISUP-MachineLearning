@@ -1,5 +1,4 @@
-# Introduction to machine learning course: lecture slides, lab notebooks, notes and exercises
-
+# Introduction to machine learning course
 ## Table of contents
 
 The course covers the basics of Machine Learning with theoretical and practical applications.
