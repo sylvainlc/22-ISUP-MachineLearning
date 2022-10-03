@@ -1,0 +1,200 @@
+\documentclass[a4paper,10pt,fleqn]{article}
+
+\usepackage{a4wide,amsmath,amsthm,amssymb,bbm,fancyhdr}
+\usepackage{ifthen,color,enumerate,comment,dsfont,pdfsync,framed,todonotes,enumitem}
+
+\newcommand{\titre}[1]{\textbf{\textsc{#1}}}
+
+\RequirePackage[T1]{fontenc}
+
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{dsfont}
+\usepackage{enumitem}
+\newcommand{\eqsp}{\,}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\rmd}{\mathrm{d}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\rset}{\ensuremath{\mathbb{R}}}
+\renewcommand{\P}{\ensuremath{\operatorname{P}}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\pE}{\ensuremath{\mathbb{E}}}
+\newcommand{\rme}{\ensuremath{\mathrm{e}}}
+\newcommand{\calH}{\ensuremath{\mathcal{H}}}
+\newcommand{\xset}{\ensuremath{\mathsf{X}}}
+\newcommand{\V}{\ensuremath{\mathbb{V}}}
+\newcommand{\Sb}{\ensuremath{\mathbb{S}}}
+\newcommand{\gaus}{\ensuremath{\mathcal{N}}}
+\newcommand{\HH}{\ensuremath{\mathcal{H}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\W}{\ensuremath{\mathcal{W}}}
+\newcommand{\X}{\ensuremath{\mathcal{X}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\dlim}{\ensuremath{\stackrel{\mathcal{L}}{\longrightarrow}}}
+\newcommand{\plim}{\ensuremath{\stackrel{\mathrm{P}}{\longrightarrow}}}
+\newcommand{\PP}{\ensuremath{\mathbb{P}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\pa}[1]{\left(#1\right)}
+\newcommand{\hatk}{\widehat K}
+\newcommand{\f}{\varphi}
+\newcommand{\Id}{\textsf{Id}}
+\newcommand{\bfU}{\mathbf{U}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfs}{\mathbf{\Sigma}}
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfV}{\mathbf{V}}
+\newcommand{\bfB}{\mathbf{B}}
+\newcommand{\bfI}{\mathbf{I}}
+\newcommand{\bfD}{\mathbf{D}}
+\newcommand{\bfK}{\mathbf{K}}
+\newcommand{\argmin}{\mathop{\textrm{argmin}}}
+\newcommand{\argmax}{\mathop{\textrm{argmax}}}
+\newcommand{\crit}{\mathop{\textrm{crit}}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\pc}{\pi_{\mathcal{C}}}
+
+
+% Style
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+
+\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
+ 2022-2023
+
+\noindent\hrulefill
+
+\begin{center}
+\textsc{Introduction to machine learning}
+\end{center}
+\hrulefill
+
+\section{Bayes classifier}
+
+Let $(\Omega,\calF,\bP)$ be a probability space. Assume that $(X,Y)$ is a couple of random variables defined on  $(\Omega,\calF,\bP)$ and taking values in $\xset\times\{-1,1\}$ where $\xset$ is a given state space, which means that the focus is set on a two-class classification problem. One aim of supervised classification is to define a function $h: \xset \to \{-1,1\}$, called {\em classifier}, such that $h(X)$ is the best prediction of $Y$ in a given context. For instance, the risk of misclassification of $h$ is \index{classification risk}
+$$
+\mathsf{R}_{\mathrm{miss}}(h) = \bE\left[\1_{Y\neq h(X)}\right] =  \bP\left(Y\neq h(X)\right)\eqsp.
+$$
+Note that $\bE[Y|X]$ is a random variable measurable with respect to the $\sigma$-algebra $\sigma(X)$. Therefore, there exists a function $\eta:\xset \to [-1,1]$ so that $\bE[Y|X] = \eta(X)$ almost surely.
+
+\begin{lemma} \label{lem:bayesclassif}
+The classifier $h_{\star}$, defined for all $x\in\xset$, by
+$$
+h_{\star}(x) = \left\{
+    \begin{array}{ll}
+
+       1 & \mbox{if }\; \eta(x)>0\eqsp, \\
+        -1 & \mbox{otherwise}\eqsp,
+    \end{array}
+\right.
+$$
+is such that
+$$
+h_{\star} = \underset{h:\xset\to\{-1,1\}}{\argmin}\mathsf{R}_{\mathrm{miss}}(h)\eqsp.
+$$
+\end{lemma}
+
+\begin{proof}
+For all $u,v \in \{-1,1\}$, $\1_{u \neq v}=\1_{u v=-1}=(1-uv)/2$. Since $Y$ and $h(X)$ take values in $\{-1,1\}$, this implies
+$$
+\mathsf{R}_{\mathrm{miss}}(h) =\PP(Y\neq h(X)) = \left(1-\pE[Y h(X)]\right)/2\eqsp.
+$$
+Now, using sucessively the tower property, the equality $|u|= u\times \mathrm{sign}(u)$, and the tower property again,
+$$
+\pE[Y h(X)] =\pE[\pE[Y|X] h(X)] \leq \pE[|\pE[Y|X]| \underbrace{|h(X)|}_{=1}]=  \pE[\pE[Y|X] \underbrace{\mathrm{sign}(\pE[Y|X])}_{h_\star(X)}]=\pE[Y h_\star(X)]\,.
+$$
+This  yields $\mathsf{R}_{\mathrm{miss}}(h) \geq \mathsf{R}_{\mathrm{miss}}(h_\star)$, which concludes the proof.
+\end{proof}
+
+\section{Empirical risk minimization}
+First, we do not assume that the joint law of $(X,Y)$ belongs to any parametric or semiparametric family of models. Instead, we  make some restrictions on the set of classifiers on which the optimisation occurs.
+
+%Another approach which allows to weaken the assumptions on the joint distribution of $(X,Y)$ is to 
+More precisely, we consider that the optimization of classifiers holds on a specific set $\calH$ of classifiers (often called the {\em dictionary}\index{dictionary}), which may possibly not contain the Bayes classifier. Moreover, since in most cases, the classification risk $\mathsf{R}_{\mathrm{miss}}$ cannot be computed nor  minimized, it is instead estimated by the empirical classification risk \index{classification risk!empirical} defined as
+$$
+\widehat {\mathsf{R}}^n_{\mathrm{miss}}(h) = \frac{1}{n}\sum_{i=1}^n \1_{Y_i \neq h(X_i)}\eqsp,
+$$
+where  $(X_i,Y_i)_{1\leqslant i\leqslant n}$ are independent observations with the same distribution as $(X,Y)$. The classification problem then boilds down to solving
+$$
+\widehat h^n_{\calH} \in \underset{h\in\calH}{\argmin}\;\widehat {\mathsf{R}}^n_{\mathrm{miss}}(h)\eqsp.
+$$
+In this context several practical and theoretical challenges arise from the minimization of the empirical classification risk. The choice of $\calH$ is pivotal in designing an efficient classification procedure. Note that choosing $\calH$ as all possible classifiers is meaningless, in this case, $\widehat h^n_{\calH}$ is such that $\widehat h^n_{\calH}(X_i) = Y_i$ for all $1 \leqslant i\leqslant n$ and $\widehat h^n_{\calH}(x)$ is any element of $\{-1,1\}$ for all $x\notin\{X_1,\ldots,X_n\}$. Although $\widehat{\mathsf{R}}^n_{\mathrm{miss}}(h^n_{\calH}) = 0$,  is likely to be  a poor approximation of $\mathsf{R}_{\mathrm{miss}}(h^n_{\calH})$. To understand this, the excess misclassification risk may be decomposed as follows
+$$
+\mathsf{R}_{\mathrm{miss}}\left(\widehat h^n_{\calH}\right) - \mathsf{R}_{\mathrm{miss}}\left(h_{\star}\right) = \mathsf{R}_{\mathrm{miss}}\left(\widehat h^n_{\calH}\right) - \underset{h\in\calH}{\min}\; \mathsf{R}_{\mathrm{miss}}\left(h\right)  + \underset{h\in\calH}{\min}\; \mathsf{R}_{\mathrm{miss}}\left(h\right)  -  \mathsf{R}_{\mathrm{miss}}\left(h_{\star}\right) \geqslant 0\eqsp.
+$$
+The first term of the decomposition $\mathsf{R}_{\mathrm{miss}}(\widehat h^n_{\calH}) - \min_{h\in\calH}\; \mathsf{R}_{\mathrm{miss}}\left(h\right)$ is a \textbf{stochastic error} which is likely to grow when the size of $\calH$ grows while $\min_{h\in\calH}\; \mathsf{R}_{\mathrm{miss}}\left(h\right)  -  \mathsf{R}_{\mathrm{miss}}\left(h_{\star}\right)$ is \textbf{deterministic} and likely to decrease as the size of $\calH$ grows.
+
+\begin{lemma}
+\label{lem:missclassif:ub}
+For all set $\calH$ of classifiers and all $n\geqslant 1$,
+$$
+\mathsf{R}_{\mathrm{miss}}(\widehat h^n_{\calH}) - \underset{h\in\calH}{\min}\; \mathsf{R}_{\mathrm{miss}}\left(h\right) \leqslant 2 \underset{h\in\calH}{\sup}\left|\widehat{\mathsf{R}}^n_{\mathrm{miss}}(h) - \mathsf{R}_{\mathrm{miss}}\left(h\right)\right| \eqsp.
+$$
+\end{lemma}
+
+\begin{proof}
+By definition of $\widehat h^n_{\calH}$, for any $h\in\calH$,
+\begin{align*}
+\mathsf{R}_{\mathrm{miss}}(\widehat h^n_{\calH}) - \underset{h\in\calH}{\min}\; \mathsf{R}_{\mathrm{miss}}\left(h\right) &=  \mathsf{R}_{\mathrm{miss}}(\widehat h^n_{\calH})  - \widehat {\mathsf{R}}^n_{\mathrm{miss}}(\widehat h^n_{\calH}) + \widehat {\mathsf{R}}^n_{\mathrm{miss}}(\widehat h^n_{\calH}) - \underset{h\in\calH}{\min}\; \mathsf{R}_{\mathrm{miss}}\left(h\right)\eqsp,\\
+&\leqslant \mathsf{R}_{\mathrm{miss}}(\widehat h^n_{\calH})  - \widehat {\mathsf{R}}^n_{\mathrm{miss}}(\widehat h^n_{\calH}) + \widehat {\mathsf{R}}^n_{\mathrm{miss}}(h) - \underset{h\in\calH}{\min}\; \mathsf{R}_{\mathrm{miss}}\left(h\right)\eqsp.
+\end{align*}
+For all $\varepsilon>0$ there exists $h_{\varepsilon}\in\calH$ such that  $\mathsf{R}_{\mathrm{miss}}(h_{\varepsilon})< \min_{h\in\calH}\; \mathsf{R}_{\mathrm{miss}}\left(h\right) + \varepsilon$ so that
+\begin{align*}
+\mathsf{R}_{\mathrm{miss}}(\widehat h^n_{\calH}) - \underset{h\in\calH}{\min}\; \mathsf{R}_{\mathrm{miss}}\left(h\right) &\leqslant \mathsf{R}_{\mathrm{miss}}(\widehat h^n_{\calH})  - \widehat {\mathsf{R}}^n_{\mathrm{miss}}(\widehat h^n_{\calH}) + \widehat {\mathsf{R}}^n_{\mathrm{miss}}(h_{\varepsilon}) - \mathsf{R}_{\mathrm{miss}}(h_{\varepsilon}) + \varepsilon\eqsp,\\
+&\leqslant   2 \underset{h\in\calH}{\sup}\left|\widehat {\mathsf{R}}^n_{\mathrm{miss}}(h) - \mathsf{R}_{\mathrm{miss}}\left(h\right)\right| + \varepsilon\eqsp,
+\end{align*}
+which concludes the proof.
+\end{proof}
+
+%\begin{theorem}[Hoeffding's inequality]
+%\label{th:hoeffding}
+%Let $(X_i)_{1\leqslant i\leqslant n}$ be $n$ independent random variables such that for all $1\leqslant i\leqslant n$, $\bP(a_i\leqslant X_i\leqslant b_i) = 1$ where $a_i, b_i$ are real numbers such that $a_i<b_i$. Then, for all $t>0$,
+%\[
+%\bP\left(\left|\sum_{i=1}^n X_i - \sum_{i=1}^n \bE\left[X_i\right]\right|>t\right)\leqslant 2\mathrm{exp}\left(\frac{-2t^2}{\sum_{i=1}^n(b_i-a_i)^2}\right)\eqsp.
+%\]
+%\end{theorem}
+%
+%\begin{proof}
+%Without loss of generality, assume that $\PE[X_i]=0$ for all $1\leqslant i\leqslant n$. It is enough to prove that, for all $t>0$,
+%\begin{equation}
+%\label{eq:hoef}
+%\bP\left(\sum_{i=1}^n X_i>t\right)\leqslant \mathrm{exp}\left(\frac{-2t^2}{\sum_{i=1}^n(b_i-a_i)^2}\right)\eqsp.
+%\end{equation}
+%Equation \eqref{eq:hoef} implies Hoeffding's inequality by noting that $\bP(|\sum_{i=1}^n X_i|>t)\leq \bP(\sum_{i=1}^n X_i>t)+\bP(-\sum_{i=1}^n X_i>t)$ and by applying \eqref{eq:hoef} to $(X_i)_{1\leqslant i\leqslant n}$ and $(-X_i)_{1\leqslant i\leqslant n}$. Write, for any $s,t>0$,
+%$$
+%\P\left(\sum_{i=1}^n X_i>t\right)=\PP\left(\rme^{s \sum_{i=1}^n X_i}>\rme^{st}\right) < \rme^{-st}\pE\left[\rme^{s \sum_{i=1}^n X_i}\right]=\rme^{-st}\prod_{i=1}^{n}\pE\left[\rme^{s X_i}\right]\,.
+%$$
+%To bound the right hand side of this inequality, set, for all $1\leqslant i\leqslant n$, $\phi_i: s\mapsto \log(\pE[\rme^{s X_i}])$. Since $X_i$ is almost surely bounded,  $\phi_i$ is differentiable  and for all $s>0$, $\phi_i'(s)=\pE\lrb{X_i \rme^{s X_i}}/\pE\lrb{\rme^{s X_i}}$. Then, differentiating again,
+%\begin{align*}
+%\phi_i''(s)=\log''\lr{\PE\lrb{\rme^{s X_i}}}=\frac{\pE\lrb{X_i^2 \rme^{s X_i}}}{\pE\lrb{\rme^{s X_i}}} - \lr{\frac{\pE\lrb{X_i \rme^{s X_i}}}{\pE\lrb{\rme^{s X_i}}}}^2=\widetilde \pE_i[X^2]-(\widetilde \pE_i[X])^2 =\widetilde \PE_i[(X-\widetilde \pE_i[X])^2]\eqsp,
+%\end{align*}
+%where
+%$$
+%\widetilde \pE_i[Z]=\frac{\pE\lrb{Z \rme^{s X_i}}}{\pE\lrb{\rme^{s X_i}}}\eqsp.
+%$$
+%Then,
+%$$
+%\phi_i''(s) = \inf_{x \in [a_i,b_i]}\widetilde \PE_i[(X-x)^2] \leqslant \widetilde \pE_i\lrb{\lr{X-\frac{a_i+b_i}{2}}^2} \leqslant \lr{\frac{b_i-a_i}{2}}^2\eqsp.
+%$$
+%Finally, using Taylor's expansion,
+%\begin{equation}
+%\label{eq:hoeffding:loglaplace}
+%\phi_i(s)\leq \phi_i(0)+\phi_i'(0)+\frac{s^2}{2} \sup_{\alpha \in [0,1]} \phi_i''(\alpha s) \leq \frac{s^2(b_i-a_i)^2}{8}\eqsp.
+%\end{equation}
+%This implies
+%$$
+%\P\lr{\sum_{i=1}^n X_i>t} \leqslant \rme^{-st} \rme^{s^2 \sum_{i=1}^n  \frac{(b_i-a_i)^2}{8}} \eqsp.
+%$$
+%Choosing $s=4t/(\sum_{i=1}^n (b_i-a_i)^2)$ minimizes the right hand side and yields \eqref{eq:hoef}.
+%
+%
+%\end{proof}
+
+\end{document}
