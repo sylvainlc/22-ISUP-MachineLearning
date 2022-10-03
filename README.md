@@ -11,7 +11,7 @@ The course covers the basics of Machine Learning with theoretical and practical 
 
 ### Labs
 - [Elementary illustrations of Discriminant Analysis and Logistic regression](https://github.com/sylvainlc/22-ISUP-MachineLearning/tree/main/2-DiscriminantAnalysis/Lab_DiscriminantAnalysis_Logistic.html)
-- [Detailed lab on Logistic regression](https://github.com/sylvainlc/22-ISUP-MachineLearning/tree/main/3-Logistic/Lab_Logistic.html)
+- [Detailed lab on Logistic regression](https://github.com/sylvainlc/22-ISUP-MachineLearning/tree/main/4-Logistic/Lab_Logistic.ipynb)
 
 ### Exercises
 - [Bayes classifier and Excess risk](https://github.com/sylvainlc/22-ISUP-MachineLearning/tree/main/1-Introduction/Exercises/training_intro_learning_correction.pdf)
