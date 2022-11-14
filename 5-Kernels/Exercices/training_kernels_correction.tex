@@ -1,0 +1,252 @@
+\documentclass[a4paper,10pt,fleqn]{article}
+
+\usepackage{a4wide,amsmath,amsthm,amssymb,bbm,fancyhdr}
+\usepackage{ifthen,color,enumerate,comment,dsfont,pdfsync,framed,todonotes,enumitem}
+\newboolean{corrige}
+\setboolean{corrige}{true}
+
+\newcommand{\titre}[1]{\textbf{\textsc{#1}}}
+
+\RequirePackage[T1]{fontenc}
+
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{dsfont}
+\newcommand{\thisyear}{}
+\usepackage{enumitem}
+\newcommand{\eqsp}{\,}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\rset}{\ensuremath{\mathbb{R}}}
+\renewcommand{\P}{\ensuremath{\operatorname{P}}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\rme}{\ensuremath{\mathrm{e}}}
+\newcommand{\calH}{\ensuremath{\mathcal{H}}}
+\newcommand{\xset}{\ensuremath{\mathsf{X}}}
+\newcommand{\V}{\ensuremath{\mathbb{V}}}
+\newcommand{\Sb}{\ensuremath{\mathbb{S}}}
+\newcommand{\gaus}{\ensuremath{\mathcal{N}}}
+\newcommand{\HH}{\ensuremath{\mathcal{H}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\W}{\ensuremath{\mathcal{W}}}
+\newcommand{\X}{\ensuremath{\mathcal{X}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\dlim}{\ensuremath{\stackrel{\mathcal{L}}{\longrightarrow}}}
+\newcommand{\plim}{\ensuremath{\stackrel{\mathrm{P}}{\longrightarrow}}}
+\newcommand{\PP}{\ensuremath{\mathbb{P}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\pa}[1]{\left(#1\right)}
+\newcommand{\hatk}{\widehat K}
+\newcommand{\f}{\varphi}
+\newcommand{\Id}{\textsf{Id}}
+\newcommand{\bfU}{\mathbf{U}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfs}{\mathbf{\Sigma}}
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfV}{\mathbf{V}}
+\newcommand{\bfB}{\mathbf{B}}
+\newcommand{\bfI}{\mathbf{I}}
+\newcommand{\bfD}{\mathbf{D}}
+\newcommand{\bfK}{\mathbf{K}}
+\newcommand{\argmin}{\mathop{\textrm{argmin}}}
+\newcommand{\argmax}{\mathop{\textrm{argmax}}}
+\newcommand{\crit}{\mathop{\textrm{crit}}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\pc}{\pi_{\mathcal{C}}}
+
+
+% Style
+%\pagestyle{fancyplain}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+%\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\footnotesize {\sf
+%MAT4506 Introduction to Machine Learning  %/ \rightmark
+%}}}
+%\rhead[\fancyplain{}{\footnotesize {\sf MAT4506 Introduction to machine learning, \thisyear %/ \rightmark
+%}}]{\fancyplain{}{\thepage}}
+
+
+\newtheorem{theorem}{Theorem}
+
+%% Titre
+%\title{{\bf Machine learning}}
+%\author{{\em Logistic regression}}
+%\date{}
+
+
+\begin{document}
+
+\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
+ 2022-2023
+
+\noindent\hrulefill
+
+\begin{center}
+\textsc{kernels}
+\end{center}
+\hrulefill
+
+\medskip
+
+
+
+\section*{Warm-up}
+ Let $\calH$ be a RKHS associated with a positive definite kernel $k: \xset\times \xset \to \rset$.
+\begin{enumerate}
+\item  Prove that for all $(x,y)\in\xset\times \xset$, 
+$$
+|f(x)-f(y)|\leqslant \|f\|_{\calH}\|k(x,\cdot)-k(y,\cdot)\|_{\calH}\eqsp.
+$$
+
+\vspace{.2cm}
+
+{\em
+The proof follows from Cauchy-Schwarz inequality as, for all $(x,y)\in\xset^2$,
+$$
+|f(x)-f(y)|= |\langle f, k(x,\cdot)\rangle_{\mathcal{H}}-\langle f, k(x,\cdot)\rangle_{\mathcal{H}}| = |\langle f, k(x,\cdot)-k(y,\cdot)\rangle_{\mathcal{H}}|\eqsp.
+$$
+}
+
+\item  Prove that the kernel $k$ associated with $\calH$ is unique, i.e. if $\widetilde k$ is another potitive definite kernel satisfying the RKHS properties for $\calH$, then $k = \widetilde k$.
+
+\vspace{.2cm}
+
+{\em
+Write, for all $x\in\xset$,
+$$
+\|k(x,\cdot) - \widetilde k(x,\cdot)\|_{\calH}^2 = \langle k(x,\cdot) - \widetilde k(x,\cdot),k(x,\cdot) - \widetilde k(x,\cdot)\rangle = k(x,x) - \widetilde k(x,x) +  \widetilde k(x,x) - k(x,x)= 0\,.
+$$
+}
+
+\item  Prove that  for all $x\in\xset$, the function defined on $\calH$ by $\delta_x: f \mapsto f(x)$ is continuous.
+
+\vspace{.2cm}
+
+{\em
+
+}
+\end{enumerate}
+
+\section*{Kernel Ridge regression}
+Let $\mathcal{H}$ be a RKHS on $\mathcal{X}$ with kernel $k$.  We consider the regression model $Y_{i}=f^*(X_{i})+\xi_{i}$, $i\in\{1,\ldots,n\}$, with $\xi_{i}$, $1\leq i \leq n$,  independent centered noise with finite variance. The unknown function $f^*$ is estimated  by the solution 
+$\widehat f$  of the convex minimization problem
+$$\widehat f=\argmin_{f\in\mathcal{H}}\left\{{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2\right\}\,,$$
+with $\lambda>0$.
+
+	\subsection*{Solving Kernel ridge regression}
+\begin{enumerate}
+	%\item Prove that $\widehat f$ belongs to the linear span $V=\textsf{span}\{k(x_{i},.): i=1,\ldots,n\}$.
+	\item Check that $\widehat f:x\mapsto \sum_{j=1}^n\widehat \beta_{j}k(X_{j},x)$ where $\widehat \beta=(\widehat \beta_{1},\ldots,\widehat \beta_{n})^\top$ is solution to
+	$$ \widehat \beta=\argmin_{\beta\in\R^n}\left\{\|Y-K\beta\|^2+{\lambda} \beta^\top K\beta\right\}$$
+	with $K$ defined by $K=(k(X_{i},X_{j}))_{1\leq i,j\leq n}$. Comment on this result.
+
+\vspace{.2cm}
+
+{\em
+There exists $ \beta$ such that, for all $x$,
+$$
+			\widehat{f}(x) = \sum_{j=1}^n \beta_j k(X_j, x).
+$$
+This yields
+		\begin{align*}
+			{1\over n}\sum_{i=1}^n(Y_{i}-f(X_{i}))^2+{\lambda\over n} \|f\|_{\mathcal{H}}^2 
+			& = {1\over n}\sum_{i=1}^n(Y_{i}-\sum_{j=1}^n \beta_j k(X_j, X_i))^2+{\lambda\over n} \langle \sum_{j=1}^n \beta_j k(X_j, \cdot), \sum_{i=1}^n \beta_i k(X_i, \cdot) \rangle,
+		\end{align*}
+	which gives the result, since 
+$$
+		\langle \sum_{j=1}^n \beta_j k(X_j, \cdot), \sum_{i=1}^n \beta_i k(X_i, \cdot) \rangle  = \sum_{i,j=1}^n \beta_i \beta_j k(X_i, X_j) = \beta^\top K \beta.
+$$
+}
+	\item Assume that $K$ is non-singular. Give an explicit expression for $\widehat \beta$.
+
+\vspace{.2cm}
+
+{\em
+Write, for all $\beta$,
+$$
+			L(\beta) = \| Y - K \beta\|_2^2 + \lambda \beta^\top K \beta.
+$$
+		The gradient of $L$ is then given by
+		\begin{align*}
+			\nabla L (\beta) & = -2K^\top (Y - K \beta) + \lambda (K \beta + K^\top \beta)  \\
+			& = -2K(Y-K \beta) + 2 \lambda K \beta.
+	\end{align*}
+	The minimum $\widehat{\beta}$ of $L$ satisfies 
+	\begin{align*}
+		\Leftrightarrow & -2K(Y-K \widehat{\beta}) + 2 \lambda K \widehat{\beta} = 0\\
+		\Leftrightarrow & \widehat{\beta} = (K + \lambda I)^{-1} Y.
+	\end{align*}
+}
+\end{enumerate}
+
+\subsection*{Bias and variance}
+%The design $x_{1},\ldots,x_{n}$ is assumed to be fixed.
+We assume that $f^*\in\mathcal{H}$ and we write 
+$$f^*_{V}: x \mapsto \sum_{i=1}^n \beta_{i}^*k(X_{i},x)$$ 
+for the projection of $f^*$ onto the linear span $V=\textrm{span}\{k(X_{i},.): i=1,\ldots,n\}$, with respect to the Hilbert norm $\|\cdot\|_{\mathcal{H}}$. We write $K=\sum_{i=1}^n \lambda_{i}u_{i}u_{i}^\top$ for an eigenvalue decomposition of $K$.
+\begin{enumerate}
+	\item Check that 
+	$$K\widehat \beta= \sum_{i=1}^n {\lambda_{i}\over \lambda_{i}+\lambda} \langle Y, u_{i}\rangle u_{i}\quad\textrm{with}\quad Y=(Y_{1},\ldots,Y_{n})^\top\,.$$
+
+\vspace{.2cm}
+
+{\em
+Since $(u_i)_{1 \leq i \leq n}$ is an orthonormal basis of $\R^n$,   
+		\begin{align*}
+			K \widehat{\beta} & = \sum_{i=1}^n \langle K \widehat{\beta}, u_i\rangle u_i\\
+			& = \sum_{i=1}^n \langle K (K+\lambda I)^{-1}Y, u_i\rangle u_i\\
+			& = \sum_{i=1}^n \langle Y, (K+\lambda I)^{-1} K  u_i\rangle u_i\\
+			& = \sum_{i=1}^n \frac{\lambda_i }{\lambda + \lambda_i} \langle Y, u_i \rangle u_i.
+		\end{align*}
+}
+	\item Check that
+	$$\|\E[K\widehat \beta]-K\beta^*\|_2^2=\sum_{i=1}^n \left( \lambda\lambda_{i}\over \lambda_{i}+\lambda\right)^2 \langle \beta^*, u_{i}\rangle^2.$$
+
+\vspace{.2cm}
+
+{\em
+First, note that, for all $1 \leq i \leq n$, 
+		\begin{align*}
+			\langle \E [Y], u_i \rangle  = \langle K \beta^* , u_i\rangle 
+			= \langle \beta^* , K u_i\rangle = \lambda_i \langle \beta^* , u_i\rangle.
+		\end{align*}
+		Consequently, 
+		\begin{align*}
+			\| \E [K \widehat{\beta}] - K \beta^* \|^2 
+			& = \left\| \sum_{i=1}^n \frac{\lambda_i}{\lambda_i + \lambda} \langle \E [Y], u_i \rangle u_i - \sum_{i=1}^n \langle K \beta^*, u_i \rangle u_i  \right\|_2^2 \\
+			& = \left\| \sum_{i=1}^n \left( \frac{\lambda_i^2}{\lambda_i + \lambda} - \lambda_i \right)  \langle \beta^*, u_i \rangle u_i \right\|_2^2 \\
+			& = \sum_{i=1}^n \left( \frac{\lambda \lambda_i }{\lambda_i + \lambda}\right)^2 \langle \beta^*, u_i \rangle^2.
+		\end{align*}
+}
+	\item We assume henceforth that the $\varepsilon_{i}=Y_{i}-f^*(X_{i})$, $i=1,\ldots,n$, have a covariance $\mathbb{V}[\varepsilon]=\sigma^2I_{n}$.
+	Check that the covariance matrix of $K\widehat \beta$ is equal to
+	$$\mathbb{V}[K\widehat \beta]=\sum_{i=1}^n \left(\lambda_{i}\sigma\over \lambda_{i}+\lambda\right)^2u_{i}u_{i}^\top\,.$$
+
+\vspace{.2cm}
+
+{\em
+Since $\widehat{\beta} = (K + \lambda I)^{-1}y$, 
+		\begin{align*}
+			\mathbb{V}[K \widehat{\beta}] & = K \mathbb{V}[ (K + \lambda I)^{-1} Y ] K^\top\\
+			& = K (K + \lambda I)^{-1} \mathbb{V}[Y](K + \lambda I)^{-1} K\\
+			& = \sigma^2 K^2 (K + \lambda I)^{-2}\\
+			& = \sum_{i=1}^n \left( \frac{\lambda_i \sigma }{\lambda_i + \lambda}\right)^2 u_i u_i^\top,
+		\end{align*}
+	using the eigenvector decomposition of $K$.
+}
+	\item We define $\|f\|_{n}^2:= {1\over n}\sum_{i=1}^nf(X_{i})^2$. Prove that
+	$$\E\left[\|\widehat f - f^*\|^2_{n} \right]={1\over n}\sum_{i=1}^n \left( \lambda_{i}\over \lambda+\lambda_{i}\right)^2 \left(\lambda^2\langle \beta^*, u_{i}\rangle^2+\sigma^2\right).$$
+
+\vspace{.2cm}
+
+{\em
+
+}
+\end{enumerate}
+
+
+\end{document} 
