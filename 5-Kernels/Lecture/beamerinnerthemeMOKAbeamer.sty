@@ -1,0 +1,63 @@
+\mode<presentation>
+
+%\setbeamertemplate{background}{
+%  \begin{tikzpicture}
+%  \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+%  \fill[color=brown] (0,2) rectangle (\the\paperwidth,\the\paperheight);
+%  \fill[color=orange] (0,0) rectangle(2.95,1.9);
+%  \fill[color=blue!50!cyan!80] (3.05,0) rectangle(\the\paperwidth,1.9);
+%  \ifnum\thepage>1\relax%
+%   \fill[white,opacity=1] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+%   \fi
+%  \end{tikzpicture}
+%}
+
+% Title page
+
+\defbeamertemplate*{title page}{MOKAbeamer}[1][]
+{%
+    \vskip1.0cm%
+    \begin{beamercolorbox}[wd=12cm,center,sep=8pt,#1]{title}
+      \usebeamerfont{title}{\huge\inserttitle}\par%
+    \end{beamercolorbox}%
+    \vskip0.75cm%
+    \begin{beamercolorbox}[wd=\paperwidth,center,#1]{author}
+      \usebeamerfont{author}\insertauthor%
+    \end{beamercolorbox}
+         \vskip0.3cm%
+    \begin{beamercolorbox}[wd=\paperwidth,center,#1]{date}
+      \usebeamerfont{author}\insertdate%
+    \end{beamercolorbox}
+     \vskip1.5cm%
+%    \begin{beamercolorbox}[wd=12cm,center,#1]{date}
+%     %\hspace*{1cm} 
+%     \includegraphics[height=0.1\paperheight]{\logoupmc} 
+%     \hspace*{2cm} 
+%     \includegraphics[height=0.15\paperheight]{\logoisup}%\hspace*{1cm}
+%      %\includegraphics[height=0.1\paperheight]{\logocnrs}
+%    \end{beamercolorbox}
+         \vskip0.1cm%
+    %\begin{beamercolorbox}[wd=12cm,center,#1]{logoup}
+    %  \includegraphics[height=0.1\paperheight]{\logoepfl}\hspace*{3cm}
+    %  \includegraphics[height=0.1\paperheight]{\logoens}
+    %\end{beamercolorbox}
+
+  \vfill
+}
+
+
+
+%Style for theorems
+
+
+% Remarque: une * annule toutes les autres proprietes de l'objet
+
+
+% Items
+%\setbeamertemplate{items}[square]
+%\setbeamertemplate{sections/subsections in toc}[square]
+
+\mode
+<all>
+
+
