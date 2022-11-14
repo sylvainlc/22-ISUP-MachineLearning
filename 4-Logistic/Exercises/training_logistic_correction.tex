@@ -103,12 +103,22 @@ with $\beta^*\in\mathbb{R}^d$. In this case,  $\bP(Y=1|X)>1/2$ if and only if $\
 the frontier between $\left\{x\eqsp;\eqsp h_{*}(x)=1\right\}$ and $\left\{x\eqsp ;\eqsp h_{*}(x)=0\right\}$ is an hyperplane, with orthogonal
 direction $\beta^*$. 
 \begin{enumerate}
-
-	\item In this question only,  $\beta^* = (\beta_0,\beta_1)\in \rset^2$ and $X_i = (1,x_i)$ for all $1\leqslant i \leqslant n$.
-
+	\item In this question only,  $\beta^* = (\beta_0,\beta_1)\in \rset\times \rset_*$ and $X_i = (1,x_i)$ for all $1\leqslant i \leqslant n$.
 \begin{enumerate}
-\item Provide the value $x_*$ of $x_i$ such that $\mathbb{P}(Y_i=1 | X_i) = 1/2$. The logistic Bayes classifier is therefore defined by $h_*(X_i) = 1$ if and only if $x_i>x_*$. 
-\item Another classifier could be defined by choosing a threshold $\tilde p\in(0,1)$ and defining $\tilde h(X_i) = 1$ if and only if $\mathbb{P}(Y_i=1 | X_i) > \tilde p$.  Provide $\tilde x$ such that $\tilde h(X_i) = 1$ if and only if $x_i>\tilde x$. Explain a practical interest to choose $\tilde p < 1/2$.
+\item Provide the value $x_*$ of $x_i$ such that $\mathbb{P}(Y_i=1 | X_i) = 1/2$. 
+
+\vspace{.2cm}
+
+{\em
+By definition, $\mathbb{P}(Y_i=1 | X_i) = 1/2$ if and only if $\beta_0 + \beta_1x_i = 0$ i.e. if $x_i = -\beta_0/\beta_1$.
+}
+\item Another classifier could be defined by choosing a threshold $\tilde p\in(0,1)$ and defining $\tilde h(X_i) = 1$ if and only if $\mathbb{P}(Y_i=1 | X_i) > \tilde p$.  Provide $\tilde x$ such that $\mathbb{P}(Y_i=1 | X_i) = \tilde p$. Explain a practical interest to choose $\tilde p < 1/2$.
+
+\vspace{.2cm}
+
+{\em
+By definition, $\mathbb{P}(Y_i=1 | X_i) = \tilde p$ if and only if $(1-\tilde p)\mathrm{e}^{\beta_0+\beta_1x_i} = \tilde p$ i.e. if $\beta_0 + \beta_1x_i = \log(\tilde p / (1-\tilde p))$.
+}
 \end{enumerate}
 	\item The usual logistic regression classifier is defined by $h_n:x\mapsto 1$ is $x^\top\hat\beta_n >0$ and $0$ otherwise, where $\hat \beta_n$ is an estimator of $\beta$. Therefore $h_n(X) =1$ if and only if $\mathbb{P}(Y=1|X)>1/2$. Other classifiers can be defined by setting $h_n(X) =1$ if and only if $\mathbb{P}(Y=1|X)>p_*$ for a chosen $p_*\in(0,1)$. Two classifiers were built with $p_* = 0.5$ and $p_* = 0.2$, associate each classifier with its point on  ROC curve displayed above.
 
@@ -117,6 +127,12 @@ direction $\beta^*$.
 \centering
 \includegraphics[scale = .45]{roc.png}
 \end{figure}
+
+\vspace{.2cm}
+
+{\em
+The red dot corresponds to $p_* = 0.2$ as decreasing $p_*$ leads to more individual classified in group 1 which can only increase the true positive rate and the false positive rate.
+}
 	
 \end{enumerate}
 
@@ -128,17 +144,39 @@ $$
 where $\{(X_i,Y_i)\}_{1\leqslant i\leqslant n}$ are i.i.d. observations with the same law as $(X,Y)$. 
 
 \begin{enumerate}
-\item Explain the construction of $\mathbb{P}_{\theta}(Y_i = k | X_i)$, $1\leqslant i\leqslant n$ for a softmax regression model with parameters $\omega_m\in\mathbb{R}^d$ for $1\leqslant m  \leqslant M$.
+\item Explain the construction of $\mathbb{P}_{\theta}(Y_i = k | X_i)$, $1\leqslant i\leqslant n$ for a softmax regression model with parameters $\omega_m\in\mathbb{R}^d$ for $1\leqslant m  \leqslant M$. In this case, $\theta = \{\omega_1,\ldots,\omega_M\}$.
+
+\vspace{.2cm}
+
+{\em
+In a softmax regression setting, we assume, for $1\leqslant m  \leqslant M$ and $1\leqslant i  \leqslant n$, that
+$$
+\mathbb{P}_{\theta}(Y_i = k | X_i) = \frac{\mathrm{e}^{\omega_k^\top X_i}}{\sum_{\ell=1}^{n}\mathrm{e}^{\omega_\ell^\top X_i}}\eqsp.
+$$
+}
 \item In the setting  of the softmax regression function, compute $\theta \mapsto \nabla_\theta \ell^{\mathrm{multi}}_n(\theta)$.
+
+\vspace{.2cm}
+
+{\em
+It is enough to compute the partial derivative of $\theta \mapsto\log \mathbb{P}_{\theta}(Y_i = k | X_i)$ with respect to each $\omega_j$, $1\leqslant j\leqslant M$. For all $1\leqslant k\leqslant M$,
+$$
+\log \mathbb{P}_{\theta}(Y_i = k | X_i) = \omega_k^\top X_i - \log \left(\sum_{\ell=1}^{n}\mathrm{e}^{\omega_\ell^\top X_i}\right)\eqsp.
+$$
+Therefore, for all $1\leqslant j\leqslant M$,
+$$
+\partial_{\omega_j}\log \mathbb{P}_{\theta}(Y_i = k | X_i) = X_i \1_{j=k} - \frac{\mathrm{e}^{\omega_j^\top X_i}}{\sum_{\ell=1}^{n}\mathrm{e}^{\omega_\ell^\top X_i}}X_i\eqsp.
+$$
+}
 \end{enumerate}
 
 
 \section{Maximum likelihood estimation}
-The unknown parameter $\beta^*$ may be estimated  by maximizing the conditional likelihood of $Y$ given $X$
+The unknown parameter $\beta^*$ may be estimated  by maximizing the conditional likelihood of the observations given the input data:
 $$
 \widehat \beta_n\in\mathrm{argmax}_{\beta\in\mathbb{R}^{d}}
 \prod_{i=1}^n \left[ \left( \frac{\exp\left(\langle
-	\beta,x_{i}\rangle\right)}{1+\exp\left(\langle
+	\beta,_{i}\rangle\right)}{1+\exp\left(\langle
 	\beta,x_{i}\rangle\right)}\right)^{Y_{i}}
 \left(\frac{1}{1+\exp\left(\langle
 	\beta,x_{i}\rangle\right)}\right)^{1- Y_{i}} \right] ,
@@ -147,18 +185,63 @@ to define the empirical classifier
 $$
 \widehat h_{n}: x \mapsto \1_{\langle \widehat\beta_n,x\rangle>0}\eqsp.
 $$
-In the following, $\{(x_i,Y_i)\}_{1\leqslant i\leqslant n}$ are assumed to be i.i.d. with the same distribution as $(X,Y)$.
+%In the following, $\{(x_i,Y_i)\}_{1\leqslant i\leqslant n}$ are assumed to be i.i.d. with the same distribution as $(X,Y)$.
 \begin{enumerate}
 \item Compute the gradient and the Hessian $H_{n}$ of
 $$
 \ell_{n}:\beta \mapsto -\sum_{i=1}^n\left[Y_{i}\langle x_{i},\beta\rangle-\log(1+\exp(\langle x_{i},\beta\rangle))\right]\eqsp.
 $$
 What can be said about the function $\ell_{n}$ when for all $\beta\in\rset^d$, $H_{n}(\beta)$ is nonsingular? This assumption is supposed to hold in the following questions.
+
+\vspace{.2cm}
+
+{\em
+Since for all $u\in\rset^d$, $\nabla_{\beta} \langle u, \beta \rangle = u$, 
+\[
+\nabla \ell_n(\beta) = - \sum_{i=1}^n Y_i x_i + \sum_{i=1}^n \frac{\exp(\langle x_{i},\beta\rangle)}{1  + \exp(\langle x_{i},\beta\rangle)} x_i\eqsp.
+\]
+On the other hand, for all $1\leqslant i \leqslant n$ and all $1 \leqslant j \leqslant d$,
+\[
+\partial_j \left( \frac{\exp(\langle x_{i},\beta\rangle)}{1  + \exp(\langle x_{i},\beta\rangle)} x_i \right) = \frac{\exp(\langle x_{i},\beta\rangle)}{(1  + \exp(\langle x_{i},\beta\rangle))^2} x_{ij}x_i\eqsp,
+\]
+where $x_{ij}$ is the $j$th component of $x_i$. Then
+\[
+\big(H_n(\beta)\big)_{\ell j} = \sum_{i=1}^n \frac{\exp(\langle x_{i},\beta\rangle)}{(1  + \exp(\langle x_{i},\beta\rangle))^2} x_{ij}x_{i \ell}\eqsp,
+\]
+that is,
+\[
+H_n(\beta) = \sum_{i=1}^n \frac{\exp(\langle x_{i},\beta\rangle)}{(1  + \exp(\langle x_{i},\beta\rangle))^2} x_{i} x_{i}^\top\eqsp.
+\]
+%Note that $H_n(\beta)$ is the Gram matrix 
+%\[
+%H_n(\beta)   = \langle \tilde{x}_i, \tilde{x}_j \rangle,
+%\]
+%where 
+%\[
+%\tilde{x}_i = x_i \frac{\exp(\langle x_{i},\beta\rangle/2)}{1  + \exp(\langle x_{i},\beta\rangle)}\eqsp.
+%\]
+$H_n(\beta)$ is a semi positive definite matrix, which implies that $\beta \mapsto \ell_n(\beta)$ is convex. If we assume that $H_n$ is nonsingular, $\ell_n$  is strictly convex.
+}
 \item Prove that there exists $\widetilde \beta_n\in\rset^d$ such that $\|\widetilde \beta_n-\beta^*\|\leq \|\widehat \beta_n-\beta^*\|$ and
 $$
 \widehat \beta_n-\beta^*=-H_{n}(\widetilde \beta_n)^{-1}\nabla \ell_{n}(\beta^*)\eqsp.
 $$
+
+\vspace{.2cm}
+
+{\em
+Using a Taylor expansion between $\beta^{\star}$ and $\widehat{\beta}_n$, there exists $\tilde{\beta}_n \in B(\beta^{\star}, \|\widehat{\beta}_n - \beta^{\star}\|)$ such that 
+\[
+\nabla \ell_n(\widehat{\beta}_n) = \nabla \ell_n(\beta^{\star}) + H_n(\tilde{\beta}_n) ( \hat{\beta}_n - \beta^{\star})\eqsp. 
+\]
+By definition, $\nabla\ell_n(\widehat{\beta}_n) = 0$. Therefore, 
+\[
+\widehat{\beta}_n - \beta^{\star} = - H_n(\tilde{\beta}_n)^{-1} \nabla \ell_n(\beta^{\star})\eqsp,
+\]
+where $H_n(\tilde{\beta}_n)^{-1}$ exists since $H_n(\beta)$ is assumed to be non-singular for all $\beta$.
+}
 \end{enumerate}
+
 In the following it is assumed that the $(x_{i})_{1\leqslant i\leqslant n}$ are uniformly bounded, $\widehat \beta_n\to \beta^*$ a.s. and that there exists a continuous and nonsingular function $H$ such that $n^{-1}H_{n}(\beta)$ converges to $H(\beta)$, uniformly in a ball around $\beta^*$.
 \begin{enumerate}  \setcounter{enumi}{2}
 \item Define for all $1\leqslant i \leqslant n$, $p_{i}(\beta)=e^{\langle x_{i},\beta\rangle}/ \left(1+e^{\langle x_{i},\beta\rangle}\right)$. Check that
@@ -166,8 +249,75 @@ In the following it is assumed that the $(x_{i})_{1\leqslant i\leqslant n}$ are 
 \bE \left[e^{-n^{-1/2}\langle t,\nabla\ell_{n}(\beta^*)\rangle}\right]& =\prod_{i=1}^n \left({1-p_{i}(\beta^*)+p_{i}(\beta^*)e^{\langle t,x_{i}\rangle/\sqrt{n}}}\right) e^{-p_{i}(\beta^*)\langle t,x_{i}\rangle/\sqrt{n}}\eqsp, \\
 &=\exp\left(\frac{1}{2}t^T\left(n^{-1}H_{n}(\beta^*)\right)t+O(n^{-1/2})\right)\eqsp.
 \end{align*}
+
+\vspace{.2cm}
+
+{\em
+For all $t\in\rset^d$,
+\begin{align*}
+ \bE \left[ \exp\left( - \frac{1}{\sqrt{n}} \langle t, \nabla \ell_n(\beta^{\star}) \rangle \right) \right] = & \prod_{i=1}^n \bE \left[ \exp\left( \frac{1}{\sqrt{n}} (Y_i - p_i(\beta^{\star}) )\langle x_i, t \rangle \right) \right]\eqsp,\\
+= & \prod_{i=1}^n \left[ \left( 1 - p_i(\beta^{\star}) +  p_i(\beta^{\star}) \exp\left( \frac{1}{\sqrt{n}} \langle x_i, t \rangle \right) \right) \exp \left( - \frac{ p_i(\beta^{\star})}{\sqrt{n}} \langle x_i, t \rangle \right) \right]\eqsp.
+\end{align*}
+Note that 
+\[
+\log \left( 1 - p_i + p_i \exp(u/\sqrt{n}) \right) =  \log\left( 1 + p_i \frac{u}{\sqrt{n}} + p_i \frac{u^2}{2n} + \textrm{O} \left( n^{-3/2} \right)\right)\\
+ = p_i \frac{u}{\sqrt{n}} + \frac{p_i u^2}{2n} - \frac{p_i^2 u^2}{2n} + \textrm{O} \left( n^{-3/2} \right)\eqsp.
+\]
+Finally, 
+\[
+\bE \left[ \exp\left( - \frac{1}{\sqrt{n}} \langle t, \nabla \ell_n(\beta^{\star}) \rangle \right) \right] = 
+\exp\Bigg( \frac{1}{2n} \underbrace{\sum_{i=1}^n p_i(\beta^{\star}) (1 - p_i(\beta^{\star})) \langle t, x_i \rangle^2}_{t^T H_n(\beta^{\star}) t} + \textrm{O}(n^{-1/2})\Bigg)\eqsp.
+\]
+}
 \item What is the asymptotic distribution of $-n^{-1/2}\nabla\ell_{n}(\beta^*)$ and of $\sqrt{n}(\widehat \beta_n-\beta^*)$?
+
+\vspace{.2cm}
+
+{\em
+ Recall that for a multivariate random variable X, the moment-generating function is defined as 
+$$
+t\mapsto M_X(t) = \bE \left[ \exp\left( \langle t, X \rangle \right) \right].
+$$
+In particular, we know that if $X \sim \mathcal{N}(\mu, \Sigma)$ then 
+$$
+t\mapsto M_X(t) = \bE \left[ \exp \left( \langle t, \mu + \frac{1}{2} \Sigma t \rangle \right) \right].
+$$
+If, for all $t$, $M_{X_n}(t) \to M_X(t)$ then $X_n$ converges to $X$ in distribution. 
+
+For all $t\in\rset^d$, since $n^{-1} H_n(\beta^{\star}) \to_{n\to \infty} H(\beta^{\star})$,
+\[
+\bE \left[ \exp\left( - \frac{1}{\sqrt{n}} \langle t, \nabla \ell_n(\beta^{\star}) \rangle \right) \right] \to_{n\to \infty}  \exp\Bigg( \frac{1}{2} t^T H(\beta^{\star}) t \Bigg)\eqsp.
+\]
+Therefore, $-\nabla \ell_n(\beta^{\star}) / \sqrt{n}$ converges in distribution to  $Z \sim \mathcal{N}(0, H(\beta^{\star}))$. On the other hand, 
+$$
+\sqrt{n} (\widehat{\beta}_n - \beta^{\star}) = - \left( \frac{1}{n} H_n(\tilde{\beta}_n) \right)^{-1} \frac{1}{\sqrt{n}} \nabla \ell_n(\beta^{\star})\eqsp.
+$$
+As for all $n\geqslant 1$, $\tilde{\beta}_n \in B(\beta^{\star}, \|\widehat{\beta}_n - \beta^{\star}\|)$, $\tilde{\beta}_n$ converges to  $\beta^{\star}$ almost surely as $n$ grows to infinity. Hence, almost surely
+$$
+\left( \frac{1}{n} H_n(\tilde{\beta}_n) \right)^{-1} \to H(\beta^{\star})^{-1}
+$$
+and, by Slutsky lemma, $\sqrt{n} (\widehat{\beta}_n - \beta^{\star})$  converges in distribution to  $Z \sim \mathcal{N}(0,  H(\beta^{\star})^{-1})$.
+}
+
 \item For all $1\leqslant j \leqslant d$ and all $\alpha\in(0,1)$, propose a confidence interval $\mathcal{I}_{n,\alpha}$ such that $\beta^*_{j}\in \mathcal{I}_{n,\alpha}$ with asymptotic probability $1-\alpha$.
+
+\vspace{.2cm}
+
+{\em
+According to the last question, $\sqrt{n} ( \widehat{\beta}_j - \beta^{\star}_j) $ converges in distribution to a centered Gaussian random variable with variance $(H(\beta^{\star})^{-1})_{jj}$. On the other hand, almost surely,
+$$
+\widehat{\sigma}_{n,j}^2 = (n H_n(\widehat{\beta}_n)^{-1})_{jj} \to_{n\to \infty} (H(\beta^{\star})^{-1})_{jj}\eqsp.
+$$
+Then, 
+$$
+\sqrt{\frac{n}{\widehat{\sigma}_{n,j}^2}} (\widehat{\beta}_{n,j} - \beta^{\star}_j ) \to_{n\to \infty} \mathcal{N}(0,1).
+$$
+An asymptotic confidence interval $\mathcal{I}_{n,\alpha}$ of level $1-\alpha$ is then given by
+$$
+\mathcal{I}_{n,\alpha} = \left[ \widehat{\beta}_{n,j} - z_{1-\alpha/2} \sqrt{\frac{\widehat{\sigma}^2_{n,j}}{n}}\eqsp,\eqsp \widehat{\beta}_{n,j} + z_{1-\alpha/2} \sqrt{\frac{\widehat{\sigma}^2_{n,j}}{n}}  \right],
+$$
+where $z_{1- \alpha/2}$ is the quantile of order $1- \alpha/2$ of $\mathcal{N}(0, 1)$.
+}
 \end{enumerate}
 
 
