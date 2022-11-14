@@ -89,7 +89,7 @@
 \titlepage
 \end{frame}
 
-\begin{frame}{Today}
+\begin{frame}{}
 \setcounter{tocdepth}{1}
 \tableofcontents
 \end{frame}
@@ -212,191 +212,207 @@ $\rightharpoondown$ Design  nonlinear classification rules ? (\alert{kernels, ne
 \begin{itemize}
 \item One of the most widely used classification algorithm.
 
-\item Logistic model is the "brother" of the linear model in the context of binary classification 
-($\Yc = \{-1, 1\}$).
+\vspace{.2cm}
 
-\item We want to explain the label $Y$ based on $X$, we want to
-"regress" $Y$ on $X$.
+\item Logistic model is \alert{generalized linear model} of the linear model in the context of binary classification 
+($\Yc = \{0, 1\}$).
 
-\item It \structure{models the distribution of $Y|X$}.
-For $y\in \{-1, 1\}$
+\vspace{.2cm}
+
+\item It \structure{models the distribution of $Y$ given $X$}.
+For $y\in \{0, 1\}$
 $$
-\P\left(  Y = 1 | X =x \right) = \sigma \left( x^T w +b \right)
+\P\left(  Y = 1 | X \right) = \sigma \left( X^\top w +b \right)
 $$
-where $w\in \R^d$ is a vector of model weights and $b\in\R$ is the
+where $\sigma: z\mapsto (1+\mathrm{e}^{-z})^{-1}$,  $w\in \R^d$ is a vector of model weights and $b\in\R$ is the
 intercept, and where $\sigma$ is the \structure{sigmoid} function:
 \end{itemize}
-\begin{minipage}{0.45\textwidth}
-$$
-\sigma(z) = \frac{1}{1+e^{-z}}. 
-$$
-\end{minipage}
-\begin{minipage}{0.35\textwidth}
-\begin{figure}[H]
-\begin{center}
-\includegraphics[height=2cm]{./sigmoid}
-%\caption{The sigmoid function}
-\end{center}
-\end{figure}
-\end{minipage}
+%\begin{minipage}{0.45\textwidth}
+%$$
+%\sigma(z) = \frac{1}{1+e^{-z}}. 
+%$$
+%\end{minipage}
+%\begin{minipage}{0.35\textwidth}
+%\begin{figure}[H]
+%\begin{center}
+%\includegraphics[height=2cm]{./sigmoid}
+%%\caption{The sigmoid function}
+%\end{center}
+%\end{figure}
+%\end{minipage}
 \end{frame}
 
 
 
 \begin{frame}{Some comments on the logistic model}
 \begin{itemize}
-\item The sigmoid choice really is a choice. It is a modelling choice.
-\item It's a way to map $\R \to [0, 1]$ (we want to model a probability).
+\item The sigmoid is a modelling choice to map $\R \to [0, 1]$ (to model a probability).
 \item We could also consider
 $$
-\P\left(  Y = 1 | X =x \right) = F \left( x^T w +b \right)
+\P\left(  Y = 1 | X\right) = F \left( X^\top w +b \right)
 $$
-for any distribution function $F$. 
+for any \alert{distribution function $F$}. 
 \item Another popular choice is the
 Gaussian distribution
 $$ F(z) = \P(\Nc(0,1) \leq  z),
 $$
-which leads to another loss called {\color{PineGreen}probit}.
+which leads to the \alert{probit model}.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{The logistic model}
 
 \begin{itemize}
-\item In the case of the sigmoid,
-one has
+\item In the case of the sigmoid (\alert{logistic regression}),
 \begin{align*}
 \P\left(  Y = 1 | X \right) &= \frac{\exp (b+ w^\top X)}{1+ \exp(b+ w^\top X)} = \frac{1}{1+\exp(-(b+ w^\top X)) } \\
-\P\left(  Y = - 1 | X \right) &=  \frac{1}{1+\exp(b+ w^\top X) }
+\P\left(  Y = 0 | X \right) &=  \frac{1}{1+\exp(b+ w^\top X) }
 \end{align*}
 
-\item However, the sigmoid choice has the following nice interpretation: an easy computation leads to
+\vspace{.3cm}
+
+\item \structure{Log-odd ratio}:
 $$
-\log \left( \frac{\P\left(  Y = 1 | X \right)}{\P\left(  Y = -1 | X  \right)} \right) = X^\top w +b.
+\log \left( \frac{\P\left(  Y = 1 | X \right)}{\P\left(  Y = 0| X  \right)} \right) = X^\top w +b.
 $$
-\item This quantity is called the \structure{log-odd ratio}.
+
 \end{itemize}
 \end{frame}
 
-\begin{frame}{The logistic model}
-
-\begin{itemize}
-\item Therefore, this model makes the assumption that \structure{(the logit transformation of) the probability $p(X)=\P\left(  Y = 1 | X \right)$  is linear}:
-$$
-\mathrm{logit} (p(X)) := \log\left( \frac{p(X)}{1-p(X)} \right) = X^\top w + b.
-$$
-\pause
-\item Note that 
-\begin{block}{}
-$$
-\P\left(  Y = 1 | X \right) \geq \P\left(  Y = -1 | X \right)
-$$
-\underline{if and only if}
-$$
-X^\top w + b \geq 0.
-$$
-\end{block}
-\pause
-This is a \structure{linear classification rule}, linear w.r.t.\ the considered features $x$!
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{The logistic "regression"}
-\begin{theorem}
-%	Let us consider that we have $C=2$ classes.
-%	Then, under assumption that logit-transformation is linear, we have
-%	$$
-%		(b^\star, w^\star) \in \argmin_{(b, w)\in\R^\times\R^d} \E \left[\log\left( 1 + \exp(-Y(b + w^\top X)) \right) \right].
-%	$$
-%	Let
-%	$$
-%		(\bar b, \bar w) \in \argmin_{(b, w)\in\R^\times\R^d} \E \left[\log\left( 1 + \exp(-Y(b + w^\top X)) \right) \right].
-%	$$
-%	Then, under assumption that the logit-transformation is linear,
-%	a Bayes classifier is
+%\begin{frame}{The logistic model}
+%
+%\begin{itemize}
+%\item Therefore, this model makes the assumption that \structure{(the logit transformation of) the probability $p(X)=\P\left(  Y = 1 | X \right)$  is linear}:
+%$$
+%\mathrm{logit} (p(X)) := \log\left( \frac{p(X)}{1-p(X)} \right) = X^\top w + b.
+%$$
+%\pause
+%\item Note that 
+%\begin{block}{}
+%$$
+%\P\left(  Y = 1 | X \right) \geq \P\left(  Y = 0 | X \right)
+%$$
+%\underline{if and only if}
+%$$
+%X^\top w + b \geq 0.
+%$$
+%\end{block}
+%\pause
+%This is a \structure{linear classification rule}, linear w.r.t.\ the considered features $x$!
+%\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}{The logistic "regression"}
+%\begin{theorem}
+%%	Let us consider that we have $C=2$ classes.
+%%	Then, under assumption that logit-transformation is linear, we have
+%%	$$
+%%		(b^\star, w^\star) \in \argmin_{(b, w)\in\R^\times\R^d} \E \left[\log\left( 1 + \exp(-Y(b + w^\top X)) \right) \right].
+%%	$$
+%%	Let
+%%	$$
+%%		(\bar b, \bar w) \in \argmin_{(b, w)\in\R^\times\R^d} \E \left[\log\left( 1 + \exp(-Y(b + w^\top X)) \right) \right].
+%%	$$
+%%	Then, under assumption that the logit-transformation is linear,
+%%	a Bayes classifier is
+%%	$$
+%%		g^\star \colon x \in \R^d \mapsto
+%%		\left\{ \begin{array}{ll}
+%%			+1 & \text{if } \bar b + \bar w ^\top x > 0 \\
+%%			-1 & \text{otherwise}.
+%%		\end{array} \right.
+%%	$$
+%	Consider that the logit-transformation is linear with parameters $(b^\star, w^\star)$:
+%$$
+%\mathrm{logit} (p(X)) := \log\left( \frac{p(X)}{1-p(X)} \right) = f^\star(X) =  X^\top w^\star + b^\star.
+%$$
+%	%Let $f^\star \colon x \in \R^d \mapsto b^\star + (w^\star) ^\top x$.
+%	Then \alert{$f^\star$ is a minimizer of the risk}:
+%	$f \mapsto \E \left[\log\left( 1 + \exp(-Yf(X)) \right) \right]$ over all affine functions and
 %	$$
 %		g^\star \colon x \in \R^d \mapsto
 %		\left\{ \begin{array}{ll}
-%			+1 & \text{if } \bar b + \bar w ^\top x > 0 \\
-%			-1 & \text{otherwise}.
+%			1 & \text{if } f^\star(x) > 0 \\
+%			0 & \text{otherwise}
 %		\end{array} \right.
 %	$$
-	Let us consider that $C=2$ and that the logit-transformation is linear with parameters $(b^\star, w^\star)$.
-	Let $f^\star \colon x \in \R^d \mapsto b^\star + (w^\star) ^\top x$.
+%	is a Bayes classifier.
+%\end{theorem}
+%\centering
+%{\color{Vert} Proof on blackboard !}
+%\end{frame}
 
-	Then $f^\star$ is a minimizer of the risk functional
-	$f \mapsto \E \left[\log\left( 1 + \exp(-Yf(X)) \right) \right]$ over all affine functions and
-	$$
-		g^\star \colon x \in \R^d \mapsto
-		\left\{ \begin{array}{ll}
-			+1 & \text{if } f^\star(x) > 0 \\
-			-1 & \text{otherwise}
-		\end{array} \right.
-	$$
-	is a Bayes classifier.
-\end{theorem}
-\end{frame}
+%\begin{frame}[allowframebreaks]{Proof}
+%
+%	The function $g^\star$  is a Bayes classifier, since $f^\star(x) > 0$ if and only if $\P(Y=1 | X) > \P(Y=0 | X)$. Without loss of generality, we consider that $b$ vanishes and we denote $\ell \colon (x, y, w) \mapsto \log\left( 1 + \exp(-y w^\top x) \right)$.
+%	Then, $\forall (x, y) \in \R^d \times \R$,
+%	$$
+%		\nabla_{w}{\ell}(x, y, w)
+%		= - \frac{y}{1+\exp(y w^\top x)} x
+%		= - \frac{y \exp(-y w^\top x)}{1+\exp(-y w^\top x)} x.
+%	$$
+%	Thus, since $\nabla_{w}{\ell}$ is Lebesgue-measurable, we can switch derivative and integral, leading to:
+%	\begin{align*}
+%		\nabla_w & {\E(\ell(X, Y, w)|X)}\\
+%		&= \P(Y=+1 | X) \nabla_w{\psi}(X, 1, w) + \P(Y=-1 | X) \nabla_w{\psi}(X, -1, w) \\
+%		&= - \frac{\exp((w^\star)^\top x)}{1+\exp((w^\star)^\top x)} \frac{1}{1+\exp(w^\top X)} X \\
+%		&\quad +
+%		\frac{1}{1+\exp((w^\star)^\top x)} \frac{\exp(w^\top X)}{1+\exp(w^\top X)} X.
+%	\end{align*}
+%	Thus, $\nabla_{w}{\E(\ell(X, Y, w^\star)|X)} = 0$ and $\nabla_{w}{\E(\ell(X, Y, w^\star))} = 0$.
+%	Since $\ell$ is convex in $w$, this proves that $w^\star$ is a minimizer of $\E(\ell(X, Y, \cdot))$.
+%\end{frame}
 
-\begin{frame}[allowframebreaks]{Proof}
-
-	First, let us remark that $g^\star$, as previously defined, is a Bayes classifier, since $f^\star(x) > 0$ if and only if $\P(Y=+1 | X=x) > \P(Y=-1 | X=x)$.
-
-	Second, without loss of generality, we consider that $b$ vanishes and we denote $\ell \colon (x, y, w) \mapsto \log\left( 1 + \exp(-y w^\top x) \right)$.
-	Then, $\forall (x, y) \in \R^d \times \R$,
-	$$
-		\nabla_{w}{\ell}(x, y, w)
-		= - \frac{y}{1+\exp(y w^\top x)} x
-		= - \frac{y \exp(-y w^\top x)}{1+\exp(-y w^\top x)} x.
-	$$
-	Thus, since $\nabla_{w}{\ell}$ is Lebesgue-measurable, we can switch derivative and integral, leading to:
-	\begin{align*}
-		\nabla_w & {\E(\ell(X, Y, w)|X)}\\
-		&= \P(Y=+1 | X) \nabla_w{\psi}(X, 1, w) + \P(Y=-1 | X) \nabla_w{\psi}(X, -1, w) \\
-		&= - \frac{\exp((w^\star)^\top x)}{1+\exp((w^\star)^\top x)} \frac{1}{1+\exp(w^\top X)} X \\
-		&\quad +
-		\frac{1}{1+\exp((w^\star)^\top x)} \frac{\exp(w^\top X)}{1+\exp(w^\top X)} X.
-	\end{align*}
-	Thus, $\nabla_{w}{\E(\ell(X, Y, w^\star)|X)} = 0$ and $\nabla_{w}{\E(\ell(X, Y, w^\star))} = 0$.
-	Since $\ell$ is convex in $w$, this proves that $w^\star$ is a minimizer of $\E(\ell(X, Y, \cdot))$.
-\end{frame}
-
-\begin{frame}{Estimation of $w$ and $b$}
-
-\begin{itemize}
-\item We have a model for the conditional law of $Y$ given $X$.
-\item Data $(X_i , Y_i)$ is assumed i.i.d with the same distribution as $(X,Y)$.
-\item Compute estimators $\hat{w}$ and $\hat{b}$ by maximum likelihood estimation
-\item Or equivalently, minimize the minus log-likelihood.
-\item  More generally, when a model is used
-\begin{center}
-Goodness-of-fit = -log likelihood
-\end{center}
-log is used mainly since averages are easier to study (and compute) than products.
-\end{itemize}  
-\end{frame}
-
-\begin{frame}{Logistic regression - likelihood function}
-
-$\rightharpoondown$   $\{(X_i,Y_i)\}_{1\leqslant i\leqslant n}$ are \alert{i.i.d. with the same distribution as $(X,Y)$}.
-
-{\bf\structure{Likelihood}}
-
-\begin{align*}
- \prod_{i=1}^n \P(Y_i | X_i) &= \prod_{i=1}^n \sigma(\langle w,X_i \rangle + b)^{Y_i} \big(1 - 
-\sigma(\langle w,X_i \rangle + b) \big)^{1 - Y_i}\,, \\
-& = \prod_{i=1}^n \sigma(\langle w,x_i \rangle + b)^{Y_i} 
-\sigma(-\langle w,X_i \rangle - b)^{1 - Y_i}
-\end{align*}
-\smallskip
-
-and the \alert{normalized negative loglikelihood} is 
-\smallskip
-
-\begin{equation*}
-f(w,b) = \frac{1}{n}\sum_{i=1}^n \ell(Y_i, \langle w,X_i \rangle + b)\,.
-\end{equation*}
-\end{frame}
+%\begin{frame}{Estimation of $w$ and $b$}
+%
+% \alert{Parametric model} for the conditional law of $Y$ given $X$: $\P_{w,b}(Y|X)$.
+%
+%\vspace{.2cm}
+%
+%Data $(X_i , Y_i)_{1\leq i \leq n}$  i.i.d with the same distribution as $(X,Y)$.
+%
+%\vspace{.2cm}
+%
+%Compute estimators $\hat{w}$ and $\hat{b}$ by maximum likelihood estimation.
+%
+%\vspace{.2cm}
+%
+%Or equivalently, \alert{minimize the minus log-likelihood}: 
+%$$
+%(w,b)\mapsto -n^{-1}\log \P_{w,b}(Y_{1:n}|X_{1:n}).
+%$$ 
+%More generally, when a model is used
+%\begin{center}
+%Goodness-of-fit = -log likelihood
+%\end{center}
+%The log function is used mainly since averages are easier to study (and compute) than products.
+%\end{frame}
+%
+%\begin{frame}{Logistic regression - likelihood function}
+%
+%$\rightharpoondown$   $\{(X_i,Y_i)\}_{1\leqslant i\leqslant n}$ are \alert{i.i.d. with the same distribution as $(X,Y)$}.
+%
+%\vspace{.3cm}
+%
+%
+%{\bf\structure{Likelihood:}}
+%
+%\begin{align*}
+% \prod_{i=1}^n \P(Y_i | X_i) &= \prod_{i=1}^n \sigma(\langle w,X_i \rangle + b)^{Y_i} \big(1 - 
+%\sigma(\langle w,X_i \rangle + b) \big)^{1 - Y_i}\,, \\
+%& = \prod_{i=1}^n \sigma(\langle w,x_i \rangle + b)^{Y_i} 
+%\sigma(-\langle w,X_i \rangle - b)^{1 - Y_i}
+%\end{align*}
+%\smallskip
+%
+%and the \alert{normalized negative loglikelihood} is 
+%\smallskip
+%
+%\begin{equation*}
+%f(w,b) = \frac{1}{n}\sum_{i=1}^n \ell(Y_i, \langle w,X_i \rangle + b)\,.
+%\end{equation*}
+%\end{frame}
 
 
 \begin{frame}{Logistic regression - likelihood function}
@@ -449,58 +465,58 @@ yields
 %\item Efficient convex optimization algorithms (more on that later)
 %\end{itemize}
 %\end{frame}
-
-\begin{frame}{But...}
-\begin{remark}
-However, if there exists a separating hyperplane for $(X_i,Y_i)_{1\leq i \leq n}$ i.e.\ if there exists $(b_0,w_0)$ such that
-$$
-\forall i=1,\hdots , n , \qquad Y_i (w_0^T X_i +b_0) >0,
-$$
-then there is no minimizer of the negative log-likelihood! 
-\end{remark}
-\end{frame}
-
-\begin{frame}{Summary: LDA/QDA/Logistic reg}
-
-
- \textbf{Logistic regression} directly models the parameter of the distribution of \structure{$Y$ given $X$}.
-
-\begin{itemize}
-\item The \structure{logit transformation of the probability} $p(X)=\P\left(  Y = 1 | X \right)$  is \alert{linear}:
-$$
-\mathrm{logit} (p(X)) := \log\left( \frac{p(X)}{1-p(X)} \right) = X^\top w + b.
-$$
-\end{itemize}
-
-\textbf{Linear discriminant analysis} do the opposite. 
-
-\begin{itemize}
-\item It models the distributions of \structure{$X$ given $Y = j$} for $j = 1,...,M$ by Gaussian distributions $f_j(x)$,
-\item  The posterior distribution of $Y$ given $X$ can be computed with Bayes formula:
-$$
-\P \left( Y =j | X \right) = \frac{\pi_j f_j(X) }{\sum_\ell^M \pi_\ell f_\ell(X)},
-$$
-with $\pi_j = \P(Y=j)$.
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Summary: LDA/QDA/Logistic reg}
-
-\begin{itemize}
-\item Classification rule: we choose the group which maximizes these probabilities
-$\hat{g}(X)=k$ if and only if $\P(Y=k|X)\geq \P(Y=j|X), \forall j \neq k$.
-\item Boundary between 2 groups: set of points x such that 
-$$\P (Y =k|X )=\P(Y =j|X )$$
-i.e.\
-\begin{align*}
-0 &= \log\left(\frac{\P (Y =k|X)}{\P(Y =j|X)} \right) =  \log\frac{f_k(X)}{f_j(X)}+ 	\log\frac{\pi_k}{\pi_j} \\
-&= \log\frac{\pi_k}{\pi_j} + \frac{1}{2} (\mu_k + \mu_j)^T \Sigma^{-1} (\mu_k - \mu_j) + X^\top \Sigma^{-1} (\mu_k - \mu_j)
-\end{align*}
-which is \alert{linear} in $x$!
-\end{itemize}
-
-\end{frame}
+%
+%\begin{frame}{But...}
+%\begin{remark}
+%However, if there exists a separating hyperplane for $(X_i,Y_i)_{1\leq i \leq n}$ i.e.\ if there exists $(b_0,w_0)$ such that
+%$$
+%\forall i=1,\hdots , n , \qquad Y_i (w_0^T X_i +b_0) >0,
+%$$
+%then there is no minimizer of the negative log-likelihood! 
+%\end{remark}
+%\end{frame}
+%
+%\begin{frame}{Summary: LDA/QDA/Logistic reg}
+%
+%
+% \textbf{Logistic regression} directly models the parameter of the distribution of \structure{$Y$ given $X$}.
+%
+%\begin{itemize}
+%\item The \structure{logit transformation of the probability} $p(X)=\P\left(  Y = 1 | X \right)$  is \alert{linear}:
+%$$
+%\mathrm{logit} (p(X)) := \log\left( \frac{p(X)}{1-p(X)} \right) = X^\top w + b.
+%$$
+%\end{itemize}
+%
+%\textbf{Linear discriminant analysis} do the opposite. 
+%
+%\begin{itemize}
+%\item It models the distributions of \structure{$X$ given $Y = j$} for $j = 1,...,M$ by Gaussian distributions $f_j(x)$,
+%\item  The posterior distribution of $Y$ given $X$ can be computed with Bayes formula:
+%$$
+%\P \left( Y =j | X \right) = \frac{\pi_j f_j(X) }{\sum_\ell^M \pi_\ell f_\ell(X)},
+%$$
+%with $\pi_j = \P(Y=j)$.
+%\end{itemize}
+%
+%\end{frame}
+%
+%\begin{frame}{Summary: LDA/QDA/Logistic reg}
+%
+%\begin{itemize}
+%\item Classification rule: we choose the group which maximizes these probabilities
+%$\hat{g}(X)=k$ if and only if $\P(Y=k|X)\geq \P(Y=j|X), \forall j \neq k$.
+%\item Boundary between 2 groups: set of points x such that 
+%$$\P (Y =k|X )=\P(Y =j|X )$$
+%i.e.\
+%\begin{align*}
+%0 &= \log\left(\frac{\P (Y =k|X)}{\P(Y =j|X)} \right) =  \log\frac{f_k(X)}{f_j(X)}+ 	\log\frac{\pi_k}{\pi_j} \\
+%&= \log\frac{\pi_k}{\pi_j} + \frac{1}{2} (\mu_k + \mu_j)^T \Sigma^{-1} (\mu_k - \mu_j) + X^\top \Sigma^{-1} (\mu_k - \mu_j)
+%\end{align*}
+%which is \alert{linear} in $x$!
+%\end{itemize}
+%
+%\end{frame}
 
 %\begin{frame}
 %
@@ -517,63 +533,75 @@ which is \alert{linear} in $x$!
 \section{Linear Support Vector Machine (SVM)}
 
 
-\begin{frame}{Linear Support Vector Machine (SVM)}
+\begin{frame}{Binary classification problem}
  \begin{itemize}
-    \item Binary classification problem
-    \item We observe a training dataset of pairs $(x_i, y_i)$ for $i=1, \ldots, n$
-    \item Features $x_i \in \R^d$ and labels $y_i \in \{ -1, 1 \}$
-    \item Aim is to learn a classification rule that \textbf{generalizes} well
-    \item Given a features vector $x \in \R^d$, we want to predict the label $y$ 
-    \item Without \textbf{overfitting}
+    \item Training dataset of pairs $(X_i, Y_i)$ for $1\leq i \leq n$.
+
+\vspace{.2cm}
+
+    \item \alert{Features $X_i \in \R^d$} and \alert{labels $Y_i \in \{ -1, 1 \}$}.
+
+\vspace{.2cm}
+
+    \item Given a features vector $x \in \R^d$, we want to predict its associated label.
+    %\item Without \textbf{overfitting}
+
+\vspace{.2cm}
+
+\item \structure{Focus on linear classification}, i.e. classifiers defined by $w\in\R^d$ and $b\in\R$ such that
+
+$$
+h(x) = \mathrm{sign}(x^\top w  + b)\,.
+$$
   \end{itemize}
 \end{frame}
 
 \subsection{Preliminary}
 
-\begin{frame}{Linear classification}
-  Why?
-  \begin{itemize}
-    \item It's simple!
-    \item On very large datasets ($n$ is large, say $n \geq 10^7$), no other choice (training complexity)
-    \item Big data paradigm: lots of data $\Rightarrow$ simple methods are enough
-  \end{itemize}
-
-  % What is a linear classifier
-  % \begin{itemize}
-  % \item Using training data $(x_1, y_1), \ldots, (x_n, y_n)$,
-  %   construct a decision rule $f$ that predict the label $\hat y$ of a
-  %   new data point $x$    
-  % \item We saw that the logistic classifier is linear:
-  %   where $\sign z = 1$ if $z > 0$ and $\sign z = -1$ if $z < 0$, and
-  %   where $\hat \beta \in \R^d$ and $\hat b \in \R$ is the intercept
-  % \item The aim of linear classification is to find $\hat \theta$ and
-  %   $\hat b$ using the training data
-  % \end{itemize}
-
-  \medskip
-
-
-  
-  \begin{block}{A linear classifier}
-  
-  \begin{tabular}[htbp]{cc}    
-    \begin{minipage}[htbp]{.5\linewidth}
-      \vspace{0.2cm}
-      \begin{center}
-  				\includegraphics[width=5cm]{../../../ISUP2018/notes/img/SVM/lda_binary}
-      \end{center}
-    \end{minipage}
-    &
-    \begin{minipage}[htbp]{.5\linewidth}
-      Learn $\hat w \in \R^d$ and $\hat b$ s.t.\       
-      \begin{equation*}
-        \hat y = \sign(\langle {x, \hat w} \rangle + \hat b)
-      \end{equation*}
-      is a good classifier
-    \end{minipage}
-	\end{tabular}
-  \end{block}
-\end{frame}
+%\begin{frame}{Linear classification}
+%  Why?
+%  \begin{itemize}
+%    \item It's simple!
+%    \item On very large datasets ($n$ is large, say $n \geq 10^7$), no other choice (training complexity)
+%    \item Big data paradigm: lots of data $\Rightarrow$ simple methods are enough
+%  \end{itemize}
+%
+%  % What is a linear classifier
+%  % \begin{itemize}
+%  % \item Using training data $(x_1, y_1), \ldots, (x_n, y_n)$,
+%  %   construct a decision rule $f$ that predict the label $\hat y$ of a
+%  %   new data point $x$    
+%  % \item We saw that the logistic classifier is linear:
+%  %   where $\sign z = 1$ if $z > 0$ and $\sign z = -1$ if $z < 0$, and
+%  %   where $\hat \beta \in \R^d$ and $\hat b \in \R$ is the intercept
+%  % \item The aim of linear classification is to find $\hat \theta$ and
+%  %   $\hat b$ using the training data
+%  % \end{itemize}
+%
+%  \medskip
+%
+%
+%  
+%  \begin{block}{A linear classifier}
+%  
+%  \begin{tabular}[htbp]{cc}    
+%    \begin{minipage}[htbp]{.5\linewidth}
+%      \vspace{0.2cm}
+%      \begin{center}
+%  				\includegraphics[width=5cm]{../../../ISUP2018/notes/img/SVM/lda_binary}
+%      \end{center}
+%    \end{minipage}
+%    &
+%    \begin{minipage}[htbp]{.5\linewidth}
+%      Learn $\hat w \in \R^d$ and $\hat b$ s.t.\       
+%      \begin{equation*}
+%        \hat y = \sign(\langle {x, \hat w} \rangle + \hat b)
+%      \end{equation*}
+%      is a good classifier
+%    \end{minipage}
+%	\end{tabular}
+%  \end{block}
+%\end{frame}
 
 
 %\subsection{Linearly separable data}
@@ -582,37 +610,55 @@ which is \alert{linear} in $x$!
 
   \begin{frame}{Preliminary definitions}
   
-  \begin{exampleblock}{}
-A dataset is {\color{Vert} linearly separable} if we can find an hyperplane $H$ that puts 
-\begin{itemize}
-  \item Points $x_i \in \R^d$ such that $y_i = 1$ on one side of the hyperplane
-  \item Points $x_i \in \R^d$ such that $y_i = -1$ on the other
-  \item $H$ do not pass through a point $x_i$
-\end{itemize}
-\end{exampleblock}
+A dataset is \structure{\textbf{linearly separable}} if \alert{there exists an hyperplane $H$} (linear classification rule) such that the following assumptions hold.
+
+\vspace{.2cm}
+
+$\rightharpoondown$ Points $X_i \in \R^d$ such that\alert{ $Y_i = 1$ are on one side of the hyperplane}.
+
+\vspace{.1cm}
+
+$\rightharpoondown$ Points $X_i \in \R^d$ such that \alert{$Y_i = -1$ are on the other side}.
+
+\vspace{.1cm}
+
+$\rightharpoondown$ $H$ \alert{does not pass through any point $X_i$}.
+
 
 \begin{center}
-  \includegraphics[width=0.5\textwidth]{../../../ISUP2018/notes/img/SVM/hyperplane.png}
+\includegraphics[width=0.7\textwidth]{./hyperplane.png}
 \end{center}
 \end{frame}
 
 
 
-\begin{frame}{Preliminary definitions}
-\begin{exampleblock}{}
-  An {\color{Vert}hyperplane }
-  \begin{equation*}
-      H = \{ x \in \R^d : w^T x + b = 0 \}
-  \end{equation*}
-  is a translation of a set of vectors orthogonal to $w$
-  \begin{itemize}
-    \item $w \in \R^d$ is a non-zero vector normal to the hyperplane
-    \item $b \in \R$ is a scalar 
-  \end{itemize}
- \end{exampleblock}
-  
-  
-    Definition of $H$ is invariant by multiplication of $w$ and $b$ by a non-zero scalar
+\begin{frame}{Some geometry}
+A \structure{{\bf hyperplane}} is a translation of a set of vectors orthogonal to $w$.
+
+\begin{align*}
+H_{w,b}= \{ x \in \R^d : w^\top x + b = 0 \}\,.
+\end{align*}
+
+\vspace{.2cm}
+
+$\rightharpoondown$ $w \in \R^d$ is a \structure{{\bf non-zero vector normal}} to the hyperplane.
+
+$\rightharpoondown$ $b \in \R$ is a scalar. 
+
+\vspace{.5cm}
+
+Following for instance the results obtained for linear discriminant analysis and logistic regression, a \alert{ hyperplane $H_{w,b}$ may be used as a classifier} by defining
+
+\vspace{.2cm}
+
+\[
+h_{w,b}: x \mapsto \left\{
+    \begin{array}{ll}
+       1 & \mbox{if }\;  \langle w; x\rangle + b >0\,, \\
+        -1 & \mbox{otherwise}\,.
+    \end{array}
+\right.
+\]
 \end{frame}
 
 
@@ -624,14 +670,14 @@ A dataset is {\color{Vert} linearly separable} if we can find an hyperplane $H$ 
 
   If $H$ do not pass through any sample point $x_i$, we can scale $w$ and $b$ so that
   \begin{equation*}
-    \min_{(x, y) \in D_n} |w^T x + b| = 1
+    \min_{(x, y) \in D_n} |w^\top x + b| = 1
   \end{equation*}
     For such $w$ and $b$, we call $H$ the {\color{Vert}canonical} hyperplane
     
     
   \begin{figure}
   \begin{center}
-    \includegraphics[width=0.5\textwidth]{../../../ISUP2018/notes/img/SVM/canonical_hyperplane.png}
+    \includegraphics[width=0.5\textwidth]{./canonical_hyperplane.png}
     \caption{The marginal hyperplanes are the hyperplanes parallel to the separating hyperplane and passing through the closest points on the negative or positive sides.}
   \end{center}
   \end{figure}
@@ -641,22 +687,22 @@ A dataset is {\color{Vert} linearly separable} if we can find an hyperplane $H$ 
 
 
 \begin{frame}{The margin}
-  The distance of any point $x' \in \R^d$ to $H$ is given by
+  The distance of any point $x \in \R^d$ to $H$ is given by
   \begin{equation*}
-    \frac{|\langle {w, x'} \rangle  + b|}{\norm{w}}
+    d(x,H_{w,b}) = \frac{|\langle {w, x} \rangle  + b|}{\norm{w}}
   \end{equation*}
 
 \begin{exampleblock}{}
   So, if $H$ is a canonical hyperplane, its {\color{Vert}margin} is given by
   \begin{equation*}
-    \min_{(x, y) \in D_n}   \frac{|w^T x + b|}{\norm{w}} 
+    \min_{(x, y) \in D_n}   \frac{|w^\top x + b|}{\norm{w}} 
     = \frac{1}{\norm{w}}.
   \end{equation*}
  \end{exampleblock}
 
-  \begin{center}
-    \includegraphics[width=6cm]{../../../ISUP2018/notes/img/SVM/margin}
-  \end{center}
+%  \begin{center}
+%    \includegraphics[width=6cm]{../../../ISUP2018/notes/img/SVM/margin}
+%  \end{center}
 
 \end{frame}
 
@@ -665,15 +711,15 @@ A dataset is {\color{Vert} linearly separable} if we can find an hyperplane $H$ 
 \begin{frame}{Summary}
 If $\Dc_n$ is strictly \structure{linearly separable}, we can find a \structure{canonical separating hyperplane} 
 \begin{equation*}
-  H = \{ x \in \R^d : w^T x + b = 0 \}.
+  H_{w,b} = \{ x \in \R^d : w^\top x + b = 0 \},
 \end{equation*}
 that satisfies
 \begin{equation*}
-  |\langle {w, x_i} \rangle  + b| \geq 1 \; \text{ for any } \; i=1, \ldots, n,
+  |\langle {w, X_i} \rangle  + b| \geq 1 \; \text{ for any } \; i=1, \ldots, n,
 \end{equation*}
-which entails that a point $x_i$ is correctly classified if
+which entails that a point $X_i$ is correctly classified if
 \begin{equation*}
-  y_i (\langle {x_i, w} \rangle  + b) \geq 1.
+  Y_i (\langle {X_i, w} \rangle  + b) \geq 1.
 \end{equation*}
 The \structure{margin} of $H$ is equal to $1 / \norm{w}$.
 \end{frame}
@@ -682,23 +728,63 @@ The \structure{margin} of $H$ is equal to $1 / \norm{w}$.
 
 
 \subsection{Linear SVM: separable case}
+
+\begin{frame}{Linear SVM: separable case}
+
+\structure{{\bf  Hard Support Vector Machines}}  is a classification procedure which aims at  building a linear classifier with the largest possible margin, i.e. \alert{the largest minimal distance between a point in the training set and the hyperplane}.
+
+\vspace{.5cm}
+
+The hyperplane which \structure{{\bf correctly separates all training data sets with the largest margin}} is obtained with:
+
+\vspace{.3cm}
+\[
+(\widehat w_n,\widehat b_n)\in \underset{\substack{(w,b)\in\mathbb{R}^d\times \mathbb{R}; \|w\|=1,\\ \forall i\in\{1,\ldots,n\},\, Y_i\left(\langle w; X_i\rangle + b\right) > 0}}{\argmax}\left\{\underset{1\leqslant i \leqslant n}{\min}\;\left|\langle w; X_i\rangle + b\right|\right\}\,.
+\]
+\end{frame}
+
+\begin{frame}{Linear SVM: separable case}
+
+The \structure{{\bf hard Support Vector Machines}} procedure is equivalent to solving the following optimization problem:
+
+\vspace{.3cm}
+\[
+(\widehat w_n,\widehat b_n)\in \underset{(w,b)\in\mathbb{R}^d\times \mathbb{R}; \|w\|=1}{\argmax}\left\{\underset{1\leqslant i \leqslant n}{\min}\;Y_i\left(\langle w; X_i\rangle + b\right)\right\}\,,
+\]
+
+\vspace{.5cm}
+
+A \alert{solution to the hard Support Vector Machines optimization} problem is obtained by setting  $(\widehat w_n,\widehat b_n) = (w_\star/\|w_\star\|,b_\star/\|w_\star\|)$ where
+
+\begin{equation*}
+(w_\star,b_\star)\in  \hspace{-.8cm}  \underset{\substack{(w,b)\in\mathbb{R}^d\times \mathbb{R}\\ \forall i\in\{1,\ldots,n\}, Y_i\left(\langle w; X_i\rangle + b\right)\geqslant 1}}{\argmin} \hspace{-.8cm} \|w\|^2\,.
+\end{equation*}
+
+\vspace{.2cm}
+
+\centering
+{\color{Vert} Proof on blackboard !}
+\end{frame}
+
 \begin{frame}{Linear SVM: separable case}
 
 \begin{block}{Maximum margin problem}
-A way of classifying $\Dc_n$ with maximum margin is to solve the following problem:
-\begin{align*}
-  &\min_{w \in \R^d, b \in \R} \frac 12 \norm{w}_2^2 \\
-  &\text{ subject to } \;\;  y_i (\langle {x_i, w} \rangle  + b) \geq 1 \; \text{ for all } 
-  \;i=1, \ldots, n
-\end{align*}
+In the \alert{Hard SVM case}, a way of classifying $\Dc_n$ with maximum margin is to solve the following problem:
+$$
+(w_\star,b_\star)\in\mathrm{argmin}_{w \in \R^d, b \in \R}  \left\{\frac 12 \norm{w}_2^2\right\}\,,
+$$
+under \alert{the constraints}:
+$$ 
+Y_i (\langle {X_i, w} \rangle  + b) \geq 1\,,
+$$
+for all $1\leq i\leq n$.
 \end{block}
 
 \medskip
 
-Note that:
 \begin{itemize}
-  \item This problem admits a \alert{unique} solution
-  \item It is a ``quadratic programming'' problem, which is easy to solve numerically
+  \item This problem admits a \alert{unique} solution.
+  \item It is a \alert{quadratic programming'} problem.
   \item Dedicated optimization algorithms can solve this on a large scale very efficiently
 \end{itemize}
 \end{frame}
@@ -707,57 +793,60 @@ Note that:
 \subsection{Lagrangian duality}
 \begin{frame}{Tools from constrained convex optimization}
 
-  \begin{itemize}
-    \item Consider a constrained optimization problem
-  \begin{align*}
-    \min_{x \in \R^d} & \quad f(x) \\
-    \text{ subject to } \;\; & h_i(x) = 0 \; \text{ for all } 
-    \;i=1, \ldots, p \\
-   	 & g_j(x) \leq 0 \; \text{ for all } 
-    \;j=1, \ldots, q
-  \end{align*}
-  where $f, h_1, \hdots h_p, g_1, \ldots, g_q : \R^d \rightarrow \R$
-  \item Denote $P^\star = f(x^\star)$ the minimum of the \textbf{primal} pb
-    \end{itemize}
+ Consider a \alert{constrained optimization problem}:
+$$
+   P^\star = \min_{x \in \R^d}  \quad f(x)
+$$
+under \alert{the constraints}, for all $1\leq i \leq p$, $1 \leq j \leq q$,
+$$
+ h_i(x) = 0 \quad\mathrm{and}\quad g_j(x) \leq 0\,,
+$$
+ where $f, h_1, \hdots h_p, g_1, \ldots, g_q$ are defined on $ \R^d$.
+
     
     \begin{block}{Lagrangian}
-   The associated \textbf{Lagrangian} is the function given on $\R^d \times \R^p\times \R_+^q$ by
+   The \textbf{Lagrangian} is the function defined on $\R^d \times \R^p\times \R_+^q$ by
   \begin{equation*}
-    L(x, \lambda, \mu) = f(x) + \sum_{i=1}^p \lambda_i h_i(x) + \sum_{j=1}^q \mu_j g_j(x)
+    \mathcal{L}(x, \lambda, \mu): \mapsto f(x) + \sum_{i=1}^p \lambda_i h_i(x) + \sum_{j=1}^q \mu_j g_j(x)
   \end{equation*}
   \end{block}
-    $\lambda = (\lambda_1, \ldots, \lambda_q) \in \R^p$,   $\mu = (\mu_1, \ldots, \mu_q) \in \R_{\alert{+}}^q$ are called \textbf{Lagrange} or \textbf{dual} variables.
+    $\lambda  \in \R^p$,   $\mu \in \R_{\alert{+}}^q$ are the \structure{\textbf{Lagrange}} or \structure{\textbf{dual}} variables.
 
 \end{frame}
 
 
-\begin{frame}[allowframebreaks]
+\begin{frame}
+The \alert{Lagrange dual} function is defined by:
+$$
+D:(\lambda, \mu) \mapsto \inf_{x \in \R^d} \mathcal{L}(x, \lambda, \mu)\,.
+$$
+Let $\mathcal{D}$ be the subset of $\R^d$ of feasible points. Using
+$$
+\sup_{\mu\geq 0,\lambda}\inf_{x \in \R^d} \mathcal{L}(x,\lambda,\mu) \leq \inf_{x \in \R^d} \sup_{\mu\geq 0,\lambda}\mathcal{L}(x,\lambda,\mu)=\inf_{x \in \mathsf{D}} f(x) 
+$$
+yealds the \structure{weak duality relation}:
+$$
+D^\star = \sup_{\mu\geq 0,\lambda} D(\lambda, \mu) \leq \inf_{x \in \mathsf{D}} f(x) =P^\star\,.
+$$
 
-\begin{block}{ The {Lagrange dual} function }
-    \begin{align*}
-      D(\lambda, \mu) &:= \inf_{x \in \R^d} L(x, \lambda, \mu) \\
-      &= \inf_{x \in \R^d} 
-      \left( f(x) + \sum_{i=1}^p \lambda_i h_i(x) + \sum_{j=1}^q \mu_j g_j(x) \right)
-    \end{align*}
-    for $(\lambda, \mu) \in \R^p \times \R_+^q$
-\end{block}
-  \begin{itemize}
-    \item $D$ is always concave, as the infimum of linear functions
-    \item Denote $D^\star := D(\lambda^\star, \mu^\star) = \max_{\lambda\atop \mu \geq 0} D(\lambda, \mu)$ the optimal value of the dual. It is a convex problem (maximum of a concave function)
-    \item For any \textbf{feasible} $x$ and any $(\lambda, \mu) \in \R^p \times \R_+^q$ we have $D(\lambda, \mu) \leq f(x)$, hence
-    \begin{block}{Weak duality}
-    \begin{equation*}
-      D^\star \leq P^\star
-    \end{equation*}
-    \end{block}
-    This  \structure{always} holds!
-    \item Something that \alert{does not} always holds is
-    \begin{block}{Strong duality}
-    \begin{equation*}
-      D^\star = P^\star
-    \end{equation*}
-    \end{block}
-  \end{itemize}
+\vspace{.2cm}
+
+Equality, known as \structure{strong duality relation} requires some additional assumptions.
+ 
+%    \item For any \textbf{feasible} $x$ and any $(\lambda, \mu) \in \R^p \times \R_+^q$ we have $D(\lambda, \mu) \leq f(x)$, hence
+%    \begin{block}{Weak duality}
+%    \begin{equation*}
+%      D^\star \leq P^\star
+%    \end{equation*}
+%    \end{block}
+%    This  \structure{always} holds!
+%    \item Something that \alert{does not} always holds is
+%    \begin{block}{Strong duality}
+%    \begin{equation*}
+%      D^\star = P^\star
+%    \end{equation*}
+%    \end{block}
+%  \end{itemize}
 \end{frame}
 
 
@@ -780,25 +869,23 @@ Note that:
 \end{frame}
 
 \begin{frame}{Karush-Kuhn-Tucker (KKT) conditions}
+Assume that (i) $f, g_1, \ldots, g_q$ are \textbf{differentiable} and  \textbf{convex}, (ii) that $h_1,\hdots h_p$ are \textbf{affine} functions and that (iii) \alert{Slater's condition} holds.
 
-  \begin{enumerate}[(i)]
-    \item Assume that $f, g_1, \ldots, g_q$ are \textbf{differentiable}, \textbf{convex}, 
-    \item $h_1,\hdots h_p$ are \textbf{affine} functions
-    \item Assume Slater's condition
-    \end{enumerate}
-    \begin{block}{NSC for optimality}
-    Under (i), (ii), (iii), 
+\vspace{.2cm}
     
-    $x^\star \in \R^d$ is a solution of the primal problem \underline{if and only if} there is $(\lambda^\star, \mu^\star \in \R^p\times\R_+^q$ such that
-    \begin{align*}
-      \nabla_x L(x^\star, \lambda^\star, \mu^\star) &= \nabla f(x^\star) 
+Then $x^\star \in \R^d$ is a solution of the primal problem \underline{if and only if} there is $(\lambda^\star, \mu^\star) \in \R^p\times\R_+^q$ such that
+$$
+      \nabla_x \mathcal{L}(x^\star, \lambda^\star, \mu^\star) = \nabla f(x^\star) 
       + \sum_{i=1}^n \lambda_i^\star \nabla h_i(x^\star) 
-      + \sum_{j=1}^n \mu_j^\star \nabla g_j(x^\star) = 0 \\
-      h_i(x^\star) &= 0 \quad \text{ for any } i=1, \ldots, p \\
-      g_j(x^\star) &\leq 0 \quad \text{ for any } j=1, \ldots, q \\
-      \mu_j^\star g_j(x^\star) &= 0 \quad \text{ for any } j=1, \ldots, q \\
+      + \sum_{j=1}^n \mu_j^\star \nabla g_j(x^\star) = 0\,,
+$$
+with
+\begin{align*}
+      h_i(x^\star) &= 0 \quad \text{ for any } i=1, \ldots, p\,, \\
+      g_j(x^\star) &\leq 0 \quad \text{ for any } j=1, \ldots, q\,, \\
+      \mu_j^\star g_j(x^\star) &= 0 \quad \text{ for any } j=1, \ldots, q\,. \\
     \end{align*}
-    \end{block}
+
 \end{frame}
 
 
@@ -831,36 +918,29 @@ Note that:
   \end{block}
 \end{frame}
 
-\begin{frame}
-\textbf{Exercise} \\
-Now that you know about the Lagrangian duality, you can prove that the distance of a point to the canonical hyperplane is well given by the formula on Slide 10!
-\end{frame}
-
 
 
 \subsection{Back to the Linear SVM} 
 
 \begin{frame}{Back to the linear SVM}
-
-The problem has the form
-\begin{block}{}
-\begin{align*}
-  &\min_{w \in \R^d, b \in \R} f(w) \\
-  &\text{ subject to } \;\;  g_i(w, b) \leq 0 \; \text{ for all } 
-  \;i=1, \ldots, n
-\end{align*}
-\end{block}
-where
+In the \alert{Hard SVM case}, a way of classifying $\Dc_n$ with maximum margin is to solve the following problem:
+$$
+\min_{w \in \R^d, b \in \R}  f(w)\,,
+$$
+under \alert{the constraints}:
+$$ 
+g_i(w) \leq 0\,,
+$$
+for all $1\leq i\leq n$, where
 \begin{itemize}
-  \item $f(w) = \frac 12 \norm{w}_2^2$ is \textbf{strongly convex}, since
+  \item $f(w) = \norm{w}_2^2/2$ is \textbf{strongly convex}, since
   \begin{equation*}
       \nabla^2 f(w) = I_d \succ 0    
   \end{equation*}
   \item Constraints are $g_i(w, b) \leq 0$ with \textbf{affine} functions
   \begin{equation*}
-    g_i(w, b) =  1 - y_i (\langle {x_i, w} \rangle  + b)
+    g_i(w, b) =  1 - Y_i (\langle {X_i, w} \rangle  + b)\,.
   \end{equation*}
-  so that the constraints are \textbf{qualified}
 \end{itemize}
 \end{frame}
 
@@ -869,19 +949,15 @@ where
 
 
 
-KKT theorem 
-  \begin{itemize}
-    \item Leads to crucial properties on the SVM
-    \item Allows to obtain the dual formulation of the problem
-  \end{itemize}
+The \alert{KKT conditions} allows to obtain the dual formulation of the problem.
 
   \bigskip
   \begin{block}{Lagragian}
   \begin{itemize}
-    \item Introduce dual variables \structure{$\mu_i \geq 0$} for $i=1, \ldots, n$ corresponding to the constraints $g_i(w, b) \leq 0$
+    \item Introduce dual variables \structure{$\mu_i \geq 0$} for $i=1, \ldots, n$ corresponding to the constraints $g_i(w, b) \leq 0$.
     \item For $w \in \R^d$, $b \in \R$ and $\mu = (\mu_1, \ldots \mu_n) \in \R_+^n$, define the Lagrangian
     \begin{equation*}
-      L(w, b, \mu) = \frac 12 \norm{w}_2^2 + \sum_{i=1}^n \mu_i \big(1 - y_i( \langle {w, x_i} \rangle  + b) \big)
+      \mathcal{L}(w, b, \mu) = \frac 12 \norm{w}_2^2 + \sum_{i=1}^n \mu_i \big(1 - y_i( \langle {w, x_i} \rangle  + b) \big)\,.
     \end{equation*}
   \end{itemize}
   \end{block}
@@ -892,7 +968,7 @@ KKT theorem
 
 \begin{frame}{KKT and linear SVM}
   \begin{equation*}
-    L(w, b, \mu) = \frac 12 \norm{w}_2^2 + \sum_{i=1}^n \mu_i \big(1 - y_i( \langle {w, x_i} \rangle  + b) \big)
+    \mathcal{L}(w, b, \mu) = \frac 12 \norm{w}_2^2 + \sum_{i=1}^n \mu_i \big(1 - y_i( \langle {w, x_i} \rangle  + b) \big)
   \end{equation*}
 
   \begin{block}{KKT conditions}
@@ -926,7 +1002,7 @@ At the optimum,
       \mu_i \neq 0 \quad \text{iff} \quad y_i (\langle {w, x_i} \rangle  + b) = 1
   \end{equation*}
 \end{itemize}
-\pause 
+
 This means that
 \begin{itemize}
     \item $w$ writes as a linear combination of the features vectors $x_i$ that belong to the marginal hyperplanes $\{ x \in \R^d : w^T x + b = \pm 1 \}$
@@ -939,13 +1015,25 @@ The support vectors fully define the maximum-margin hyperplane, hence the name
 \textbf{\alert{Support Vector Machine}}
 \end{frame}
 
-\begin{frame}{SVM that's the name}
-\begin{figure}
+\begin{frame}{Linearly separable dataset}
 \begin{center}
-\includegraphics[height=5cm]{img/support_vectors}
+\includegraphics[width=0.6\textwidth]{svm_data1.png}
+\includegraphics[width=0.6\textwidth]{svm_data2.png}
 \end{center}
-\end{figure}
+\end{frame}
 
+
+\begin{frame}{SVM}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{svm_linear1.png}
+\includegraphics[width=0.6\textwidth]{svm_linear2.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Support vectors}
+\begin{center}
+\includegraphics[width=\textwidth]{svm_linear3.png}
+\end{center}
 \end{frame}
 
 
@@ -957,23 +1045,25 @@ Under \structure{strong duality}, primal and dual problems are strongly related,
 \begin{itemize}
 \item  Recall that the Lagrangian is
   \begin{equation*}
-    L(w, b, \mu) = \frac 12 \norm{w}_2^2 + \sum_{i=1}^n \mu_i \big(1 - y_i( \langle {w, x_i} \rangle  + b) \big)
+    \mathcal{L}(w, b, \mu) = \frac 12 \norm{w}_2^2 + \sum_{i=1}^n \mu_i \big(1 - y_i( \langle {w, x_i} \rangle  + b) \big)
   \end{equation*}  
-\item   Plug $w = \sum_{i=1}^n \mu_i y_i x_i$ in it to obtain
+\item   \structure{Plug $w = \sum_{i=1}^n \mu_i y_i x_i$ in this equation} to obtain
   \begin{align*}
-    L(w, b, \mu) &= \frac 12 \Big\| \sum_{i=1}^n \mu_i y_i x_i \Big\|_2^2 
+    \mathcal{L}(w, b, \mu) &= \frac 12 \Big\| \sum_{i=1}^n \mu_i y_i x_i \Big\|_2^2 
     + \sum_{i=1}^n \mu_i - b \sum_{i=1}^n \mu_i y_i \\
-       &\quad - \sum_{i, j=1}^n \mu_i \mu_j y_i y_j \langle {x_i, x_j} \rangle 
+       &\quad - \sum_{i, j=1}^n \mu_i \mu_j y_i y_j \langle {x_i, x_j} \rangle \,.
   \end{align*}
- \item  Recalling that $\sum_{i=1}^n \mu_i y_i = 0$ and doing some algebra we arrive at the dual formulation
+ \item  Recalling that $\sum_{i=1}^n \mu_i y_i = 0$ and doing some algebra provides the dual formulation.
 
 \begin{block}{Dual formulation}
-
-  \begin{align*}
-      &\max_{\mu \in \R^n} \quad \quad \sum_{i=1}^n \mu_i - \frac 12 \sum_{i, j=1}^n \mu_i \mu_j y_i y_j \langle {x_i, x_j} \rangle  \\
-    &\text{subject to} \quad \mu_i \geq 0 \; \text{ and } \; 
-    \sum_{i=1}^n \mu_i y_i  = 0 \; \text{ for all } \; i=1, \ldots, n
-  \end{align*}
+The dual problem amounts to solve:
+$$
+   \max_{\mu \in \R^n} \quad \quad \sum_{i=1}^n \mu_i - \frac 12 \sum_{i, j=1}^n \mu_i \mu_j y_i y_j \langle {x_i, x_j} \rangle\,,
+$$
+under \alert{the constraints}
+$$
+\mu_i \geq 0 \; \text{ and } \;  \sum_{i=1}^n \mu_i y_i  = 0 \; \text{ for all } \; i=1, \ldots, n\,.
+$$
   \end{block}
   \end{itemize}
 
@@ -982,10 +1072,10 @@ Under \structure{strong duality}, primal and dual problems are strongly related,
 \begin{frame}{Comments}
 
   \begin{itemize}
-    \item As in the primal formulation, it is again a quadratic programming problem
+    \item As in the primal formulation, it is again a \alert{quadratic programming problem}.
     \item At optimum, we have (using KKT conditions) that the decision function is expressed using the dual variables as
     \begin{equation*}
-      x \mapsto \mathop{sign}(w^T x + b) = \mathop{sign}\Big(  \sum_{i=1}^n \mu_i y_i 
+      x \mapsto \mathop{sign}(w^\top x + b) = \mathop{sign}\Big(  \sum_{i=1}^n \mu_i y_i 
       \langle {x, x_i} \rangle  + b \Big)
     \end{equation*}
     \item The intercept $b$ can be expressed for any support vector $x_i$ as
@@ -1005,43 +1095,46 @@ This allows to write the margin as a function of the dual variables
     \begin{equation*}
       \sum_{i=1}^n \mu_i y_i b =  \sum_{i=1}^n \mu_i y_i^2 - \sum_{i, j=1}^n \mu_i \mu_j y_i y_j \langle {x_i, x_j} \rangle 
     \end{equation*}
-    \pause
   \item Namely recalling that at optimum $\sum_{i=1}^n \mu_i y_i = 0$ and $w = \sum_{i=1}^n \mu_i y_i x_i$ we get
   \begin{align*}
     0 &= \sum_{i=1}^n \mu_i = \norm{w}_2^2, \quad \text{ namely } \\
       \text{margin} &= \frac{1}{\norm{w}_2^2} = \frac{1}{\sum_{i=1}^n \mu_i} 
     = \frac{1}{\norm{\mu}_1}
   \end{align*}
-	\pause 
-  \item Okay, this is a nice theory, but...
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}
-  Have you ever seen a dataset that looks like this?
-  
-  \begin{center}
-    \includegraphics[width=0.4\textwidth]{../../../ISUP2018/notes/img/SVM/hyperplane}
-  \end{center}
-  
-  Datasets are generally \alert{not} linearly separable!
-
-\end{frame}
+%\begin{frame}
+%  Have you ever seen a dataset that looks like this?
+%  
+%  \begin{center}
+%    \includegraphics[width=0.4\textwidth]{./hyperplane}
+%  \end{center}
+%  
+%  Datasets are generally \alert{not} linearly separable!
+%
+%\end{frame}
 
  \begin{frame}{Relaxation for the non-separable case}
-  Keep cool and \textbf{relax} !
+$\rightharpoondown$ Restricting the problem to linearly separable  training data sets is a \alert{somehow strong assumption}.
 
-  \bigskip
+\vspace{.2cm}
+
+$\rightharpoondown$ Inequality constraints in the quadratic optimization problem \alert{can be relaxed}.
+
+\vspace{.2cm}
+
+
   Replace the constraints
   \begin{equation*}
-    y_i (\langle {w, x_i} \rangle  + b) \geq 1 \;\; \text{ for all } \;\;
+    Y_i (\langle {w, X_i} \rangle  + b) \geq 1 \;\; \text{ for all } \;\;
     i=1, \ldots, n,
   \end{equation*}
   \pause
   that are too strong, by the \textbf{relaxed} ones
   \begin{equation*}
-    y_i (\langle {w, x_i} \rangle  + b) \geq 1 - s_i \;\; \text{ for all } \;\;
+    Y_i (\langle {w, X_i} \rangle  + b) \geq 1 - s_i \;\; \text{ for all } \;\;
     i=1, \ldots, n,
   \end{equation*}
   for \textbf{\structure{slack variables}} $s_1, \ldots, s_n \geq 0$
@@ -1056,35 +1149,44 @@ This allows to write the margin as a function of the dual variables
 \subsection{Linear SVM: non-separable case}
 
 \begin{frame}{Linear SVM: non-separable case}
-Relax, but keep the slacks $s_i$ as small as possible (goodness-of-fit)
-
-Replace the original problem
-\begin{align*}
-  &\min_{w \in \R^d, b \in \R} \frac 12 \norm{w}_2^2 \\
-  &\text{ subject to } \;\;  y_i (\langle {x_i, w} \rangle  + b) \geq 1 \; \text{ for all } 
-  \;i=1, \ldots, n
-\end{align*}
-by the relaxed one using slack variables
+The original problem
+$$
+\min_{w \in \R^d, b \in \R} \frac 12 \norm{w}_2^2\,,
+$$
+under the constraints
+$$
+Y_i (\langle {X_i, w} \rangle  + b) \geq 1 \; \text{ for all } 
+  \;i=1, \ldots, n\,.
+$$
+is replaced by the relaxation using slack variables
 \begin{block}{}
-\begin{align*}
-  &\min_{w \in \R^d, b \in \R, s \in \R^n} \frac 12 \norm{w}_2^2 
-  + C \sum_{i=1}^n s_i \\
-  &\text{ subject to } \;\;  y_i (\langle {x_i, w} \rangle  + b) \geq 1 - s_i \; 
-  \text{ and } \; s_i \geq 0 \; \forall  \;i=1, \ldots, n
-\end{align*}
+$$
+\min_{w \in \R^d, b \in \R, s \in \R^n} \frac 12 \norm{w}_2^2 
+  + C \sum_{i=1}^n s_i\,,
+$$
+under the constraints
+$$
+Y_i (\langle {X_i, w} \rangle  + b) \geq 1 - s_i \; 
+  \text{ and } \; s_i \geq 0 \; \forall  \;i=1, \ldots, n\,.
+$$
 \end{block}
-where $C > 0$ is the ``goodness-of-fit strength''
 \end{frame}
 
 
 \begin{frame}{}
   \begin{itemize}
-    \item The slack $s_i \geq 0$ measures the the distance by which $x_i$ violates the desired inequality $y_i (\langle {x_i, w} \rangle  + b) \geq 1$ 
-   \pause
-    \item A vector $x_i$ with $0 < y_i (\langle {x_i, w} \rangle  + b) < 1$ is correctly classified but is an outlier, since $s_i > 0$
-    \pause
+    \item The slack $s_i \geq 0$ measures the the distance by which $x_i$ violates the desired inequality $Y_i (\langle {X_i, w} \rangle  + b) \geq 1$ 
+
+\vspace{.2cm}
+
+    \item A vector $x_i$ with $0 < Y_i (\langle {X_i, w} \rangle  + b) < 1$ is correctly classified but is an outlier, since $s_i > 0$
+
+\vspace{.2cm}
+
     \item If we omit outliers, training data is correctly classified by the hyperplane $\{ x \in \R^d : \langle {x, w} \rangle  + b = 0 \}$ with a margin $1 / \norm{w}_2^2$
-    \pause
+
+\vspace{.2cm}
+    
     \item The margin $1 / \norm{w}_2^2$ is called a \textbf{\structure{soft-margin}} (in the non-separable case), while it is a \textbf{\structure{hard-margin}} in the separable case
   \end{itemize}
 
@@ -1098,24 +1200,26 @@ where $C > 0$ is the ``goodness-of-fit strength''
 
 \begin{frame}{Linear SVM: non-separable case}
 
-So, we arrived at:
 \begin{block}{Relaxed margin problem}
-\begin{align*}
-  &\min_{w \in \R^d, b \in \R, s \in \R^n} \frac 12 \norm{w}_2^2 
-  + C \sum_{i=1}^n s_i \\
-  &\text{ subject to } \;\;  y_i (\langle {x_i, w} \rangle + b) \geq 1 - s_i \; 
-  \text{ and } \; s_i \geq 0 \; \text{ for all }  \;i=1, \ldots, n
-\end{align*}
+$$
+\min_{w \in \R^d, b \in \R, s \in \R^n} \frac 12 \norm{w}_2^2 
+  + C \sum_{i=1}^n s_i\,,
+$$
+under the constraints
+$$
+Y_i (\langle {X_i, w} \rangle  + b) \geq 1 - s_i \; 
+  \text{ and } \; s_i \geq 0 \; \forall  \;i=1, \ldots, n\,.
+$$
 \end{block}
 
 Once again:
 \begin{itemize}
-  \item This problem admits a \textbf{unique} solution
-  \item It is a quadratic programming problem
+  \item This problem admits a \textbf{unique} solution.
+  \item It is a quadratic programming problem.
 \end{itemize}
 
 \medskip
-The constant $C > 0$ is chosen using $V$-fold cross-valiation
+The constant $C > 0$ is chosen using $V$-fold cross-valiation.
 \end{frame}
 
 
@@ -1123,7 +1227,7 @@ The constant $C > 0$ is chosen using $V$-fold cross-valiation
 \begin{frame}{Linear SVM: non-separable case}
   \begin{block}{Lagrangian}
   \begin{align*}
-    L(w, b, s, \mu, \beta) &= \frac 12 \norm{w}_2^2 + C \sum_{i=1}^n 
+    \mathcal{L}(w, b, s, \mu, \beta) &= \frac 12 \norm{w}_2^2 + C \sum_{i=1}^n 
     s_i \\ 
     & \quad + \sum_{i=1}^n \mu_i \big(1 - s_i - y_i( \langle {w, x_i} \rangle  + b) \big) 
     - \sum_{i=1}^n \beta_i s_i
@@ -1131,10 +1235,10 @@ The constant $C > 0$ is chosen using $V$-fold cross-valiation
   with $\mu_i\geq 0$ and $\beta_i \geq 0$.
   \end{block}
   
-  At optimum, let's again:
+  At optimum:
   \begin{itemize}
-    \item set the gradients $\nabla_w$, $\nabla_b$ and $\nabla_s$ to zero
-    \item write the complementary conditions
+    \item set the \alert{gradients} $\nabla_w$, $\nabla_b$ and $\nabla_s$ \alert{to zero} ;
+    \item write \alert{the complementary conditions}.
   \end{itemize}
 \end{frame}
 
@@ -1157,21 +1261,28 @@ The constant $C > 0$ is chosen using $V$-fold cross-valiation
 
 
 \begin{frame}{Linear SVM: non-separable case}
-  This means that
   \begin{itemize}
     \item $w = \sum_{i=1}^n \mu_i y_i x_i$
-    \pause
-    \item If $\mu_i \neq 0$ we say that $x_i$ is a \structure{support vector} and in this case $y_i(\langle {w, x_i} \rangle  + b) = 1 - s_i$
+
+\vspace{.3cm}
+
+    \item If $\mu_i \neq 0$ we say that $x_i$ is a \structure{support vector} and in this case $y_i(\langle {w, x_i} \rangle  + b) = 1 - s_i$.
+
+\vspace{.3cm}
+
     \begin{itemize}
-      \item If $s_i = 0$ then $x_i$ belongs to a margin hyperplane
-      \item If $s_i \neq 0$ then $x_i$ is an outlier and $\beta_i = 0$ and then $\mu_i = C$
+      \item If $s_i = 0$ then $x_i$ belongs to a margin hyperplane.
+
+\vspace{.2cm}
+
+      \item If $s_i \neq 0$ then $x_i$ is an outlier and $\beta_i = 0$ and then $\mu_i = C$.
     \end{itemize}
   \end{itemize}
-  \pause 
+
   \begin{alertblock}{}
   Support vectors either belong to a marginal hyperplane, or are outliers with $\mu_i = C$
   \end{alertblock}
-  \pause
+
   \begin{figure}
  	\begin{center}
  		\includegraphics[height=4cm]{img/soft_support_vectors}
