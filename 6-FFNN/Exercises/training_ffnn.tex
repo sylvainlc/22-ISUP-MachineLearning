@@ -1,0 +1,296 @@
+\documentclass[a4paper,10pt,fleqn]{article}
+
+\usepackage{a4wide,amsmath,amsthm,amssymb,bbm,fancyhdr}
+\usepackage{ifthen,color,enumerate,comment,dsfont,pdfsync,framed,todonotes,enumitem}
+\newboolean{corrige}
+\setboolean{corrige}{true}
+
+\newcommand{\titre}[1]{\textbf{\textsc{#1}}}
+
+\RequirePackage[T1]{fontenc}
+
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{dsfont}
+\newcommand{\thisyear}{}
+\usepackage{enumitem}
+\newcommand{\eqsp}{\,}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\rset}{\ensuremath{\mathbb{R}}}
+\renewcommand{\P}{\ensuremath{\operatorname{P}}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+\newcommand{\rme}{\ensuremath{\mathrm{e}}}
+\newcommand{\calH}{\ensuremath{\mathcal{H}}}
+\newcommand{\xset}{\ensuremath{\mathsf{X}}}
+\newcommand{\V}{\ensuremath{\mathbb{V}}}
+\newcommand{\Sb}{\ensuremath{\mathbb{S}}}
+\newcommand{\gaus}{\ensuremath{\mathcal{N}}}
+\newcommand{\HH}{\ensuremath{\mathcal{H}}}
+\newcommand{\F}{\ensuremath{\mathcal{F}}}
+\newcommand{\W}{\ensuremath{\mathcal{W}}}
+\newcommand{\X}{\ensuremath{\mathcal{X}}}
+\newcommand{\1}{\ensuremath{\mathbbm{1}}}
+\newcommand{\dlim}{\ensuremath{\stackrel{\mathcal{L}}{\longrightarrow}}}
+\newcommand{\plim}{\ensuremath{\stackrel{\mathrm{P}}{\longrightarrow}}}
+\newcommand{\PP}{\ensuremath{\mathbb{P}}}
+\newcommand{\p}{\ensuremath{\mathbb{P}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\pa}[1]{\left(#1\right)}
+\newcommand{\hatk}{\widehat K}
+\newcommand{\f}{\varphi}
+\newcommand{\Id}{\textsf{Id}}
+\newcommand{\bfU}{\mathbf{U}}
+\newcommand{\bfX}{\mathbf{X}}
+\newcommand{\bfs}{\mathbf{\Sigma}}
+\newcommand{\bfA}{\mathbf{A}}
+\newcommand{\bfV}{\mathbf{V}}
+\newcommand{\bfB}{\mathbf{B}}
+\newcommand{\bfI}{\mathbf{I}}
+\newcommand{\bfD}{\mathbf{D}}
+\newcommand{\bfK}{\mathbf{K}}
+\newcommand{\argmin}{\mathop{\textrm{argmin}}}
+\newcommand{\argmax}{\mathop{\textrm{argmax}}}
+\newcommand{\crit}{\mathop{\textrm{crit}}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\pc}{\pi_{\mathcal{C}}}
+
+
+% Style
+%\pagestyle{fancyplain}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+%\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\footnotesize {\sf
+%MAT4506 Introduction to Machine Learning  %/ \rightmark
+%}}}
+%\rhead[\fancyplain{}{\footnotesize {\sf MAT4506 Introduction to machine learning, \thisyear %/ \rightmark
+%}}]{\fancyplain{}{\thepage}}
+
+
+\newtheorem{theorem}{Theorem}
+
+%% Titre
+%\title{{\bf Machine learning}}
+%\author{{\em Logistic regression}}
+%\date{}
+
+
+\begin{document}
+
+\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
+ 2022-2023
+
+\noindent\hrulefill
+
+\begin{center}
+\textsc{Feed Forward Neural Networks}
+\end{center}
+\hrulefill
+
+\medskip
+
+
+
+\section*{Warm-up}
+Assume that the observation $Y$ takes values in $\{1,\ldots,M\}$ and that $X\in\mathbb{R}^d$. The negative loglikelihood to be minimized to estimate the parameters of the model is given by:
+$$
+\theta \mapsto \ell^{\mathrm{multi}}_n(\theta)= -\frac{1}{n} \sum_{i=1}^n\sum_{k=1}^{M} \1_{Y_i=k}\log \mathbb{P}_{\theta}(Y_i = k | X_i)\,,
+$$
+where $\{(X_i,Y_i)\}_{1\leqslant i\leqslant n}$ are i.i.d. observations with the same law as $(X,Y)$. 
+
+\begin{enumerate}
+\item Explain the construction of $\mathbb{P}_{\theta}(Y_i = k | X_i)$, $1\leqslant i\leqslant n$ for the following model. A feed forward neural network with a first hidden layer with dimension $d_1$ and activation function $\varphi_1$,  a second hidden layer with dimension $d_2$ and activation function $\varphi_2$, and an output layer of dimension $M$ and activation function given by the softmax function.
+
+\vspace{.2cm}
+
+{\em
+Let $X_i$ be the input and define all layers as follows.
+\begin{align*}
+h_{\theta}^0(X_i) &= X_i\eqsp,\\
+z_{\theta}^1(X_i)  &= b^1 + W^1h_{\theta}^{0}(X_i)\eqsp, \quad b^1\in\mathbb{R}^{d_1}, W^1 \in\mathbb{R}^{d_1\times d}\eqsp,\\
+h_{\theta}^1(x)  &= \varphi_1(z_{\theta}^{k}(X_i))\eqsp,\\
+z_{\theta}^2(X_i)  &= b^2 + W^2h_{\theta}^{1}(X_i)\eqsp,\quad b^1\in\mathbb{R}^{d_2}, W^1 \in\mathbb{R}^{d_2\times d_1}\eqsp,\\
+h_{\theta}^2(x)  &= \varphi_2(z_{\theta}^{2}(X_i))\eqsp,\\
+z_{\theta}^3(X_i)  &= b^3 + W^3h_{\theta}^{2}(X_i)\eqsp,\quad b^1\in\mathbb{R}^{M}, W^1 \in\mathbb{R}^{M\times d_2}\eqsp,\\
+h_{\theta}^3(X_i)  &= \mathbb{P}_{\theta}(Y_i = k | X_i) = \mathrm{Softmax}(z_{\theta}^{3}(X_i))\eqsp,\\
+\end{align*}
+}
+\item What is the unknown parameter $\theta$ of the previous model ? Explain how to estimate $\theta$ with  a stochastic gradient descent.
+
+\vspace{.2cm}
+
+{\em
+The unknown parameters are estimated iteratively. Let $\theta_0$ be an initial estimate (randomly chosen). Then for each iteration $p\geqslant 1$, the new estimate is computed as follows
+$$
+\theta_p = \theta_{p-1} - \gamma_p \nabla_{\theta=\theta_{p-1}} \left(-\frac{1}{B} \sum_{i=1}^B\sum_{k=1}^{M} \1_{Y_{I_i}=k}\log \mathbb{P}_{\theta}(Y_{I_i} = k | X_{I_i})\right)\eqsp,
+$$
+where $B$ is the batch size, $(\gamma_p)_{p\geqslant 1}$ are positive step-sizes, and for all $(I_i)_{1 \leqslant i \leqslant B}$ are i.i.d. with unifrom distribution on  $\{1,\ldots,n\}$. Of course, this elementary stochastci gradient descent algorithm can be improves (see lecture notes with for instance Adagrad, Adadelta, Rmsprop, Adam).
+}
+\item What is the complexity of an iteration of the previous algorithm ?
+
+\vspace{.2cm}
+
+{\em
+Using $B$ randomly chosen observations to provide each update instead of using all observations allows to reduce the complexity (proportional to $B$ instead of $n$).
+}
+\end{enumerate}
+
+
+
+\section*{Backpropagation}
+Let $x\in\rset^d$ be the input of a MLP with L layers and define all layers as follows.
+\begin{align*}
+h_{\theta}^0(x) &= x\eqsp,\\
+z_{\theta}^k(x)  &= b^k + W^kh_{\theta}^{k-1}(x)\quad \mathrm{for\;all\;} 1\leqslant k\leqslant L\eqsp,\\
+h_{\theta}^k(x)  &= \varphi_k(z_{\theta}^{k}(x))\quad \mathrm{for\;all\;}1\leqslant k\leqslant L\eqsp,
+\end{align*}
+where $b^1\in\rset^{d_1}$, $W^1\in\rset^{d_1\times d}$ and for all $2\leqslant k\leqslant L$, $b^k\in\rset^{d_k}$, $W^k\in\rset^{d_k\times d_{k-1}}$. For all $1\leqslant k\leqslant L$, $\varphi_k: \rset^{d_k} \to \rset^{d_k}$ is a nonlinear activation function. Let $\theta = \{b^1,W^1,\ldots,b^L,W^L\}$ be the unknown parameters of the MLP and 
+$$
+f_{\theta}(x) = h_{\theta}^L(x)
+$$
+ be the output layer of the MLP. As there is no modelling assumptions anymore, virtually any activation functions $\varphi^m$, $1\leqslant m\leqslant L-1$ may be used. In this section, it is assumed that these intermediate activation functions apply elementwise and, with a minor abuse of notations, we write for all $1\leqslant m\leqslant L-1$ and all $z\in\rset^{d_m}$,
+$$
+\varphi_m(z) = (\varphi_m(z_1),\ldots, \varphi_m(z_{d_m}))\eqsp,
+$$
+with $\varphi_m: \rset\to \rset$ the seleced scalar activation function. 
+
+In a classification setting ,the output $h_{\theta}^L(x)$ is the estimate of the probability that the class is  $k$ for all $1\leqslant k\leqslant M$, given the input $x$. The common choice in this case is the softmax function: for all $1\leqslant i\leqslant M$
+$$
+\varphi_L(z)_i = \mathrm{softmax}(z)_i = \frac{\rme^{z_i}}{\sum_{j=1}^M\rme^{z_j}}\eqsp.
+$$
+In this case $d_L = M$ and each component $k$ of $h_{\theta}^L(x)$ contains $\mathbb{P}(Y=k | X)$.
+
+\begin{enumerate}
+\item Prove that  for all $1\leqslant i,j\leqslant M$,
+$$
+\partial_{z_i}(\varphi_L(z))_j =  \left\{
+    \begin{array}{ll}
+        \mathrm{softmax}(z)_i (1-\mathrm{softmax}(z)_i ) & \mbox{if } i=j\eqsp,\\
+        - \mathrm{softmax}(z)_i \mathrm{softmax}(z)_j & \mbox{otherwise.}
+    \end{array}
+\right.
+$$
+
+\vspace{.2cm}
+
+{\em
+It is enough to write for all $1\leqslant j\leqslant M$,
+$$
+\varphi_L(z)_j = \frac{\rme^{z_j}}{\sum_{j=1}^M\rme^{z_j}}\eqsp.
+$$
+Therefore, 
+$$
+\partial_{z_j}(\varphi_L(z))_j =  \frac{\rme^{z_j}\sum_{j=1}^M\rme^{z_j}-\rme^{z_j}\rme^{z_j}}{\left(\sum_{\ell=1}^M\rme^{z_\ell}\right)^2} = \varphi_L(z)_j -\varphi^2_L(z)_j =  \varphi_L(z)_j (1-\varphi_L(z)_j )\eqsp. 
+$$
+The case $i\neq j$ can be dealt with similarly.
+}
+
+\item Write $\ell_{\theta}(X,Y) =  -\sum_{k=1}^{M} \1_{Y=k}\log f_{\theta}(X)_k$ so that 
+$$
+\ell_n:\theta \mapsto \frac{1}{n} \sum_{i=1}^n \ell_{\theta}(X_i,Y_i)\eqsp. 
+$$
+Prove that  the gradient with respect to all parameters can be computed as follows.
+\begin{align*}
+\nabla_{W^L} \ell_{\theta}(X,Y) &= (f_{\theta}(X) - \1_Y)(h_{\theta}^{L-1}(X))^\top\eqsp,\\
+\nabla_{b^L} \ell_{\theta}(X,Y) &= f_{\theta}(X) - \1_Y\eqsp,
+\end{align*}
+where $\1_Y$ is the vector where all entries equal to 0 except the entry with index $Y$ which equals 1.
+
+\vspace{.2cm}
+
+{\em
+For all $1\leqslant j\leqslant M$,
+\begin{align*}
+\partial_{(z_\theta^L(X))_j}\ell_{\theta}(X,Y) &=  -\sum_{k=1}^{M} \1_{Y=k}\partial_{(z_\theta^L(X))_j}\log f_{\theta}(X)_k\eqsp,\\
+&=  -\sum_{k=1}^{M} \1_{Y=k}\partial_{(z_\theta^L(X))_j}\log \varphi_L(z_\theta^L(X))_k\eqsp,\\
+&=  -\sum_{k=1}^{M} \1_{Y=k}\frac{\varphi_L(z_\theta^L(X))_j (1-\varphi_L(z_\theta^L(X))_j )\1_{j=k} - \varphi_L(z_\theta^L(X))_j \varphi_L(z_\theta^L(X))_k\1_{j\neq k}}{\varphi_L(z_\theta^L(X))_k}\eqsp,\\
+&=  -\sum_{k=1}^{M} \1_{Y=k}\left\{(1-\varphi_L(z_\theta^L(X))_k )\1_{j=k} -  \varphi_L(z_\theta^L(X))_k\1_{j\neq k}\right\}\eqsp.
+\end{align*}
+Therefore,
+$$
+\nabla_{z_\theta^L(X)} \ell_{\theta}(X,Y) = f_{\theta}(X) - \1_Y\eqsp.
+$$
+Then, for all $1\leqslant i\leqslant M$ and all $1\leqslant j \leqslant d_{L-1}$, by the chain rule, and using that $z_{\theta}^L(X) = b^L + W^Lh_{\theta}^{L-1}(X)$,
+\begin{align*}
+\partial_{W^L_{i,j}}\ell_{\theta}(X,Y) &=  \sum_{k=1}^{M} \partial_{(z_{\theta}^L(X))_k}\ell_{\theta}(X,Y)\partial_{W^L_{i,j}}(z_{\theta}^L(X))_k\eqsp,\\
+&=  \sum_{k=1}^{M} (\ell_{\theta}(X,Y) - \1_Y)_k\1_{i=k}(h_{\theta}^{L-1}(X))_j\eqsp,\\
+&=  (f_{\theta}(X) - \1_Y)_i(h_{\theta}^{L-1}(X))_j\eqsp.
+\end{align*}
+Therefore,
+$$
+\nabla_{W^L} \ell_{\theta}(X,Y) = (f_{\theta}(X) - \1_Y)(h_{\theta}^{L-1}(X))^\top\eqsp.
+$$
+Similarly, for all $1\leqslant i\leqslant M$,  using that $z_{\theta}^L(X) = b^L + W^Lh_{\theta}^{L-1}(X)$,
+\begin{align*}
+\partial_{b^L_{i}}\ell_{\theta}(X,Y) &=  \sum_{k=1}^{M} \partial_{(z_{\theta}^L(X))_k}\ell_{\theta}(X,Y)\partial_{b^L_{i}}(z_{\theta}^L(X))_k\eqsp,\\
+&=  \sum_{k=1}^{M} (f_{\theta}(X) - \1_Y)_k\1_{i=k}\eqsp,\\
+&=  (f_{\theta}(X) - \1_Y)_i\eqsp.
+\end{align*}
+Therefore,
+$$
+\nabla_{b^L} \ell_{\theta}(X,Y) = f_{\theta}(X) - \1_Y\eqsp.
+$$
+}
+
+\item Prove that for all $1\leqslant m\leqslant L-1$,
+\begin{align*}
+\nabla_{W^m} \ell_{\theta}(X,Y) &= \nabla_{z_{\theta}^m(X)}\ell_{\theta}(X,Y)(h_{\theta}^{m-1}(X))^\top\eqsp,\\
+\nabla_{b^m} \ell_{\theta}(X,Y) &=  \nabla_{z_{\theta}^m(X)}\ell_{\theta}(X,Y)\eqsp,
+\end{align*}
+where $\nabla_{z_{\theta}^m(X)}$ is computed recursively as follows.
+\begin{align*}
+\nabla_{z^L(X)} \ell_{\theta}(X,Y) &= \ell_{\theta}(X,Y) - \1_Y\eqsp,\\
+\nabla_{h_{\theta}^m(X)} \ell_{\theta}(X,Y) &= (W^{m+1})^\top\nabla_{z_{\theta}^{m+1}(X)} \ell_{\theta}(X,Y) \eqsp,\\
+\nabla_{z_{\theta}^m(X)} \ell_{\theta}(X,Y) &= \nabla_{h_{\theta}^m(X)}\ell_{\theta}(X,Y) \odot \varphi_m'(z_{\theta}^{m}(X))\eqsp,
+\end{align*}
+where $\odot$ is the elementwise multiplication.
+
+\vspace{.2cm}
+
+{\em
+To obtain the recursive formulation of the gradient computations, known as the {\em back propagation} of the gradient, write, for all $1\leqslant m \leqslant L-1$ and all $1\leqslant j \leqslant d_m$,   using that $z_{\theta}^{m+1}(X) = b^{m+1} + W^{m+1}h_{\theta}^{m}(X)$,
+\begin{align*}
+\partial_{(h_{\theta}^m(X))_j}\ell_{\theta}(X,Y) &=  \sum_{i=1}^{d_{m+1}} \partial_{(z_{\theta}^{m+1}(X))_i}\ell_{\theta}(X,Y)\partial_{(h_{\theta}^m(X))_j}(z_{\theta}^{m+1}(X))_i\eqsp,\\
+&=  \sum_{i=1}^{d_{m+1}} \partial_{(z_{\theta}^{m+1}(X))_i}\ell_{\theta}(X,Y)W^{m+1}_{i,j}\eqsp.
+\end{align*}
+Therefore,
+$$
+\nabla_{h_{\theta}^m(X)} \ell_{\theta}(X,Y) = (W^{m+1})^\top\nabla_{z_{\theta}^{m+1}(X)} \ell_{\theta}(X,Y) \eqsp.
+$$
+Then, for all $1\leqslant m \leqslant L-1$ and all $1\leqslant j \leqslant d_m$,  using that $h_{\theta}^{m}(X)_j =\varphi_m(z_{\theta}^{m}(X)_j)$,
+\begin{align*}
+\partial_{(z_{\theta}^m(X))_j}\ell_{\theta}(X,Y) &=  \sum_{i=1}^{d_{m}} \partial_{(h_{\theta}^m(X))_i}\ell_{\theta}(X,Y)\partial_{(z_{\theta}^m(X))_j}(h_{\theta}^m(X))_i\eqsp,\\
+&=  \sum_{i=1}^{d_{m}} \partial_{(h_{\theta}^m(X))_i}\ell_{\theta}(X,Y) \1_{i=j}\varphi_m'(z_{\theta}^{m}(X)_i)\eqsp,\\
+&= \partial_{(h_{\theta}^m(X))_j}\ell_{\theta}(X,Y) \varphi_m'(z_{\theta}^{m}(X)_j)\eqsp.
+\end{align*}
+Therefore,
+$$
+\nabla_{z_{\theta}^m(X)} \ell_{\theta}(X,Y) = \nabla_{h_{\theta}^m(X)}\ell_{\theta}(X,Y) \odot \varphi_m'(z_{\theta}^{m}(X))\eqsp.
+$$
+Then, for all $1\leqslant i\leqslant d_m$ and all $1\leqslant j \leqslant d_{m-1}$, and using that $z_{\theta}^m(X) = b^m + W^mh_{\theta}^{m-1}(X)$,
+\begin{align*}
+\partial_{W^m_{i,j}}\ell_{\theta}(X,Y) &=  \sum_{k=1}^{d_m} \partial_{(z_{\theta}^m(X))_k}\ell_{\theta}(X,Y)\partial_{W^m_{i,j}}(z_{\theta}^m(X))_k\eqsp,\\
+&=  \sum_{k=1}^{d_m} \partial_{(z_{\theta}^m(X))_k}\ell_{\theta}(X,Y)\1_{i=k}(h_{\theta}^{m-1}(X))_j\eqsp,\\
+&=  \partial_{(z_{\theta}^m(X))_i}\ell_{\theta}(X,Y)(h_{\theta}^{m-1}(X))_j\eqsp.
+\end{align*}
+Therefore,
+$$
+\nabla_{W^m} \ell_{\theta}(X,Y) = \nabla_{z_{\theta}^m(X)}\ell_{\theta}(X,Y)(h_{\theta}^{m-1}(X))^\top\eqsp.
+$$
+Similarly, for all $1\leqslant i\leqslant d_m$,  using that $z_{\theta}^m(X) = b^m + W^mh_{\theta}^{m-1}(X)$,
+\begin{align*}
+\partial_{b^m_{i}}\ell_{\theta}(X,Y) &=  \sum_{k=1}^{d_m} \partial_{(z_{\theta}^m(X))_k}\ell_{\theta}(X,Y)\partial_{b^m_{i}}(z_{\theta}^m(X))_k\eqsp,\\
+&=  \sum_{k=1}^{d_m} \partial_{(z_{\theta}^m(X))_k}\ell_{\theta}(X,Y)\1_{i=k}\eqsp,\\
+&=  \partial_{(z_{\theta}^m(X))_k}\ell_{\theta}(X,Y)_i\eqsp.
+\end{align*}
+Therefore,
+$$
+\nabla_{b^m} \ell_{\theta}(X,Y) =  \nabla_{z_{\theta}^m(X)}\ell_{\theta}(X,Y)\eqsp.
+$$
+}
+
+\end{enumerate}
+\end{document} 
