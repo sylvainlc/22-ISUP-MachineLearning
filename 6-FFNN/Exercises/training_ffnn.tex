@@ -80,8 +80,8 @@
 
 \begin{document}
 
-\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
- 2022-2023
+%\noindent Machine learning \hfill ISUP - Sorbonne Universit\'e \\
+% 2022-2023
 
 \noindent\hrulefill
 
@@ -111,11 +111,11 @@ Let $X_i$ be the input and define all layers as follows.
 \begin{align*}
 h_{\theta}^0(X_i) &= X_i\eqsp,\\
 z_{\theta}^1(X_i)  &= b^1 + W^1h_{\theta}^{0}(X_i)\eqsp, \quad b^1\in\mathbb{R}^{d_1}, W^1 \in\mathbb{R}^{d_1\times d}\eqsp,\\
-h_{\theta}^1(x)  &= \varphi_1(z_{\theta}^{k}(X_i))\eqsp,\\
+h_{\theta}^1(x)  &= \varphi_1(z_{\theta}^{1}(X_i))\eqsp,\\
 z_{\theta}^2(X_i)  &= b^2 + W^2h_{\theta}^{1}(X_i)\eqsp,\quad b^1\in\mathbb{R}^{d_2}, W^1 \in\mathbb{R}^{d_2\times d_1}\eqsp,\\
 h_{\theta}^2(x)  &= \varphi_2(z_{\theta}^{2}(X_i))\eqsp,\\
 z_{\theta}^3(X_i)  &= b^3 + W^3h_{\theta}^{2}(X_i)\eqsp,\quad b^1\in\mathbb{R}^{M}, W^1 \in\mathbb{R}^{M\times d_2}\eqsp,\\
-h_{\theta}^3(X_i)  &= \mathbb{P}_{\theta}(Y_i = k | X_i) = \mathrm{Softmax}(z_{\theta}^{3}(X_i))\eqsp,\\
+h_{\theta}^3(X_i)  &= \{\mathbb{P}_{\theta}(Y_i = k | X_i)\}_{1\leq k \leq M} = \mathrm{Softmax}(z_{\theta}^{3}(X_i))\eqsp,\\
 \end{align*}
 }
 \item What is the unknown parameter $\theta$ of the previous model ? Explain how to estimate $\theta$ with  a stochastic gradient descent.
@@ -123,11 +123,11 @@ h_{\theta}^3(X_i)  &= \mathbb{P}_{\theta}(Y_i = k | X_i) = \mathrm{Softmax}(z_{\
 \vspace{.2cm}
 
 {\em
-The unknown parameters are estimated iteratively. Let $\theta_0$ be an initial estimate (randomly chosen). Then for each iteration $p\geqslant 1$, the new estimate is computed as follows
+The unknown parameter is $\theta = \{(b^j,W^j)\}_{1\leq j \leq 3}$ is estimated iteratively. Let $\theta_0$ be an initial estimate (randomly chosen). Then for each iteration $p\geqslant 1$, the new estimate is computed as follows
 $$
 \theta_p = \theta_{p-1} - \gamma_p \nabla_{\theta=\theta_{p-1}} \left(-\frac{1}{B} \sum_{i=1}^B\sum_{k=1}^{M} \1_{Y_{I_i}=k}\log \mathbb{P}_{\theta}(Y_{I_i} = k | X_{I_i})\right)\eqsp,
 $$
-where $B$ is the batch size, $(\gamma_p)_{p\geqslant 1}$ are positive step-sizes, and for all $(I_i)_{1 \leqslant i \leqslant B}$ are i.i.d. with unifrom distribution on  $\{1,\ldots,n\}$. Of course, this elementary stochastci gradient descent algorithm can be improves (see lecture notes with for instance Adagrad, Adadelta, Rmsprop, Adam).
+where $B$ is the batch size, $(\gamma_p)_{p\geqslant 1}$ are positive step-sizes, and $(I_i)_{1 \leqslant i \leqslant B}$ are i.i.d. with unifrom distribution on  $\{1,\ldots,n\}$. Of course, this elementary stochastic gradient descent algorithm can be improved (with for instance Adagrad, Adadelta, Rmsprop, Adam).
 }
 \item What is the complexity of an iteration of the previous algorithm ?
 
